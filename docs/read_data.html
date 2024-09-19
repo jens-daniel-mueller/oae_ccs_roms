@@ -539,15 +539,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreec9f35a01df6866361f9a796fa0537a28fc078310targetblankc9f35a0a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreef7fc26fb6ae00e2c83db569ae9257ee838eaf5e2targetblankf7fc26fa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/c9f35a01df6866361f9a796fa0537a28fc078310" target="_blank">c9f35a0</a>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/f7fc26fb6ae00e2c83db569ae9257ee838eaf5e2" target="_blank">f7fc26f</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreec9f35a01df6866361f9a796fa0537a28fc078310targetblankc9f35a0a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreef7fc26fb6ae00e2c83db569ae9257ee838eaf5e2targetblankf7fc26fa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -557,7 +557,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/c9f35a01df6866361f9a796fa0537a28fc078310" target="_blank">c9f35a0</a>.
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/f7fc26fb6ae00e2c83db569ae9257ee838eaf5e2" target="_blank">f7fc26f</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -622,6 +622,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/f7fc26fb6ae00e2c83db569ae9257ee838eaf5e2/analysis/read_data.Rmd" target="_blank">f7fc26f</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-09-19
+</td>
+<td>
+first map but i cleaned up the code
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/5eca06c9c894ffd5d3a58c89c34d021a205909c9/docs/read_data.html" target="_blank">5eca06c</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-09-19
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -734,14 +768,11 @@ setup project
 <div id="read-this" class="section level2">
 <h2>Read this</h2>
 <p>this is the script to open the data</p>
-<pre class="r"><code># Testing file
+<pre class="r"><code># File paths
 # /work/loher/ROMS/Alk_enh_formatted_2024_08 ##regridded v2
 # /net/sea/work/loher/ROMS/Pactcs30_Alk_enhanced_2024_08 ## original grids v2
 
-# setting main path to read files
-# path_ROMSv2_results &lt;- 
-#   &quot;/net/sea/work/loher/ROMS/Pactcs30_Alk_enhanced_2024_08/&quot; 
-
+#loading packages
 library(ncdf4)
 library(tidync)
 library(stars)</code></pre>
@@ -762,7 +793,11 @@ tidyverse 1.3.2 ──</code></pre>
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
-<pre class="r"><code># #reading/opening a specific nc file
+<pre class="r"><code># setting main path to read files (original grid)
+# path_ROMSv2_results &lt;- 
+#   &quot;/net/sea/work/loher/ROMS/Pactcs30_Alk_enhanced_2024_08/&quot;
+
+# #reading/opening a specific nc file
 # nc &lt;- nc_open(paste0(path_ROMSv2_results,
 #                      &quot;Pactcs30_Alk_enhanced_ColumbiaRiver_1x/avg/ColumbiaRiver_1x_2010_monthly.nc&quot;))
 # 
@@ -789,8 +824,9 @@ tidyverse 1.3.2 ──</code></pre>
 # # extract the year and month from the time stamp
 # testtable &lt;- testtable %&gt;% mutate(year = year(time), month = month(time))
 # 
+#
 # ######
-#For the regridded standard files:
+#For the regridded standard files, path:
 path_ROMSv2RG_results &lt;- 
  &quot;/net/sea/work/loher/ROMS/Alk_enh_formatted_2024_08/&quot;
 
@@ -877,19 +913,59 @@ print(nc)</code></pre>
         history: Tue Aug 20 20:38:27 2024: cdo --history -s -P 12 -f nc4 -selvar,Alk,DIC,PO4,salt,SiO3,temp -remapbil,/net/sea/work/loher/ROMS/Alk_enh_formatted_2024_08/griddes_ColumbiaRiver /nfs/sea/work/loher/ROMS/Pactcs30_Alk_enhanced_2024_08/Pactcs30_Alk_enhanced_ColumbiaRiver_1x/avg/z_pactcs30_2010-2015_avg.00000.nc /net/sea/work/loher/ROMS/Alk_enh_formatted_2024_08/ColumbiaRiver/pactcs30_2010-2015_avg.00000_1x.nc
         CDO: Climate Data Operators version 2.2.0 (https://mpimet.mpg.de/cdo)
         cdo_openmp_thread_number: 12</code></pre>
-<pre class="r"><code>nc &lt;- read_ncdf(paste0(path_ROMSv2RG_results,
+<pre class="r"><code>#filtering for just one variable
+nc &lt;- read_ncdf(paste0(path_ROMSv2RG_results,
                      &quot;ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc&quot;), 
           var = &quot;FG_CO2&quot;)</code></pre>
 <pre><code>Will return stars object with 9259008 cells.
 No projection information found in nc file. 
  Coordinate variable units found to be degrees, 
  assuming WGS84 Lat/Lon.</code></pre>
-<pre class="r"><code>nc &lt;- nc %&gt;% 
+<pre class="r"><code>#slicing for just one timepoint
+nc &lt;- nc %&gt;% 
   slice(time, 1
       ) 
-  ggplot() + 
+#creating a blank plot nad loading in the nc data layer  
+ggplot() + 
   geom_stars(data = nc)</code></pre>
 <p><img src="figure/read_data.Rmd/read_data-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-1">
+Past versions of read_data-1.png
+</button>
+</p>
+<div id="fig-read_data-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/5eca06c9c894ffd5d3a58c89c34d021a205909c9/docs/figure/read_data.Rmd/read_data-1.png" target="_blank">5eca06c</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-09-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># 
 # #loading nc file into tidync
 # columbia1x_regrid &lt;-
