@@ -8,8 +8,117 @@ editor_options:
 ---
 
 ## Read this
-
+this is the script to open the data
 ```{r read_data}
+# Testing file
+# /work/loher/ROMS/Alk_enh_formatted_2024_08 ##regridded v2
+# /net/sea/work/loher/ROMS/Pactcs30_Alk_enhanced_2024_08 ## original grids v2
+
+# setting main path to read files
+# path_ROMSv2_results <- 
+#   "/net/sea/work/loher/ROMS/Pactcs30_Alk_enhanced_2024_08/" 
+
+library(ncdf4)
+library(tidync)
+library(stars)
+library(tidyverse)
+
+# #reading/opening a specific nc file
+# nc <- nc_open(paste0(path_ROMSv2_results,
+#                      "Pactcs30_Alk_enhanced_ColumbiaRiver_1x/avg/ColumbiaRiver_1x_2010_monthly.nc"))
+# 
+# print(nc)
+
+# #loading nc file into tidync
+# columbia1x_interior <-
+#   tidync(paste0(path_ROMSv2_results,
+#                 "Pactcs30_Alk_enhanced_ColumbiaRiver_1x/avg/ColumbiaRiver_1x_2010_monthly.nc"))
+# 
+# # filtering nc to a subset of dimensions, then producing a table of certain
+# # variables within the subset
+# sub_columbia1x_interior <- columbia1x_interior %>%
+#   hyper_filter(s_rho = s_rho <= 100) %>% 
+#   hyper_tibble(select_var = c("Alk", "DIC"),
+#                force = TRUE)
+# 
+# #read in ALK and DIC info from the nc file
+# testtable <- read_ncdf(paste0(
+#   path_ROMSv2_results,"Pactcs30_Alk_enhanced_ColumbiaRiver_1x/avg/ColumbiaRiver_1x_2010_monthly.nc"),
+#   var = c("Alk", "DIC"), make_units = FALSE)
+# # compile into a table
+# testtable <- testtable %>% as_tibble()
+# # extract the year and month from the time stamp
+# testtable <- testtable %>% mutate(year = year(time), month = month(time))
+# 
+# ######
+#For the regridded standard files:
+path_ROMSv2RG_results <- 
+ "/net/sea/work/loher/ROMS/Alk_enh_formatted_2024_08/"
+
+#reading/opening a specific nc file
+nc <- nc_open(paste0(path_ROMSv2RG_results,
+                     "ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc"))
+
+print(nc)
+
+
+nc <- read_ncdf(paste0(path_ROMSv2RG_results,
+                     "ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc"), 
+          var = "FG_CO2")
+nc <- nc %>% 
+  slice(time, 1
+      ) 
+  ggplot() + 
+  geom_stars(data = nc)
+# 
+# #loading nc file into tidync
+# columbia1x_regrid <-
+#   tidync(paste0(path_ROMSv2RG_results,
+#                 "ColumbiaRiver/pactcs30_2010-2015_avg.01092_1x.nc"))
+# 
+# # filtering nc to a subset of dimensions, then producing a table of certain
+# # variables within the subset ie only top depth on the last day, Alk
+# alk_columbia1x_regrid <- columbia1x_regrid %>%
+#   hyper_filter(depth = depth <= 0, time = index == 16
+#                ) %>%
+#   hyper_tibble(select_var = c("Alk"),
+#                force = TRUE)
+# #plotting basic on map
+# alk_C_sf <- st_as_sf(alk_columbia1x_regrid, coords = c("lon", "lat"), crs = 4326)
+# ggplot(data = alk_C_sf) + geom_sf(aes(color = Alk)) + theme_minimal() +
+#   labs(title = "Columbia River Final Alkalinity", 
+#        x = "Longitude", y = "Latitude")
+# 
+# #repeat for DIC
+# dic_columbia1x_regrid <- columbia1x_regrid %>%
+#   hyper_filter(depth = depth <= 0, time = index == 16
+#   ) %>%
+#   hyper_tibble(select_var = c("DIC"),
+#                force = TRUE)
+# dic_C_sf <- st_as_sf(dic_columbia1x_regrid, coords = c("lon", "lat"), crs = 4326)
+# ggplot(data = dic_C_sf) + geom_sf(aes(color = DIC)) + theme_minimal() +
+#   labs(title = "Columbia River Final DIC", 
+#        x = "Longitude", y = "Latitude")
+# 
+# 
+# 
+# 
+# ## This section: what does it do/what is the point
+# #read in ALK and DIC info from the nc file
+# testtable <- read_ncdf(paste0(
+#   path_ROMSv2RG_results,"ColumbiaRiver/pactcs30_2010-2015_avg.01092_1x.nc"),
+#   var = c("Alk"), make_units = FALSE)
+# # compile into a table
+# testtable <- testtable %>% as_tibble()
+# # extract the year and month from the time stamp
+# testtable <- testtable %>% mutate(year = year(time), month = month(time))
+
+```
+
+vhjgvj
+
+
+```{r plot_data}
 
 ```
 
