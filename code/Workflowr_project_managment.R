@@ -48,4 +48,5 @@ republish = TRUE)
 
 # Push latest version to GitHub
 wflow_git_push()
+vgfroh
 jens-daniel-mueller
