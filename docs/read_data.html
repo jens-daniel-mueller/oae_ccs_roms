@@ -539,15 +539,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree210c1007588f05d62127c92871737ec7312e1d6etargetblank210c100a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreec9f35a01df6866361f9a796fa0537a28fc078310targetblankc9f35a0a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/210c1007588f05d62127c92871737ec7312e1d6e" target="_blank">210c100</a>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/c9f35a01df6866361f9a796fa0537a28fc078310" target="_blank">c9f35a0</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree210c1007588f05d62127c92871737ec7312e1d6etargetblank210c100a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreec9f35a01df6866361f9a796fa0537a28fc078310targetblankc9f35a0a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -557,7 +557,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/210c1007588f05d62127c92871737ec7312e1d6e" target="_blank">210c100</a>.
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/c9f35a01df6866361f9a796fa0537a28fc078310" target="_blank">c9f35a0</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -572,6 +572,7 @@ were generated:
 </p>
 <pre><code>
 Ignored files:
+    Ignored:    .Rhistory
     Ignored:    .Rproj.user/
 
 Unstaged changes:
@@ -621,6 +622,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/c9f35a01df6866361f9a796fa0537a28fc078310/analysis/read_data.Rmd" target="_blank">c9f35a0</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-09-19
+</td>
+<td>
+first map
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/16549e7b7d6fded15da0ac482bee8a8432d40620/docs/read_data.html" target="_blank">16549e7</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-09-19
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -698,6 +733,206 @@ setup project
 </div>
 <div id="read-this" class="section level2">
 <h2>Read this</h2>
+<p>this is the script to open the data</p>
+<pre class="r"><code># Testing file
+# /work/loher/ROMS/Alk_enh_formatted_2024_08 ##regridded v2
+# /net/sea/work/loher/ROMS/Pactcs30_Alk_enhanced_2024_08 ## original grids v2
+
+# setting main path to read files
+# path_ROMSv2_results &lt;- 
+#   &quot;/net/sea/work/loher/ROMS/Pactcs30_Alk_enhanced_2024_08/&quot; 
+
+library(ncdf4)
+library(tidync)
+library(stars)</code></pre>
+<pre><code>Loading required package: abind</code></pre>
+<pre><code>Loading required package: sf</code></pre>
+<pre><code>Linking to GEOS 3.11.1, GDAL 3.4.1, PROJ 7.2.1; sf_use_s2() is TRUE</code></pre>
+<pre><code>WARNING: different compile-time and runtime versions for GEOS found:</code></pre>
+<pre><code>Linked against: 3.11.1-CAPI-1.17.1 compiled against: 3.9.1-CAPI-1.14.2</code></pre>
+<pre><code>It is probably a good idea to reinstall sf, and maybe rgeos and rgdal too</code></pre>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>── Attaching packages
+───────────────────────────────────────
+tidyverse 1.3.2 ──</code></pre>
+<pre><code>✔ ggplot2 3.4.4     ✔ purrr   1.0.2
+✔ tibble  3.2.1     ✔ dplyr   1.1.3
+✔ tidyr   1.3.0     ✔ stringr 1.5.0
+✔ readr   2.1.3     ✔ forcats 0.5.2
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code># #reading/opening a specific nc file
+# nc &lt;- nc_open(paste0(path_ROMSv2_results,
+#                      &quot;Pactcs30_Alk_enhanced_ColumbiaRiver_1x/avg/ColumbiaRiver_1x_2010_monthly.nc&quot;))
+# 
+# print(nc)
+
+# #loading nc file into tidync
+# columbia1x_interior &lt;-
+#   tidync(paste0(path_ROMSv2_results,
+#                 &quot;Pactcs30_Alk_enhanced_ColumbiaRiver_1x/avg/ColumbiaRiver_1x_2010_monthly.nc&quot;))
+# 
+# # filtering nc to a subset of dimensions, then producing a table of certain
+# # variables within the subset
+# sub_columbia1x_interior &lt;- columbia1x_interior %&gt;%
+#   hyper_filter(s_rho = s_rho &lt;= 100) %&gt;% 
+#   hyper_tibble(select_var = c(&quot;Alk&quot;, &quot;DIC&quot;),
+#                force = TRUE)
+# 
+# #read in ALK and DIC info from the nc file
+# testtable &lt;- read_ncdf(paste0(
+#   path_ROMSv2_results,&quot;Pactcs30_Alk_enhanced_ColumbiaRiver_1x/avg/ColumbiaRiver_1x_2010_monthly.nc&quot;),
+#   var = c(&quot;Alk&quot;, &quot;DIC&quot;), make_units = FALSE)
+# # compile into a table
+# testtable &lt;- testtable %&gt;% as_tibble()
+# # extract the year and month from the time stamp
+# testtable &lt;- testtable %&gt;% mutate(year = year(time), month = month(time))
+# 
+# ######
+#For the regridded standard files:
+path_ROMSv2RG_results &lt;- 
+ &quot;/net/sea/work/loher/ROMS/Alk_enh_formatted_2024_08/&quot;
+
+#reading/opening a specific nc file
+nc &lt;- nc_open(paste0(path_ROMSv2RG_results,
+                     &quot;ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc&quot;))
+
+print(nc)</code></pre>
+<pre><code>File /net/sea/work/loher/ROMS/Alk_enh_formatted_2024_08/ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc (NC_FORMAT_NETCDF4):
+
+     9 variables (excluding dimension variables):
+        float Alk[lon,lat,depth,time]   (Chunking: [96,88,1,1])  
+            long_name: averaged Alkalinity
+            units: mMol m-3
+            missing_value: NaN
+            _FillValue: NaN
+        float DIC[lon,lat,depth,time]   (Chunking: [96,88,1,1])  
+            long_name: averaged Dissolved inorganic carbon
+            units: mMol C m-3
+            missing_value: NaN
+            _FillValue: NaN
+        float PO4[lon,lat,depth,time]   (Chunking: [96,88,1,1])  
+            long_name: averaged Phosphate
+            units: mMol P m-3
+            missing_value: NaN
+            _FillValue: NaN
+        float SiO3[lon,lat,depth,time]   (Chunking: [96,88,1,1])  
+            long_name: averaged Silicate
+            units: mMol Si m-3
+            missing_value: NaN
+            _FillValue: NaN
+        float salt[lon,lat,depth,time]   (Chunking: [96,88,1,1])  
+            long_name: averaged salinity
+            units: PSU
+            missing_value: NaN
+            _FillValue: NaN
+        float temp[lon,lat,depth,time]   (Chunking: [96,88,1,1])  
+            long_name: averaged potential temperature
+            units: Celsius
+            missing_value: NaN
+            _FillValue: NaN
+        float FG_CO2[lon,lat,time]   (Chunking: [96,88,1])  
+            long_name: averaged Air-sea flux of CO2
+            units: mmol/m2/s
+            missing_value: NaN
+            _FillValue: NaN
+        float PCO2OC[lon,lat,time]   (Chunking: [96,88,1])  
+            long_name: averaged PCO2OC
+            units: not looked up yet
+            missing_value: NaN
+            _FillValue: NaN
+        float pCO2air[lon,lat,time]   (Chunking: [96,88,1])  
+            long_name: averaged Atmospheric pCO2
+            units: ppm
+            missing_value: NaN
+            _FillValue: NaN
+
+     4 dimensions:
+        time  Size:1096   *** is unlimited *** 
+            standard_name: time
+            calendar: 365_day
+            axis: T
+            long_name: Averaged time since 2010-01-01
+            units: days since 2010-01-01
+        lon  Size:96 
+            standard_name: longitude
+            long_name: longitude
+            units: degrees_east
+            axis: X
+        lat  Size:88 
+            standard_name: latitude
+            long_name: latitude
+            units: degrees_north
+            axis: Y
+        depth  Size:16 
+            axis: Z
+            long_name: depth
+            units: m
+            remark: positive down
+
+    5 global attributes:
+        CDI: Climate Data Interface version 2.2.1 (https://mpimet.mpg.de/cdi)
+        Conventions: CF-1.6
+        history: Tue Aug 20 20:38:27 2024: cdo --history -s -P 12 -f nc4 -selvar,Alk,DIC,PO4,salt,SiO3,temp -remapbil,/net/sea/work/loher/ROMS/Alk_enh_formatted_2024_08/griddes_ColumbiaRiver /nfs/sea/work/loher/ROMS/Pactcs30_Alk_enhanced_2024_08/Pactcs30_Alk_enhanced_ColumbiaRiver_1x/avg/z_pactcs30_2010-2015_avg.00000.nc /net/sea/work/loher/ROMS/Alk_enh_formatted_2024_08/ColumbiaRiver/pactcs30_2010-2015_avg.00000_1x.nc
+        CDO: Climate Data Operators version 2.2.0 (https://mpimet.mpg.de/cdo)
+        cdo_openmp_thread_number: 12</code></pre>
+<pre class="r"><code>nc &lt;- read_ncdf(paste0(path_ROMSv2RG_results,
+                     &quot;ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc&quot;), 
+          var = &quot;FG_CO2&quot;)</code></pre>
+<pre><code>Will return stars object with 9259008 cells.
+No projection information found in nc file. 
+ Coordinate variable units found to be degrees, 
+ assuming WGS84 Lat/Lon.</code></pre>
+<pre class="r"><code>nc &lt;- nc %&gt;% 
+  slice(time, 1
+      ) 
+  ggplot() + 
+  geom_stars(data = nc)</code></pre>
+<p><img src="figure/read_data.Rmd/read_data-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># 
+# #loading nc file into tidync
+# columbia1x_regrid &lt;-
+#   tidync(paste0(path_ROMSv2RG_results,
+#                 &quot;ColumbiaRiver/pactcs30_2010-2015_avg.01092_1x.nc&quot;))
+# 
+# # filtering nc to a subset of dimensions, then producing a table of certain
+# # variables within the subset ie only top depth on the last day, Alk
+# alk_columbia1x_regrid &lt;- columbia1x_regrid %&gt;%
+#   hyper_filter(depth = depth &lt;= 0, time = index == 16
+#                ) %&gt;%
+#   hyper_tibble(select_var = c(&quot;Alk&quot;),
+#                force = TRUE)
+# #plotting basic on map
+# alk_C_sf &lt;- st_as_sf(alk_columbia1x_regrid, coords = c(&quot;lon&quot;, &quot;lat&quot;), crs = 4326)
+# ggplot(data = alk_C_sf) + geom_sf(aes(color = Alk)) + theme_minimal() +
+#   labs(title = &quot;Columbia River Final Alkalinity&quot;, 
+#        x = &quot;Longitude&quot;, y = &quot;Latitude&quot;)
+# 
+# #repeat for DIC
+# dic_columbia1x_regrid &lt;- columbia1x_regrid %&gt;%
+#   hyper_filter(depth = depth &lt;= 0, time = index == 16
+#   ) %&gt;%
+#   hyper_tibble(select_var = c(&quot;DIC&quot;),
+#                force = TRUE)
+# dic_C_sf &lt;- st_as_sf(dic_columbia1x_regrid, coords = c(&quot;lon&quot;, &quot;lat&quot;), crs = 4326)
+# ggplot(data = dic_C_sf) + geom_sf(aes(color = DIC)) + theme_minimal() +
+#   labs(title = &quot;Columbia River Final DIC&quot;, 
+#        x = &quot;Longitude&quot;, y = &quot;Latitude&quot;)
+# 
+# 
+# 
+# 
+# ## This section: what does it do/what is the point
+# #read in ALK and DIC info from the nc file
+# testtable &lt;- read_ncdf(paste0(
+#   path_ROMSv2RG_results,&quot;ColumbiaRiver/pactcs30_2010-2015_avg.01092_1x.nc&quot;),
+#   var = c(&quot;Alk&quot;), make_units = FALSE)
+# # compile into a table
+# testtable &lt;- testtable %&gt;% as_tibble()
+# # extract the year and month from the time stamp
+# testtable &lt;- testtable %&gt;% mutate(year = year(time), month = month(time))</code></pre>
+<p>vhjgvj</p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -727,20 +962,40 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] workflowr_1.7.0
+ [1] forcats_0.5.2   stringr_1.5.0   dplyr_1.1.3     purrr_1.0.2    
+ [5] readr_2.1.3     tidyr_1.3.0     tibble_3.2.1    ggplot2_3.4.4  
+ [9] tidyverse_1.3.2 stars_0.6-0     sf_1.0-9        abind_1.4-5    
+[13] tidync_0.4.0    ncdf4_1.19      workflowr_1.7.0
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.10       compiler_4.2.2    pillar_1.9.0      bslib_0.4.1      
- [5] later_1.3.0       git2r_0.30.1      jquerylib_0.1.4   tools_4.2.2      
- [9] getPass_0.2-2     digest_0.6.30     jsonlite_1.8.3    evaluate_0.18    
-[13] lifecycle_1.0.3   tibble_3.2.1      pkgconfig_2.0.3   rlang_1.1.1      
-[17] cli_3.6.1         rstudioapi_0.15.0 yaml_2.3.6        xfun_0.35        
-[21] fastmap_1.1.0     httr_1.4.4        stringr_1.5.0     knitr_1.41       
-[25] fs_1.5.2          vctrs_0.6.4       sass_0.4.4        rprojroot_2.0.3  
-[29] glue_1.6.2        R6_2.5.1          processx_3.8.0    fansi_1.0.3      
-[33] rmarkdown_2.18    callr_3.7.3       magrittr_2.0.3    whisker_0.4      
-[37] ps_1.7.2          promises_1.2.0.1  htmltools_0.5.3   httpuv_1.6.6     
-[41] utf8_1.2.2        stringi_1.7.8     cachem_1.0.6     </code></pre>
+ [1] fs_1.5.2            lubridate_1.9.0     httr_1.4.4         
+ [4] rprojroot_2.0.3     tools_4.2.2         backports_1.4.1    
+ [7] bslib_0.4.1         utf8_1.2.2          R6_2.5.1           
+[10] KernSmooth_2.23-20  DBI_1.1.3           colorspace_2.0-3   
+[13] withr_2.5.0         tidyselect_1.2.0    processx_3.8.0     
+[16] compiler_4.2.2      git2r_0.30.1        cli_3.6.1          
+[19] rvest_1.0.3         RNetCDF_2.6-1       xml2_1.3.3         
+[22] labeling_0.4.2      sass_0.4.4          scales_1.2.1       
+[25] classInt_0.4-8      callr_3.7.3         proxy_0.4-27       
+[28] digest_0.6.30       rmarkdown_2.18      pkgconfig_2.0.3    
+[31] htmltools_0.5.3     highr_0.9           dbplyr_2.2.1       
+[34] fastmap_1.1.0       rlang_1.1.1         readxl_1.4.1       
+[37] rstudioapi_0.15.0   PCICt_0.5-4.3       jquerylib_0.1.4    
+[40] generics_0.1.3      farver_2.1.1        jsonlite_1.8.3     
+[43] googlesheets4_1.0.1 magrittr_2.0.3      ncmeta_0.3.5       
+[46] Rcpp_1.0.10         munsell_0.5.0       fansi_1.0.3        
+[49] lifecycle_1.0.3     stringi_1.7.8       whisker_0.4        
+[52] yaml_2.3.6          grid_4.2.2          parallel_4.2.2     
+[55] promises_1.2.0.1    crayon_1.5.2        haven_2.5.1        
+[58] hms_1.1.2           knitr_1.41          ps_1.7.2           
+[61] pillar_1.9.0        reprex_2.0.2        glue_1.6.2         
+[64] evaluate_0.18       getPass_0.2-2       modelr_0.1.10      
+[67] vctrs_0.6.4         tzdb_0.3.0          httpuv_1.6.6       
+[70] cellranger_1.1.0    gtable_0.3.1        assertthat_0.2.1   
+[73] cachem_1.0.6        xfun_0.35           lwgeom_0.2-10      
+[76] broom_1.0.5         e1071_1.7-12        later_1.3.0        
+[79] class_7.3-20        googledrive_2.0.0   gargle_1.2.1       
+[82] units_0.8-0         timechange_0.1.1    ellipsis_0.3.2     </code></pre>
 </div>
 </div>
 
