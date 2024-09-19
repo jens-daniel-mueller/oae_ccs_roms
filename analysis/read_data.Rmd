@@ -1,0 +1,15 @@
+---
+title: "read_data"
+author: "Victoria Froh & Jens Daniel Müller"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Read data
+
+```{r read_data}
+
+```
+
