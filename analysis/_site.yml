@@ -3,9 +3,12 @@ output_dir: ../docs
 navbar:
   title: oae_ccs_roms
   left:
-  - text: Home
-    href: index.html
+  - text: Read data
+    href: read_data.html
   right:
+  - icon: fa-home
+    text: Jens' homepage
+    href: https://jens-daniel-mueller.github.io/
   - icon: fab fa-github
     text: Source code
     href: https://github.com/jens-daniel-mueller/oae_ccs_roms
