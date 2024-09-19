@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-## Read data
+## Read this
 
 ```{r read_data}
 
