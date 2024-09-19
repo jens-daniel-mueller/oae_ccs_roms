@@ -10,18 +10,19 @@ editor_options:
 ## Read this
 this is the script to open the data
 ```{r read_data}
-# Testing file
+# File paths
 # /work/loher/ROMS/Alk_enh_formatted_2024_08 ##regridded v2
 # /net/sea/work/loher/ROMS/Pactcs30_Alk_enhanced_2024_08 ## original grids v2
 
-# setting main path to read files
-# path_ROMSv2_results <- 
-#   "/net/sea/work/loher/ROMS/Pactcs30_Alk_enhanced_2024_08/" 
-
+#loading packages
 library(ncdf4)
 library(tidync)
 library(stars)
 library(tidyverse)
+
+# setting main path to read files (original grid)
+# path_ROMSv2_results <- 
+#   "/net/sea/work/loher/ROMS/Pactcs30_Alk_enhanced_2024_08/"
 
 # #reading/opening a specific nc file
 # nc <- nc_open(paste0(path_ROMSv2_results,
@@ -50,8 +51,9 @@ library(tidyverse)
 # # extract the year and month from the time stamp
 # testtable <- testtable %>% mutate(year = year(time), month = month(time))
 # 
+#
 # ######
-#For the regridded standard files:
+#For the regridded standard files, path:
 path_ROMSv2RG_results <- 
  "/net/sea/work/loher/ROMS/Alk_enh_formatted_2024_08/"
 
@@ -61,15 +63,18 @@ nc <- nc_open(paste0(path_ROMSv2RG_results,
 
 print(nc)
 
-
+#filtering for just one variable
 nc <- read_ncdf(paste0(path_ROMSv2RG_results,
                      "ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc"), 
           var = "FG_CO2")
+#slicing for just one timepoint
 nc <- nc %>% 
   slice(time, 1
       ) 
-  ggplot() + 
+#creating a blank plot nad loading in the nc data layer  
+ggplot() + 
   geom_stars(data = nc)
+
 # 
 # #loading nc file into tidync
 # columbia1x_regrid <-
