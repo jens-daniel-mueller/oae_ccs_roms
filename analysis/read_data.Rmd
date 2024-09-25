@@ -10,113 +10,87 @@ editor_options:
 ## Read this
 this is the script to open the data
 ```{r read_data}
-# File paths
-# /work/loher/ROMS/Alk_enh_formatted_2024_08 ##regridded v2
-# /net/sea/work/loher/ROMS/Pactcs30_Alk_enhanced_2024_08 ## original grids v2
 
 #loading packages
 library(ncdf4)
 library(tidync)
 library(stars)
 library(tidyverse)
+library(dplyr)
 
-# setting main path to read files (original grid)
-# path_ROMSv2_results <- 
-#   "/net/sea/work/loher/ROMS/Pactcs30_Alk_enhanced_2024_08/"
-
-# #reading/opening a specific nc file
-# nc <- nc_open(paste0(path_ROMSv2_results,
-#                      "Pactcs30_Alk_enhanced_ColumbiaRiver_1x/avg/ColumbiaRiver_1x_2010_monthly.nc"))
-# 
-# print(nc)
-
-# #loading nc file into tidync
-# columbia1x_interior <-
-#   tidync(paste0(path_ROMSv2_results,
-#                 "Pactcs30_Alk_enhanced_ColumbiaRiver_1x/avg/ColumbiaRiver_1x_2010_monthly.nc"))
-# 
-# # filtering nc to a subset of dimensions, then producing a table of certain
-# # variables within the subset
-# sub_columbia1x_interior <- columbia1x_interior %>%
-#   hyper_filter(s_rho = s_rho <= 100) %>% 
-#   hyper_tibble(select_var = c("Alk", "DIC"),
-#                force = TRUE)
-# 
-# #read in ALK and DIC info from the nc file
-# testtable <- read_ncdf(paste0(
-#   path_ROMSv2_results,"Pactcs30_Alk_enhanced_ColumbiaRiver_1x/avg/ColumbiaRiver_1x_2010_monthly.nc"),
-#   var = c("Alk", "DIC"), make_units = FALSE)
-# # compile into a table
-# testtable <- testtable %>% as_tibble()
-# # extract the year and month from the time stamp
-# testtable <- testtable %>% mutate(year = year(time), month = month(time))
-# 
-#
-# ######
 #For the regridded standard files, path:
 path_ROMSv2RG_results <- 
  "/net/sea/work/loher/ROMS/Alk_enh_formatted_2024_08/"
 
-#reading/opening a specific nc file
-nc <- nc_open(paste0(path_ROMSv2RG_results,
+#opening specific nc file (Columbia site, 1x)
+# nc <- nc_open(paste0(path_ROMSv2RG_results,
+#                      "ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc"))
+# 
+# print(nc)
+
+#filtering for just one variable w/ stars package
+# nc_alk <- read_ncdf(paste0(path_ROMSv2RG_results,
+#                      "ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc"),
+#            var = "Alk")
+
+#problem here with Alk and DIC: include the depth dimension; getting weird error
+# when trying to slice for this since the value is 0
+# nc_surface_alk <- nc_alk %>%
+#   filter(depth == 0)
+
+#slicing for just one timepoint
+# nc_surface_alk_1 <- nc_surface_alk %>%
+#   slice(time, 1)
+
+###################
+#using tidync instead
+nc <- tidync(paste0(path_ROMSv2RG_results,
                      "ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc"))
 
-print(nc)
+# filtering nc file for just the surface @ the first time index for both 
+# DIC and Alk variable
+alk_surface_t1 <- nc %>%
+  hyper_filter(depth = index == 1, time = index == 1) %>% 
+  hyper_tibble(select_var = c("Alk"), #  produces a tibble object
+               force = TRUE)
+dic_surface_t1 <- nc %>%
+  hyper_filter(depth = index == 1, time = index == 1) %>% 
+  hyper_tibble(select_var = c("DIC"), # produces a tibble object
+               force = TRUE)
 
-#filtering for just one variable
-nc <- read_ncdf(paste0(path_ROMSv2RG_results,
-                     "ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc"), 
-          var = "FG_CO2")
-#slicing for just one timepoint
-nc <- nc %>% 
-  slice(time, 1
-      ) 
-#creating a blank plot nad loading in the nc data layer  
-ggplot() + 
-  geom_stars(data = nc)
+#plotting
+alk_surface_t1_sf <- st_as_sf(alk_surface_t1, coords = c("lon", "lat"), crs = 4326)
+ggplot(data = alk_surface_t1_sf) + geom_sf(aes(color = Alk)) +
+  labs(title = "Columbia River Surface Alkalinity @ T1", 
+       x = "Longitude", y = "Latitude")
+
+#plotting
+dic_surface_t1_sf <- st_as_sf(dic_surface_t1, coords = c("lon", "lat"), crs = 4326)
+ggplot(data = dic_surface_t1_sf) + geom_sf(aes(color = DIC)) +
+  labs(title = "Columbia River Surface DIC @ T1", 
+       x = "Longitude", y = "Latitude")
+#why do they look like dots?
+
+##########################
+#i tried something else so i could get the data but i can't plot this w/ ggplot
+# lon <- ncvar_get(nc, "lon", verbose = FALSE) # read lon variable
+# lat <- ncvar_get(nc, "lat", verbose = FALSE) # read lat variable
+# time <- ncvar_get(nc, "time", verbose = FALSE) # read t (time) variable
+# depth <- ncvar_get(nc, "depth", verbose = FALSE) # read depth variable
+# print(c(length(lon), length(lat), length(t), length(depth))) # show vector lengths
+# 
+# alk_array <- ncvar_get(nc, "Alk") #pull the alk values from the ncdf4 file
+# 
+# alk_surface_time_1 <- alk_array[, , 1, 1] #pull only the first time point and surface layer
+
+
+##################
+#creating a blank plot and loading in the nc data layer using stars package  
+# ggplot(data = alk_surface_time_1) 
+#  geom_stars(data = alk_surface_time_1)
+
 
 # 
-# #loading nc file into tidync
-# columbia1x_regrid <-
-#   tidync(paste0(path_ROMSv2RG_results,
-#                 "ColumbiaRiver/pactcs30_2010-2015_avg.01092_1x.nc"))
-# 
-# # filtering nc to a subset of dimensions, then producing a table of certain
-# # variables within the subset ie only top depth on the last day, Alk
-# alk_columbia1x_regrid <- columbia1x_regrid %>%
-#   hyper_filter(depth = depth <= 0, time = index == 16
-#                ) %>%
-#   hyper_tibble(select_var = c("Alk"),
-#                force = TRUE)
-# #plotting basic on map
-# alk_C_sf <- st_as_sf(alk_columbia1x_regrid, coords = c("lon", "lat"), crs = 4326)
-# ggplot(data = alk_C_sf) + geom_sf(aes(color = Alk)) + theme_minimal() +
-#   labs(title = "Columbia River Final Alkalinity", 
-#        x = "Longitude", y = "Latitude")
-# 
-# #repeat for DIC
-# dic_columbia1x_regrid <- columbia1x_regrid %>%
-#   hyper_filter(depth = depth <= 0, time = index == 16
-#   ) %>%
-#   hyper_tibble(select_var = c("DIC"),
-#                force = TRUE)
-# dic_C_sf <- st_as_sf(dic_columbia1x_regrid, coords = c("lon", "lat"), crs = 4326)
-# ggplot(data = dic_C_sf) + geom_sf(aes(color = DIC)) + theme_minimal() +
-#   labs(title = "Columbia River Final DIC", 
-#        x = "Longitude", y = "Latitude")
-# 
-# 
-# 
-# 
-# ## This section: what does it do/what is the point
-# #read in ALK and DIC info from the nc file
-# testtable <- read_ncdf(paste0(
-#   path_ROMSv2RG_results,"ColumbiaRiver/pactcs30_2010-2015_avg.01092_1x.nc"),
-#   var = c("Alk"), make_units = FALSE)
-# # compile into a table
-# testtable <- testtable %>% as_tibble()
-# # extract the year and month from the time stamp
-# testtable <- testtable %>% mutate(year = year(time), month = month(time))
 
 ```
 
