@@ -22,28 +22,48 @@ library(dplyr)
 path_ROMSv2RG_results <- 
  "/net/sea/work/loher/ROMS/Alk_enh_formatted_2024_08/"
 
-#opening specific nc file (Columbia site, 1x)
+#currently not working 
+# opening specific nc file (Columbia site, 1x)
 # nc <- nc_open(paste0(path_ROMSv2RG_results,
 #                      "ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc"))
 # 
 # print(nc)
-
-#filtering for just one variable w/ stars package
+# 
+# #filtering for just one variable w/ stars package
 # nc_alk <- read_ncdf(paste0(path_ROMSv2RG_results,
 #                      "ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc"),
-#            var = "Alk")
-
-#problem here with Alk and DIC: include the depth dimension; getting weird error
-# when trying to slice for this since the value is 0
+#            var = "Alk",
+#            #ncsub = list( #tried here to subset already but i got weird errors
+#              #lon = 1:96,
+#              #lat = 1:88
+#              #depth = 1
+#              #time = 1
+#            #)
+#           # proxy = FALSE
+#           )
+# 
+# #trying to filter for surface layer only but it did not actually work
 # nc_surface_alk <- nc_alk %>%
 #   filter(depth == 0)
-
-#slicing for just one timepoint
+# 
+# #slicing for just one timepoint but it also did not actually work
 # nc_surface_alk_1 <- nc_surface_alk %>%
 #   slice(time, 1)
+# 
+# #tried this instead to subset, it works on depth but not time
+# nc_alk_subset <- nc_alk[,,1,1, drop = FALSE]
+# 
+# #creating a blank plot and loading in the nc data layer using stars package  
+# ggplot() +
+#  geom_stars(data = nc_surface_alk_1, aes(fill = Alk)) + 
+#   labs(title = "Columbia River Surface Alkalinity @ T1", 
+#        x = "Longitude", 
+#        y = "Latitude") + 
+#   theme_minimal()
+# 
 
 ###################
-#using tidync instead
+#using tidync instead, which works
 nc <- tidync(paste0(path_ROMSv2RG_results,
                      "ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc"))
 
@@ -58,18 +78,23 @@ dic_surface_t1 <- nc %>%
   hyper_tibble(select_var = c("DIC"), # produces a tibble object
                force = TRUE)
 
-#plotting
+#plotting; st_as_sf converts the proxy to a sf object ie requires loading in
 alk_surface_t1_sf <- st_as_sf(alk_surface_t1, coords = c("lon", "lat"), crs = 4326)
-ggplot(data = alk_surface_t1_sf) + geom_sf(aes(color = Alk)) +
+ggplot(data = alk_surface_t1_sf) + 
+  geom_sf(aes(color = Alk)) +
   labs(title = "Columbia River Surface Alkalinity @ T1", 
-       x = "Longitude", y = "Latitude")
+       x = "Longitude", y = "Latitude") + 
+  theme_minimal()
 
 #plotting
 dic_surface_t1_sf <- st_as_sf(dic_surface_t1, coords = c("lon", "lat"), crs = 4326)
-ggplot(data = dic_surface_t1_sf) + geom_sf(aes(color = DIC)) +
+ggplot(data = dic_surface_t1_sf) + 
+  geom_sf(aes(color = DIC)) +
   labs(title = "Columbia River Surface DIC @ T1", 
-       x = "Longitude", y = "Latitude")
-#why do they look like dots?
+       x = "Longitude", y = "Latitude") + 
+  theme_minimal()
+
+#how can i make them not look like dots
 
 ##########################
 #i tried something else so i could get the data but i can't plot this w/ ggplot
@@ -82,15 +107,77 @@ ggplot(data = dic_surface_t1_sf) + geom_sf(aes(color = DIC)) +
 # alk_array <- ncvar_get(nc, "Alk") #pull the alk values from the ncdf4 file
 # 
 # alk_surface_time_1 <- alk_array[, , 1, 1] #pull only the first time point and surface layer
+##########################
+
+# Using sea carb:
+library(seacarb)
+
+#load in temperature and salinity data from tidync file
+temp <- nc %>%
+     hyper_filter(depth = index == 1, time = index == 1) %>% 
+     hyper_tibble(select_var = c("temp"), #  produces a tibble object
+                  force = TRUE)
+
+sal <- nc %>%
+     hyper_filter(depth = index == 1, time = index == 1) %>% 
+     hyper_tibble(select_var = c("salt"), #  produces a tibble object
+                  force = TRUE)
 
 
-##################
-#creating a blank plot and loading in the nc data layer using stars package  
-# ggplot(data = alk_surface_time_1) 
-#  geom_stars(data = alk_surface_time_1)
+# join together the DIC and alk maps into one data frame
+merged_surface <- left_join(alk_surface_t1, dic_surface_t1, by = c('lat', 'lon'))
 
+#running carb to produce the pCO2 values, chose an avg temp and sal value
+merged_surface <- merged_surface %>% 
+  mutate(
+    pco2 = carb(
+      flag = 15, 
+      var1 = Alk * 1e-6, 
+      var2 = DIC * 1e-6, 
+      S=32.8, 
+      T=10, 
+      P=0, #surface = 0
+      Pt=0, #NA
+      Sit=0, #NA
+      kf="pf", #default
+      k1k2="l", #default 
+      ks="d", #default
+      )$pCO2 #to just save the pco2 output
+    )
 
+#save just pco2 and lat/lon data to sf object
+pco2_surface <- merged_surface %>% select(pco2, lon, lat) %>% 
+  st_as_sf(coords = c("lon", "lat"), crs = 4326)
+
+#plotting pco2
+ggplot(data = pco2_surface) + 
+  geom_sf(aes(color = pco2)) +
+  labs(title = "Calculated pCO2 for Columbia @ t1", 
+       x = "Longitude", y = "Latitude") + 
+  theme_minimal()
+
+# #to check accuracy: loading in model output pCO2
+# model_pco2 <- nc %>% #tidync method; this does not work, "no variables available"
+#      hyper_filter(time = index == 1) %>%
+#      hyper_tibble(select_var = c("PCO2OC"), #  produces a tibble object
+#                   force = TRUE)
+
+# #trying with ncdf4
+# nc2 <- nc_open(paste0(path_ROMSv2RG_results,
+#                       "ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc"))
+# model_pco2 <- ncvar_get(nc2, varid = PCO2OC) #also does not work, can't object
+# model_pco2 <- model_pco2 %>%
+#   slice(time, 1) # %>% st_as_sf(coords = c("lon", "lat"), crs = 4326)
 # 
+# #stars; also does not work
+# nc3 <- read_ncdf(paste0(path_ROMSv2RG_results,
+#                      "ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc"),
+#            var = "PCO2OC",
+#            ncsub = list( #tried here to subset already but i got weird errors
+#              time = 1
+#            ),
+#           proxy = FALSE
+#           )
 
 ```
 
