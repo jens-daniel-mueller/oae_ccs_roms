@@ -379,7 +379,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">read_data</h1>
 <h4 class="author">Victoria Froh &amp; Jens Daniel Müller</h4>
-<h4 class="date">25 September, 2024</h4>
+<h4 class="date">30 September, 2024</h4>
 
 </div>
 
@@ -408,7 +408,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-09-25
+<strong>Last updated:</strong> 2024-09-30
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -539,15 +539,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree7f8a0c8f390ceca577eb545419effd675fe4dcb5targetblank7f8a0c8a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree5dd4857db8a9d843229625b942fcb729298b07b6targetblank5dd4857a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/7f8a0c8f390ceca577eb545419effd675fe4dcb5" target="_blank">7f8a0c8</a>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/5dd4857db8a9d843229625b942fcb729298b07b6" target="_blank">5dd4857</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree7f8a0c8f390ceca577eb545419effd675fe4dcb5targetblank7f8a0c8a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree5dd4857db8a9d843229625b942fcb729298b07b6targetblank5dd4857a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -557,7 +557,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/7f8a0c8f390ceca577eb545419effd675fe4dcb5" target="_blank">7f8a0c8</a>.
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/5dd4857db8a9d843229625b942fcb729298b07b6" target="_blank">5dd4857</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -622,6 +622,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/5dd4857db8a9d843229625b942fcb729298b07b6/analysis/read_data.Rmd" target="_blank">5dd4857</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-09-30
+</td>
+<td>
+Running the carb function
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/a2f17f6da2e022b2b672b6c5a47ab5fb1b6c9dd2/docs/read_data.html" target="_blank">a2f17f6</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-09-25
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -829,28 +863,48 @@ tidyverse 1.3.2 ──</code></pre>
 path_ROMSv2RG_results &lt;- 
  &quot;/net/sea/work/loher/ROMS/Alk_enh_formatted_2024_08/&quot;
 
-#opening specific nc file (Columbia site, 1x)
+#currently not working 
+# opening specific nc file (Columbia site, 1x)
 # nc &lt;- nc_open(paste0(path_ROMSv2RG_results,
 #                      &quot;ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc&quot;))
 # 
 # print(nc)
-
-#filtering for just one variable w/ stars package
+# 
+# #filtering for just one variable w/ stars package
 # nc_alk &lt;- read_ncdf(paste0(path_ROMSv2RG_results,
 #                      &quot;ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc&quot;),
-#            var = &quot;Alk&quot;)
-
-#problem here with Alk and DIC: include the depth dimension; getting weird error
-# when trying to slice for this since the value is 0
+#            var = &quot;Alk&quot;,
+#            #ncsub = list( #tried here to subset already but i got weird errors
+#              #lon = 1:96,
+#              #lat = 1:88
+#              #depth = 1
+#              #time = 1
+#            #)
+#           # proxy = FALSE
+#           )
+# 
+# #trying to filter for surface layer only but it did not actually work
 # nc_surface_alk &lt;- nc_alk %&gt;%
 #   filter(depth == 0)
-
-#slicing for just one timepoint
+# 
+# #slicing for just one timepoint but it also did not actually work
 # nc_surface_alk_1 &lt;- nc_surface_alk %&gt;%
 #   slice(time, 1)
+# 
+# #tried this instead to subset, it works on depth but not time
+# nc_alk_subset &lt;- nc_alk[,,1,1, drop = FALSE]
+# 
+# #creating a blank plot and loading in the nc data layer using stars package  
+# ggplot() +
+#  geom_stars(data = nc_surface_alk_1, aes(fill = Alk)) + 
+#   labs(title = &quot;Columbia River Surface Alkalinity @ T1&quot;, 
+#        x = &quot;Longitude&quot;, 
+#        y = &quot;Latitude&quot;) + 
+#   theme_minimal()
+# 
 
 ###################
-#using tidync instead
+#using tidync instead, which works
 nc &lt;- tidync(paste0(path_ROMSv2RG_results,
                      &quot;ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc&quot;))
 
@@ -865,11 +919,13 @@ dic_surface_t1 &lt;- nc %&gt;%
   hyper_tibble(select_var = c(&quot;DIC&quot;), # produces a tibble object
                force = TRUE)
 
-#plotting
+#plotting; st_as_sf converts the proxy to a sf object ie requires loading in
 alk_surface_t1_sf &lt;- st_as_sf(alk_surface_t1, coords = c(&quot;lon&quot;, &quot;lat&quot;), crs = 4326)
-ggplot(data = alk_surface_t1_sf) + geom_sf(aes(color = Alk)) +
+ggplot(data = alk_surface_t1_sf) + 
+  geom_sf(aes(color = Alk)) +
   labs(title = &quot;Columbia River Surface Alkalinity @ T1&quot;, 
-       x = &quot;Longitude&quot;, y = &quot;Latitude&quot;)</code></pre>
+       x = &quot;Longitude&quot;, y = &quot;Latitude&quot;) + 
+  theme_minimal()</code></pre>
 <p><img src="figure/read_data.Rmd/read_data-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-1">
@@ -895,6 +951,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/a2f17f6da2e022b2b672b6c5a47ab5fb1b6c9dd2/docs/figure/read_data.Rmd/read_data-1.png" target="_blank">a2f17f6</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-09-25
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/5eca06c9c894ffd5d3a58c89c34d021a205909c9/docs/figure/read_data.Rmd/read_data-1.png" target="_blank">5eca06c</a>
 </td>
 <td>
@@ -910,11 +977,50 @@ vgfroh
 </div>
 <pre class="r"><code>#plotting
 dic_surface_t1_sf &lt;- st_as_sf(dic_surface_t1, coords = c(&quot;lon&quot;, &quot;lat&quot;), crs = 4326)
-ggplot(data = dic_surface_t1_sf) + geom_sf(aes(color = DIC)) +
+ggplot(data = dic_surface_t1_sf) + 
+  geom_sf(aes(color = DIC)) +
   labs(title = &quot;Columbia River Surface DIC @ T1&quot;, 
-       x = &quot;Longitude&quot;, y = &quot;Latitude&quot;)</code></pre>
+       x = &quot;Longitude&quot;, y = &quot;Latitude&quot;) + 
+  theme_minimal()</code></pre>
 <p><img src="figure/read_data.Rmd/read_data-2.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>#why do they look like dots?
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-2">
+Past versions of read_data-2.png
+</button>
+</p>
+<div id="fig-read_data-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/a2f17f6da2e022b2b672b6c5a47ab5fb1b6c9dd2/docs/figure/read_data.Rmd/read_data-2.png" target="_blank">a2f17f6</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-09-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>#how can i make them not look like dots
 
 ##########################
 #i tried something else so i could get the data but i can&#39;t plot this w/ ggplot
@@ -927,15 +1033,79 @@ ggplot(data = dic_surface_t1_sf) + geom_sf(aes(color = DIC)) +
 # alk_array &lt;- ncvar_get(nc, &quot;Alk&quot;) #pull the alk values from the ncdf4 file
 # 
 # alk_surface_time_1 &lt;- alk_array[, , 1, 1] #pull only the first time point and surface layer
+##########################
+
+# Using sea carb:
+library(seacarb)</code></pre>
+<pre><code>Loading required package: oce
+Loading required package: gsw
+Loading required package: SolveSAPHE</code></pre>
+<pre class="r"><code>#load in temperature and salinity data from tidync file
+temp &lt;- nc %&gt;%
+     hyper_filter(depth = index == 1, time = index == 1) %&gt;% 
+     hyper_tibble(select_var = c(&quot;temp&quot;), #  produces a tibble object
+                  force = TRUE)
+
+sal &lt;- nc %&gt;%
+     hyper_filter(depth = index == 1, time = index == 1) %&gt;% 
+     hyper_tibble(select_var = c(&quot;salt&quot;), #  produces a tibble object
+                  force = TRUE)
 
 
-##################
-#creating a blank plot and loading in the nc data layer using stars package  
-# ggplot(data = alk_surface_time_1) 
-#  geom_stars(data = alk_surface_time_1)
+# join together the DIC and alk maps into one data frame
+merged_surface &lt;- left_join(alk_surface_t1, dic_surface_t1, by = c(&#39;lat&#39;, &#39;lon&#39;))
 
+#running carb to produce the pCO2 values, chose an avg temp and sal value
+merged_surface &lt;- merged_surface %&gt;% 
+  mutate(
+    pco2 = carb(
+      flag = 15, 
+      var1 = Alk * 1e-6, 
+      var2 = DIC * 1e-6, 
+      S=32.8, 
+      T=10, 
+      P=0, #surface = 0
+      Pt=0, #NA
+      Sit=0, #NA
+      kf=&quot;pf&quot;, #default
+      k1k2=&quot;l&quot;, #default 
+      ks=&quot;d&quot;, #default
+      )$pCO2 #to just save the pco2 output
+    )
 
-# </code></pre>
+#save just pco2 and lat/lon data to sf object
+pco2_surface &lt;- merged_surface %&gt;% select(pco2, lon, lat) %&gt;% 
+  st_as_sf(coords = c(&quot;lon&quot;, &quot;lat&quot;), crs = 4326)
+
+#plotting pco2
+ggplot(data = pco2_surface) + 
+  geom_sf(aes(color = pco2)) +
+  labs(title = &quot;Calculated pCO2 for Columbia @ t1&quot;, 
+       x = &quot;Longitude&quot;, y = &quot;Latitude&quot;) + 
+  theme_minimal()</code></pre>
+<p><img src="figure/read_data.Rmd/read_data-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># #to check accuracy: loading in model output pCO2
+# model_pco2 &lt;- nc %&gt;% #tidync method; this does not work, &quot;no variables available&quot;
+#      hyper_filter(time = index == 1) %&gt;%
+#      hyper_tibble(select_var = c(&quot;PCO2OC&quot;), #  produces a tibble object
+#                   force = TRUE)
+
+# #trying with ncdf4
+# nc2 &lt;- nc_open(paste0(path_ROMSv2RG_results,
+#                       &quot;ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc&quot;))
+# model_pco2 &lt;- ncvar_get(nc2, varid = PCO2OC) #also does not work, can&#39;t object
+# model_pco2 &lt;- model_pco2 %&gt;%
+#   slice(time, 1) # %&gt;% st_as_sf(coords = c(&quot;lon&quot;, &quot;lat&quot;), crs = 4326)
+# 
+# #stars; also does not work
+# nc3 &lt;- read_ncdf(paste0(path_ROMSv2RG_results,
+#                      &quot;ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc&quot;),
+#            var = &quot;PCO2OC&quot;,
+#            ncsub = list( #tried here to subset already but i got weird errors
+#              time = 1
+#            ),
+#           proxy = FALSE
+#           )</code></pre>
 <p>vhjgvj</p>
 <br>
 <p>
@@ -966,10 +1136,11 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] forcats_0.5.2   stringr_1.5.0   dplyr_1.1.3     purrr_1.0.2    
- [5] readr_2.1.3     tidyr_1.3.0     tibble_3.2.1    ggplot2_3.4.4  
- [9] tidyverse_1.3.2 stars_0.6-0     sf_1.0-9        abind_1.4-5    
-[13] tidync_0.4.0    ncdf4_1.19      workflowr_1.7.0
+ [1] seacarb_3.3.3    SolveSAPHE_2.1.0 oce_1.7-10       gsw_1.1-1       
+ [5] forcats_0.5.2    stringr_1.5.0    dplyr_1.1.3      purrr_1.0.2     
+ [9] readr_2.1.3      tidyr_1.3.0      tibble_3.2.1     ggplot2_3.4.4   
+[13] tidyverse_1.3.2  stars_0.6-0      sf_1.0-9         abind_1.4-5     
+[17] tidync_0.4.0     ncdf4_1.19       workflowr_1.7.0 
 
 loaded via a namespace (and not attached):
  [1] fs_1.5.2            lubridate_1.9.0     httr_1.4.4         
