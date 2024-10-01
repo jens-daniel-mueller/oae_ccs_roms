@@ -16,168 +16,237 @@ library(ncdf4)
 library(tidync)
 library(stars)
 library(tidyverse)
-library(dplyr)
 
 #For the regridded standard files, path:
 path_ROMSv2RG_results <- 
  "/net/sea/work/loher/ROMS/Alk_enh_formatted_2024_08/"
 
-#currently not working 
-# opening specific nc file (Columbia site, 1x)
-# nc <- nc_open(paste0(path_ROMSv2RG_results,
-#                      "ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc"))
-# 
-# print(nc)
-# 
-# #filtering for just one variable w/ stars package
-# nc_alk <- read_ncdf(paste0(path_ROMSv2RG_results,
-#                      "ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc"),
-#            var = "Alk",
-#            #ncsub = list( #tried here to subset already but i got weird errors
-#              #lon = 1:96,
-#              #lat = 1:88
-#              #depth = 1
-#              #time = 1
-#            #)
-#           # proxy = FALSE
-#           )
-# 
-# #trying to filter for surface layer only but it did not actually work
-# nc_surface_alk <- nc_alk %>%
-#   filter(depth == 0)
-# 
-# #slicing for just one timepoint but it also did not actually work
-# nc_surface_alk_1 <- nc_surface_alk %>%
-#   slice(time, 1)
-# 
-# #tried this instead to subset, it works on depth but not time
-# nc_alk_subset <- nc_alk[,,1,1, drop = FALSE]
-# 
-# #creating a blank plot and loading in the nc data layer using stars package  
-# ggplot() +
-#  geom_stars(data = nc_surface_alk_1, aes(fill = Alk)) + 
-#   labs(title = "Columbia River Surface Alkalinity @ T1", 
-#        x = "Longitude", 
-#        y = "Latitude") + 
-#   theme_minimal()
-# 
+#opening specific nc file to get overview (Columbia site, 1x)
+view_nc <- nc_open(paste0(path_ROMSv2RG_results,
+                     "ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc"))
+
+print(view_nc)
+
+#filtering for just one variable w/ stars package + time and depth slice
+nc_alk <- read_ncdf(paste0(path_ROMSv2RG_results,
+                     "ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc"),
+           var = "Alk",
+           ncsub = cbind(start = c(1, 1, 1, 1), count = c(96, 88, 1, 1)
+             ),
+           proxy = FALSE #need this on to override the proxy format
+          )
+
+nc_dic <- read_ncdf(paste0(path_ROMSv2RG_results,
+                     "ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc"),
+           var = "DIC",
+           ncsub = cbind(start = c(1, 1, 1, 1), count = c(96, 88, 1, 1)
+             ),
+           proxy = FALSE #need this on to override the proxy format
+          )
+#creating a blank plot and loading in the nc data layers 
+ggplot() +
+ geom_stars(data = nc_alk, aes(fill = Alk)) +
+  labs(title = "Columbia River Surface Alkalinity @ T1",
+       x = "Longitude",
+       y = "Latitude") +
+  theme_minimal() + 
+  scale_fill_viridis_c() +
+  coord_quickmap()
+
+ggplot() +
+ geom_stars(data = nc_dic, aes(fill = DIC)) +
+  labs(title = "Columbia River Surface DIC @ T1",
+       x = "Longitude",
+       y = "Latitude") +
+  theme_minimal() + 
+  scale_fill_viridis_c() +
+  coord_quickmap()
 
 ###################
-#using tidync instead, which works
+#using tidync instead
 nc <- tidync(paste0(path_ROMSv2RG_results,
                      "ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc"))
 
-# filtering nc file for just the surface @ the first time index for both 
-# DIC and Alk variable
+#filtering nc file for just the surface @ the first time index, outputting tbl_df
 alk_surface_t1 <- nc %>%
   hyper_filter(depth = index == 1, time = index == 1) %>% 
-  hyper_tibble(select_var = c("Alk"), #  produces a tibble object
-               force = TRUE)
+  hyper_tibble(select_var = c("Alk") 
+               ) %>% 
+  mutate(lon = as.numeric(lon), lat = as.numeric(lat))
+
 dic_surface_t1 <- nc %>%
   hyper_filter(depth = index == 1, time = index == 1) %>% 
-  hyper_tibble(select_var = c("DIC"), # produces a tibble object
-               force = TRUE)
+  hyper_tibble(select_var = c("DIC"), 
+               )  %>% 
+  mutate(lon = as.numeric(lon), lat = as.numeric(lat))
 
-#plotting; st_as_sf converts the proxy to a sf object ie requires loading in
-alk_surface_t1_sf <- st_as_sf(alk_surface_t1, coords = c("lon", "lat"), crs = 4326)
-ggplot(data = alk_surface_t1_sf) + 
-  geom_sf(aes(color = Alk)) +
+#plotting variables
+ggplot(data = alk_surface_t1) + 
+  geom_tile(aes(lon, lat, fill = Alk)) +
   labs(title = "Columbia River Surface Alkalinity @ T1", 
        x = "Longitude", y = "Latitude") + 
-  theme_minimal()
+  theme_minimal() +
+  scale_fill_viridis_c() +
+  coord_quickmap()
 
-#plotting
-dic_surface_t1_sf <- st_as_sf(dic_surface_t1, coords = c("lon", "lat"), crs = 4326)
-ggplot(data = dic_surface_t1_sf) + 
-  geom_sf(aes(color = DIC)) +
+ggplot(data = dic_surface_t1) + 
+  geom_tile(aes(lon, lat, fill = DIC)) +
   labs(title = "Columbia River Surface DIC @ T1", 
        x = "Longitude", y = "Latitude") + 
-  theme_minimal()
-
-#how can i make them not look like dots
+  theme_minimal() +
+  scale_fill_viridis_c() +
+  coord_quickmap()
 
 ##########################
-#i tried something else so i could get the data but i can't plot this w/ ggplot
-# lon <- ncvar_get(nc, "lon", verbose = FALSE) # read lon variable
-# lat <- ncvar_get(nc, "lat", verbose = FALSE) # read lat variable
-# time <- ncvar_get(nc, "time", verbose = FALSE) # read t (time) variable
-# depth <- ncvar_get(nc, "depth", verbose = FALSE) # read depth variable
-# print(c(length(lon), length(lat), length(t), length(depth))) # show vector lengths
-# 
-# alk_array <- ncvar_get(nc, "Alk") #pull the alk values from the ncdf4 file
-# 
-# alk_surface_time_1 <- alk_array[, , 1, 1] #pull only the first time point and surface layer
-##########################
-
 # Using sea carb:
 library(seacarb)
+library(metR)
 
-#load in temperature and salinity data from tidync file
-temp <- nc %>%
+#load in data from tidync file in main active grid w/ T1 surface slice
+surface_data <- nc %>%
      hyper_filter(depth = index == 1, time = index == 1) %>% 
-     hyper_tibble(select_var = c("temp"), #  produces a tibble object
-                  force = TRUE)
+     hyper_tibble(force = TRUE) %>% 
+     mutate(lon = as.numeric(lon), lat = as.numeric(lat))
 
-sal <- nc %>%
-     hyper_filter(depth = index == 1, time = index == 1) %>% 
-     hyper_tibble(select_var = c("salt"), #  produces a tibble object
-                  force = TRUE)
+#loading in data in other grid ie surface variables
+surface_data_pco2 <- nc %>%
+  activate("D1,D2,D0") %>% #activating surface grid for PCO2OC variable
+  hyper_filter(time = index == 1) %>% 
+  hyper_tibble(select_var = c("PCO2OC"), #  produces a tibble object
+                  force = TRUE) %>% 
+  mutate(lon = as.numeric(lon), lat = as.numeric(lat))
 
+merged_surface <- full_join(surface_data, surface_data_pco2)
 
-# join together the DIC and alk maps into one data frame
-merged_surface <- left_join(alk_surface_t1, dic_surface_t1, by = c('lat', 'lon'))
-
-#running carb to produce the pCO2 values, chose an avg temp and sal value
-merged_surface <- merged_surface %>% 
+#running carb to produce the pCO2 values
+merged_surface_orig <-
+  merged_surface %>%
+  #head(6) %>% #testing subsset
+  drop_na() %>% #drops all rows with an NA
   mutate(
-    pco2 = carb(
-      flag = 15, 
-      var1 = Alk * 1e-6, 
-      var2 = DIC * 1e-6, 
-      S=32.8, 
-      T=10, 
-      P=0, #surface = 0
-      Pt=0, #NA
-      Sit=0, #NA
-      kf="pf", #default
-      k1k2="l", #default 
-      ks="d", #default
-      )$pCO2 #to just save the pco2 output
-    )
-
-#save just pco2 and lat/lon data to sf object
-pco2_surface <- merged_surface %>% select(pco2, lon, lat) %>% 
-  st_as_sf(coords = c("lon", "lat"), crs = 4326)
+    pco2_calc = carb(
+      flag = 15,
+      var1 = Alk * 1e-6 / 1.02518,
+      var2 = DIC * 1e-6 / 1.02518,
+      S = salt,
+      T = temp,
+      P = 0,
+      #surface = 0
+      Pt = PO4 * 1e-6 / 1.02518,
+      Sit = SiO3 * 1e-6 / 1.02518
+      # kf="pf", #default
+      # k1k2="l", #default
+      # ks="d", #default
+    )$pCO2 #to just save the pco2 output
+  )
 
 #plotting pco2
-ggplot(data = pco2_surface) + 
-  geom_sf(aes(color = pco2)) +
-  labs(title = "Calculated pCO2 for Columbia @ t1", 
+ggplot(data = merged_surface_orig) + 
+  geom_tile(aes(lon, lat, fill = pco2_calc)) +
+  labs(title = "Columbia River Calculated PCO2 @ T1", 
        x = "Longitude", y = "Latitude") + 
+  theme_minimal() +
+  scale_fill_viridis_c(na.value = "red") + #will show any tiles w/ var=NA
+  coord_quickmap()
+
+######################
+#Comparing Outputs
+#New dataframe w/ reorganized pCO2 data
+pco2_compare <- merged_surface_orig %>% 
+  select(lon, lat, pco2_calc, PCO2OC) %>% 
+  pivot_longer(
+    cols = c(pco2_calc, PCO2OC),
+    names_to = "Variant",
+    values_to = "pCO2"
+  )
+
+#Plotting side-by-side comparison  
+ggplot(data = pco2_compare) + 
+  geom_tile(aes(lon, lat, fill = pCO2)) +
+  facet_grid(cols = vars(Variant)) + 
+  theme_minimal() + 
+  coord_quickmap() + 
+  scale_fill_viridis_c()
+  
+
+#New df w/ the difference between model and calculated pCO2
+pco2_delta <- merged_surface_orig %>% 
+  select(lon, lat, pco2_calc, PCO2OC) %>% 
+  mutate(dpco2 = PCO2OC - pco2_calc)
+
+#Plotting difference
+ggplot(data = pco2_delta) +
+  geom_tile(aes(lon, lat, fill = dpco2)) + 
+  labs(title = "Model pCO2 - Calculated pCO2", 
+       x = "Longitude", y = "Latitude") +
+  #scale_fill_divergent() + 
+  scale_fill_viridis_c() +
+  coord_quickmap() + 
   theme_minimal()
 
-# #to check accuracy: loading in model output pCO2
-# model_pco2 <- nc %>% #tidync method; this does not work, "no variables available"
-#      hyper_filter(time = index == 1) %>%
-#      hyper_tibble(select_var = c("PCO2OC"), #  produces a tibble object
-#                   force = TRUE)
+#####################
+#Perturbation of 10 mmol Alk/m^3 in all grid cells
+surface_pert <- 
+  surface_data %>%
+  #head(6) %>% #testing subsset
+  drop_na() %>% #drops all rows with an NA
+  mutate(
+    pco2_calc_pert = carb(
+      flag = 15,
+      var1 = (Alk + 10) * 1e-6 / 1.02518,
+      var2 = DIC * 1e-6 / 1.02518,
+      S = salt,
+      T = temp,
+      P = 0,
+      #surface = 0
+      Pt = PO4 * 1e-6 / 1.02518,
+      Sit = SiO3 * 1e-6 / 1.02518
+      # kf="pf", #default
+      # k1k2="l", #default
+      # ks="d", #default
+    )$pCO2 #to just save the pco2 output
+  )
 
-# #trying with ncdf4
-# nc2 <- nc_open(paste0(path_ROMSv2RG_results,
-#                       "ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc"))
-# model_pco2 <- ncvar_get(nc2, varid = PCO2OC) #also does not work, can't object
-# model_pco2 <- model_pco2 %>%
-#   slice(time, 1) # %>% st_as_sf(coords = c("lon", "lat"), crs = 4326)
-# 
-# #stars; also does not work
-# nc3 <- read_ncdf(paste0(path_ROMSv2RG_results,
-#                      "ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc"),
-#            var = "PCO2OC",
-#            ncsub = list( #tried here to subset already but i got weird errors
-#              time = 1
-#            ),
-#           proxy = FALSE
-#           )
+#New dataframe w/ reorganized pCO2_pert data to compare
+pco2_pert_compare <- full_join(surface_pert, pco2_delta) %>% 
+  select(lon, lat, pco2_calc_pert, pco2_calc) %>% 
+  pivot_longer(
+    cols = c(pco2_calc_pert, pco2_calc),
+    names_to = "Variant",
+    values_to = "pCO2"
+  )
+
+#Plotting side-by-side comparison  
+ggplot(data = pco2_pert_compare) + 
+  geom_tile(aes(lon, lat, fill = pCO2)) +
+  facet_grid(cols = vars(Variant)) + 
+  theme_minimal() + 
+  coord_quickmap() + 
+  scale_fill_viridis_c()
+  
+
+#New df w/ the difference in pCO2 after Alk perturbation
+pco2_pert_delta <- full_join(surface_pert, pco2_delta) %>% 
+  select(lon, lat, pco2_calc_pert, pco2_calc) %>% 
+  mutate(dpco2 = pco2_calc_pert - pco2_calc)
+
+#Plotting difference
+ggplot(data = pco2_pert_delta) +
+  geom_tile(aes(lon, lat, fill = dpco2)) + 
+  labs(title = "Difference in pCO2 after Added Alkalinity", 
+       x = "Longitude", y = "Latitude") +
+  #scale_fill_divergent() + 
+  scale_fill_viridis_c() +
+  coord_quickmap() + 
+  theme_minimal()
+
+####################
+#Alkalinity Perturbation, looking at DIC changes
+
+
+
+
+
 
 ```
 
