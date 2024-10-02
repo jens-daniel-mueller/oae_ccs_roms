@@ -133,10 +133,10 @@ merged_surface_orig <-
       P = 0,
       #surface = 0
       Pt = PO4 * 1e-6 / 1.02518,
-      Sit = SiO3 * 1e-6 / 1.02518
-      # kf="pf", #default
-      # k1k2="l", #default
-      # ks="d", #default
+      Sit = SiO3 * 1e-6 / 1.02518,
+      kf="dg",
+      k1k2="m06",
+      ks="d"
     )$pCO2 #to just save the pco2 output
   )
 
@@ -144,8 +144,9 @@ merged_surface_orig <-
 ggplot(data = merged_surface_orig) + 
   geom_tile(aes(lon, lat, fill = pco2_calc)) +
   labs(title = "Columbia River Calculated PCO2 @ T1", 
-       x = "Longitude", y = "Latitude") + 
+       x = "Longitude", y = "Latitude", fill = "pCO2 (ppm)") + 
   theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5)) +
   scale_fill_viridis_c(na.value = "red") + #will show any tiles w/ var=NA
   coord_quickmap()
 
@@ -164,7 +165,10 @@ pco2_compare <- merged_surface_orig %>%
 ggplot(data = pco2_compare) + 
   geom_tile(aes(lon, lat, fill = pCO2)) +
   facet_grid(cols = vars(Variant)) + 
+  labs(title = "Calculated pCO2 vs Model pCO2", 
+       x = "Longitude", y = "Latitude", fill = "pCO2 (ppm)") +
   theme_minimal() + 
+  theme(plot.title = element_text(hjust = 0.5)) +
   coord_quickmap() + 
   scale_fill_viridis_c()
   
@@ -178,10 +182,11 @@ pco2_delta <- merged_surface_orig %>%
 ggplot(data = pco2_delta) +
   geom_tile(aes(lon, lat, fill = dpco2)) + 
   labs(title = "Model pCO2 - Calculated pCO2", 
-       x = "Longitude", y = "Latitude") +
-  #scale_fill_divergent() + 
-  scale_fill_viridis_c() +
-  coord_quickmap() + 
+       x = "Longitude", y = "Latitude", fill = "dpCO2 (ppm)") +
+  scale_fill_divergent() + 
+  #scale_fill_viridis_c() +
+  coord_quickmap() +
+  theme(plot.title = element_text(hjust = 0.5)) +
   theme_minimal()
 
 #####################
@@ -200,10 +205,10 @@ surface_pert <-
       P = 0,
       #surface = 0
       Pt = PO4 * 1e-6 / 1.02518,
-      Sit = SiO3 * 1e-6 / 1.02518
-      # kf="pf", #default
-      # k1k2="l", #default
-      # ks="d", #default
+      Sit = SiO3 * 1e-6 / 1.02518,
+      kf="dg",
+      k1k2="m06",
+      ks="d"
     )$pCO2 #to just save the pco2 output
   )
 
@@ -220,7 +225,10 @@ pco2_pert_compare <- full_join(surface_pert, pco2_delta) %>%
 ggplot(data = pco2_pert_compare) + 
   geom_tile(aes(lon, lat, fill = pCO2)) +
   facet_grid(cols = vars(Variant)) + 
+  labs(title = "Initial pCO2 vs pCO2 after Added Alkalinity", 
+       x = "Longitude", y = "Latitude", fill = "pCO2 (ppm)") +
   theme_minimal() + 
+  theme(plot.title = element_text(hjust = 0.5)) +
   coord_quickmap() + 
   scale_fill_viridis_c()
   
@@ -234,17 +242,73 @@ pco2_pert_delta <- full_join(surface_pert, pco2_delta) %>%
 ggplot(data = pco2_pert_delta) +
   geom_tile(aes(lon, lat, fill = dpco2)) + 
   labs(title = "Difference in pCO2 after Added Alkalinity", 
-       x = "Longitude", y = "Latitude") +
+       x = "Longitude", y = "Latitude", fill = "dpCO2 (ppm)") +
   #scale_fill_divergent() + 
   scale_fill_viridis_c() +
   coord_quickmap() + 
+  theme(plot.title = element_text(hjust = 0.5)) +
   theme_minimal()
 
 ####################
-#Alkalinity Perturbation, looking at DIC changes
+#Alkalinity Perturbation, looking at how DIC changes with constant pCO2
+surface_pert_dic <- 
+  merged_surface %>%
+  #head(6) %>% #testing subsset
+  drop_na() %>% #drops all rows with an NA
+  mutate(
+    DIC_pert = carb(
+      flag = 24,
+      var1 = PCO2OC,
+      var2 = (Alk + 10) * 1e-6 / 1.02518,
+      S = salt,
+      T = temp,
+      P = 0,
+      #surface = 0
+      Pt = PO4 * 1e-6 / 1.02518,
+      Sit = SiO3 * 1e-6 / 1.02518,
+      kf="dg",
+      k1k2="m06",
+      ks="d"
+    )$DIC #to just save the pco2 output
+    * 1.02518 * 1e6 #converting back to model units of mmol/m^3
+  )
 
+#New dataframe w/ reorganized DIC data to compare
+dic_pert_compare <- full_join(surface_pert_dic, merged_surface) %>% 
+  select(lon, lat, DIC_pert, DIC) %>% 
+  pivot_longer(
+    cols = c(DIC_pert, DIC),
+    names_to = "Variant",
+    values_to = "DIC"
+  )
 
+#Plotting side-by-side comparison  
+ggplot(data = dic_pert_compare) + 
+  geom_tile(aes(lon, lat, fill = DIC)) +
+  facet_grid(cols = vars(Variant)) + 
+  labs(title = "Initial Model DIC vs DIC after Added Alkalinity", 
+       x = "Longitude", y = "Latitude", fill = "DIC (mmol/m^3)") +
+  theme_minimal() + 
+  theme(plot.title = element_text(hjust = 0.5)) +
+  coord_quickmap() + 
+  scale_fill_viridis_c()
+  
 
+#New df w/ the difference in DIC after Alk perturbation
+dic_pert_delta <- full_join(surface_pert_dic, merged_surface) %>% 
+  select(lon, lat, DIC_pert, DIC) %>% 
+  mutate(dDIC = DIC_pert - DIC)
+
+#Plotting difference
+ggplot(data = dic_pert_delta) +
+  geom_tile(aes(lon, lat, fill = dDIC)) + 
+  labs(title = "Difference in DIC after Added Alkalinity", 
+       x = "Longitude", y = "Latitude", fill = "dDIC (mmol/m^3)") +
+  #scale_fill_divergent() + 
+  scale_fill_viridis_c() +
+  coord_quickmap() + 
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
 
 
 
