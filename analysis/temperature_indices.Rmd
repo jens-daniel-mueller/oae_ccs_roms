@@ -1,0 +1,503 @@
+---
+title: "temperature_indices"
+author: "Victoria Froh & Jens Daniel Müller"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Read this
+this is the script to open the data
+```{r read_data}
+
+#loading packages
+library(ncdf4)
+library(stars)
+library(tidyverse)
+library(lubridate)
+library(units)
+
+#For Columbia location
+#For the regridded standard files, path:
+path_ROMSv2RG_results <- 
+ "/net/sea/work/loher/ROMS/Alk_enh_formatted_2024_08/"
+
+#opening specific nc file to get overview
+# view_nc <- nc_open(paste0(path_ROMSv2RG_results,
+#                      "ColumbiaRiver/ColumbiaRiver_2010-2015_control.nc"))
+# 
+# print(view_nc)
+
+#filtering for just SST in 2x2deg box (45N-47N, 124W-126W), 2010 time series
+colriv_temp <- read_ncdf(paste0(path_ROMSv2RG_results,
+                     "ColumbiaRiver/ColumbiaRiver_2010-2015_control.nc"),
+           var = "temp",
+           ncsub = cbind(start = c(70, 40, 1, 1), count = c(16, 16, 1, 1096)
+             ),
+           proxy = FALSE #need this on to override the proxy format
+          )
+### ebbC project box
+# ebbproj_temp <- read_ncdf(paste0(path_ROMSv2RG_results,
+#                      "ColumbiaRiver/ColumbiaRiver_2010-2015_control.nc"),
+#            var = "temp",
+#            ncsub = cbind(start = c(79, 61, 1, 1), count = c(16, 16, 1, 1096)
+#              ),
+#            proxy = FALSE #need this on to override the proxy format
+#           )
+###
+#plotting the first time point to look at the selected region
+colriv_jan2010_temp <- colriv_temp %>% 
+  slice(time, 1)
+
+ggplot() +
+ geom_stars(data = colriv_jan2010_temp, aes(fill = temp)) +
+  borders("world", colour = "gray80", fill = "gray80") +
+  labs(title = "Columbia River Surface Temperature Jan 2nd 2010",
+       x = "Longitude",
+       y = "Latitude") +
+  theme_minimal() + 
+  scale_fill_viridis_c() +
+  coord_quickmap(xlim = c(-130,-122.5), ylim = c(41, 51))
+
+#converts time dimension to regular, rest in temp file
+days_reg <- st_get_dimension_values(colriv_temp, "time") %>% ymd()
+colriv_temp <- st_set_dimensions(colriv_temp, "time", values = days_reg)
+
+#extract year-month
+colriv_temp <- st_set_dimensions(colriv_temp, "time", values = format(
+  days_reg,"%Y-%m"))
+
+#turning data into dataframe and editing for use
+colriv_temp <-colriv_temp %>%
+  drop_units() %>% 
+  as.data.frame(long = TRUE) %>% 
+  select(-depth)
+
+#creating new data frame with grouped month and the mean SST for each
+colriv_monthly_2010_2015 <- colriv_temp %>% group_by(time) %>% 
+  summarise(ColumbiaRiver_MeanMonthlySST = mean(temp, na.rm = TRUE))
+
+#since this data includes the first data point of 2016 and we don't need
+colriv_monthly_2010_2015 <- colriv_monthly_2010_2015 %>% slice(-n())
+
+
+####################
+#For San Francisco location
+#opening specific nc file to get overview
+# view_nc <- nc_open(paste0(path_ROMSv2RG_results,
+#                      "SanFrancisco/SanFrancisco_2010-2015_control.nc"))
+# 
+# print(view_nc)
+
+#filtering for just SST in 2x2deg box (36.5N-38.5N, 122.5W-124.5W), full time
+sanfran_temp <- read_ncdf(paste0(path_ROMSv2RG_results,
+                     "SanFrancisco/SanFrancisco_2010-2015_control.nc"),
+           var = "temp",
+           ncsub = cbind(start = c(33, 39, 1, 1), count = c(16, 16, 1, 1096)
+             ),
+           proxy = FALSE #need this on to override the proxy format
+          )
+
+#plotting specific time points to look at the selected region
+sanfran_jan2016_temp <- sanfran_temp %>% 
+  slice(time, 1096)
+
+ggplot() +
+ geom_stars(data = sanfran_jan2016_temp, aes(fill = temp)) +
+  borders("world", colour = "gray80", fill = "gray80") +
+  labs(title = "San Francisco Surface Temperature Jan 2nd 2016",
+       x = "Longitude",
+       y = "Latitude") +
+  theme_minimal() + 
+  scale_fill_viridis_c() +
+  coord_quickmap(xlim = c(-127,-120), ylim = c(34, 42))
+
+#converts time dimension to regular , rest in temp file
+days_reg <- st_get_dimension_values(sanfran_temp, "time") %>% ymd()
+sanfran_temp <- st_set_dimensions(sanfran_temp, "time", values = days_reg)
+
+#extract year-month
+sanfran_temp <- st_set_dimensions(sanfran_temp, "time", values = format(
+  days_reg,"%Y-%m"))
+
+#turning data into dataframe and editing for use
+sanfran_temp <-sanfran_temp %>%
+  drop_units() %>% 
+  as.data.frame(long = TRUE) %>% 
+  select(-depth)
+
+#creating new data frame with grouped month and the mean SST for each
+sanfran_monthly_2010_2015 <- sanfran_temp %>% group_by(time) %>% 
+  summarise(SanFrancisco_MeanMonthlySST = mean(temp, na.rm = TRUE))
+
+#since this data includes the first data point of 2016 and we don't need
+sanfran_monthly_2010_2015 <- sanfran_monthly_2010_2015 %>% slice(-n())
+
+
+####################
+#For Huntington location
+#opening specific nc file to get overview
+# view_nc <- nc_open(paste0(path_ROMSv2RG_results,
+#                      "Huntington/Huntington_2010-2015_control.nc"))
+# 
+# print(view_nc)
+
+#filtering for just SST in 2x2deg box (32N-34N, 117W-119W), full time series
+hunt_temp <- read_ncdf(paste0(path_ROMSv2RG_results,
+                     "Huntington/Huntington_2010-2015_control.nc"),
+           var = "temp",
+           ncsub = cbind(start = c(50, 44, 1, 1), count = c(16, 16, 1, 1096)
+             ),
+           proxy = FALSE #need this on to override the proxy format
+          )
+
+#plotting the first time point to look at the selected region
+hunt_jan2010_temp <- hunt_temp %>% 
+  slice(time, 1)
+
+ggplot() +
+ geom_stars(data = hunt_jan2010_temp, aes(fill = temp)) +
+  borders("world", colour = "gray80", fill = "gray80") +
+  labs(title = "Huntington Surface Temperature Jan 2nd 2010",
+       x = "Longitude",
+       y = "Latitude") +
+  theme_minimal() + 
+  scale_fill_viridis_c() +
+  coord_quickmap(xlim = c(-123,-115), ylim = c(26.5, 34.5))
+
+# #All 3 regions
+# ggplot() +
+#  geom_stars(data = hunt_jan2010_temp, aes(fill = temp)) +
+#   geom_stars(data = sanfran_jan2010_temp, aes(fill = temp)) +
+#   geom_stars(data = colriv_jan2010_temp, aes(fill = temp)) +
+#   borders("world", colour = "gray80", fill = "gray80") +
+#   labs(title = "CCS Surface Temperature Jan 2nd 2010",
+#        x = "Longitude",
+#        y = "Latitude") +
+#   theme_minimal() + 
+#   scale_fill_viridis_c() +
+#   coord_quickmap(xlim = c(-130,-115), ylim = c(26.5, 49.5))
+
+#converts time dimension to regular , rest in temp file
+days_reg <- st_get_dimension_values(hunt_temp, "time") %>% ymd()
+hunt_temp <- st_set_dimensions(hunt_temp, "time", values = days_reg)
+
+#extract year-month
+hunt_temp <- st_set_dimensions(hunt_temp, "time", values = format(
+  days_reg,"%Y-%m"))
+
+#turning data into dataframe and editing for use
+hunt_temp <-hunt_temp %>%
+  drop_units() %>% #see if i need this
+  as.data.frame(long = TRUE) %>% 
+  select(-depth)
+
+#creating new data frame with grouped month and the mean SST for each
+hunt_monthly_2010_2015 <- hunt_temp %>% group_by(time) %>% 
+  summarise(Huntington_MeanMonthlySST = mean(temp, na.rm = TRUE))
+
+#since this data includes the first data point of 2016 and we don't need
+hunt_monthly_2010_2015 <- hunt_monthly_2010_2015 %>% slice(-n())
+
+
+#####################
+#For tropical 3.4 region: 5S->5N, 120W->170W
+#opening specific nc file to get overview
+# view_nc <- nc_open(paste0(path_ROMSv2RG_results,
+#                      "regrid_2024_10/surface_temp_tropPacific/Control_2010_monthly_tropPacific.nc"))
+# 
+# print(view_nc)
+
+#reading in all 6 years of monthly data and combining into 1 stars object
+years <- 2010:2015
+tropP_temp <- do.call(c, lapply(years, function(year) (
+  read_ncdf(paste0(path_ROMSv2RG_results,
+                   "regrid_2024_10/surface_temp_tropPacific/Control_", year, 
+                   "_monthly_tropPacific.nc"),
+           var = "temp",
+           proxy = FALSE #need this on to override the proxy format
+          ))))
+
+#plotting the first time point to look at the selected region
+tropP_jan2010_temp <- tropP_temp %>% 
+  slice(time, 1)
+
+ggplot() +
+ geom_stars(data = tropP_jan2010_temp, aes(fill = temp)) +
+  borders("world", colour = "gray80", fill = "gray80") +
+  labs(title = "Tropical Pacific 3.4 Surface Temperature Jan 2nd 2010",
+       x = "Longitude",
+       y = "Latitude") +
+  theme_minimal() + 
+  scale_fill_viridis_c() +
+  coord_quickmap(xlim = c(-175,-115), ylim = c(-10.5, 10.5))
+
+
+#converts time dimension to regular , rest in temp file
+days_reg <- st_get_dimension_values(tropP_temp, "time")
+tropP_temp <- st_set_dimensions(tropP_temp, "time", values = days_reg)
+
+#extract year-month
+tropP_temp <- st_set_dimensions(tropP_temp, "time", values = format(
+  ymd_hms(days_reg),"%Y-%m"))
+
+
+#turning data into dataframe and editing for use
+tropP_temp <-tropP_temp %>%
+  drop_units() %>% 
+  as.data.frame(long = TRUE) %>% 
+  select(-s_rho)
+
+#creating new data frame with grouped month and the mean SST for each
+tropP_monthly_2010_2015 <- tropP_temp %>% group_by(time) %>% 
+  summarise(tropPacific_MeanMonthlySST = mean(temp, na.rm = TRUE))
+
+
+#####################
+#plotting all 4 time series of annual mean SST
+p <- ggplot(data = tropP_monthly_2010_2015, 
+       aes(x = time, y = tropPacific_MeanMonthlySST, group = 1)) + 
+  geom_line(aes(color = "Tropical Pacific")) +
+  geom_line(data = colriv_monthly_2010_2015, 
+            aes(y = ColumbiaRiver_MeanMonthlySST, color = "Columbia River")) +
+  geom_line(data = sanfran_monthly_2010_2015, 
+            aes(y = SanFrancisco_MeanMonthlySST, color = "San Fransisco")) +
+  geom_line(data = hunt_monthly_2010_2015, aes(y = Huntington_MeanMonthlySST,
+                                               color = "Huntington")) +
+  labs(title = "Monthly Mean SST", x = "Month", y = "Mean SST") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+####################
+#30 year time series of historical monthly averages for all 4 locations
+years_past <- 1979:2009
+locations <- c("ColumbiaRiver", "Huntington", "SanFrancisco", "tropPacific")
+annual_cycles <- list()
+annual_monthly_SST_list <- list()
+
+for (i in locations){
+  #reading in all 30 years of data for each location into a stars object
+  annual_cycles[[i]] <- do.call(c, lapply(years_past, function(year)(
+    read_ncdf(paste0(path_ROMSv2RG_results,
+                     "regrid_2024_10/1979-2009/pactcs30_", year, 
+                     "_avg_", i, ".nc"),
+              var = "temp",
+              proxy = FALSE
+  ))))
+  #converting time dimensions, extracting year-month
+  days_list <- st_get_dimension_values(annual_cycles[[i]], "time")
+  annual_cycles[[i]] <- st_set_dimensions(annual_cycles[[i]], 
+                                          "time", values = days_list)
+  annual_cycles[[i]] <- st_set_dimensions(annual_cycles[[i]], "time", 
+                        values = format(ymd_hms(days_list),"%Y-%m"))
+  
+  #converting each stars object into a dataframe and cleaning up
+  annual_cycles[[i]] <- annual_cycles[[i]] %>% 
+    drop_units() %>% 
+    as.data.frame(long = TRUE) %>% 
+    select(-s_rho)
+  
+  #creating a new data frame with the monthly averages over each region
+  annual_monthly_SST_list[[i]] <- annual_cycles[[i]] %>% 
+    group_by(time) %>% 
+    summarise(mean_value = mean(temp, na.rm = TRUE), .groups = 'drop') %>% 
+    rename(!!paste0(i, "_MeanMonthlySST") := mean_value)
+  
+}
+  
+#combining 30-year data into a single data frame + the 2010-2015 data
+annual_monthly_sst <- reduce(annual_monthly_SST_list, left_join, by = "time")
+
+full_2010_2015 <- list(colriv_monthly_2010_2015, hunt_monthly_2010_2015, 
+                       sanfran_monthly_2010_2015,tropP_monthly_2010_2015) %>% 
+  reduce(full_join, by = "time")
+
+annual_monthly_sst_full <- bind_rows(annual_monthly_sst, full_2010_2015)
+
+#computing the mean over the full period for each month at each location
+monthly_mean_baseline <- annual_monthly_sst_full %>% 
+  mutate(month = format(as.Date(paste0(time, "-01")), "%m")) %>% 
+  group_by(month) %>% 
+  summarise(
+    ColumbiaRiver_basemonthlySST = mean(ColumbiaRiver_MeanMonthlySST, 
+                                        na.rm = TRUE),
+    Huntington_basemonthlySST = mean(Huntington_MeanMonthlySST, na.rm = TRUE),
+    SanFrancisco_basemonthlySST = mean(SanFrancisco_MeanMonthlySST, na.rm = TRUE),
+    tropPacific_basemonthlySST = mean(tropPacific_MeanMonthlySST, na.rm = TRUE),
+    .groups = 'drop')
+
+
+####################
+#Calculating anomaly index values
+#Extracting the month from the full time period and adding a column for it
+annual_monthly_sst_full$month <- substr(annual_monthly_sst_full$time, 6, 7)
+
+anomaly_SST_data <- merge(annual_monthly_sst_full, monthly_mean_baseline, 
+                     by = "month") 
+
+#calculate the anomaly for each location/month ie time series - base month mean
+for (j in locations) {
+  anomaly_col <- paste0(j, "_SST_anomaly")
+  anomaly_SST_data <- anomaly_SST_data %>% 
+    mutate(!!anomaly_col := .data[[paste0(j, "_MeanMonthlySST")]] - 
+           .data[[paste0(j, "_basemonthlySST")]])
+}
+
+#reduce unneeded columns and sort chronologically
+anomaly_SST <- anomaly_SST_data %>% 
+  select(time, ColumbiaRiver_SST_anomaly, Huntington_SST_anomaly, 
+         SanFrancisco_SST_anomaly, tropPacific_SST_anomaly) %>% 
+  arrange(time)
+
+#plot temperature anomalies
+options(repr.plot.width = 50, repr.plot.height = 6) #not doing anything
+ggplot(data = anomaly_SST, aes(x = time, group = 1)) + 
+  geom_line(aes(y = tropPacific_SST_anomaly, color = "Tropical Pacific")) +
+  geom_line(aes(y = ColumbiaRiver_SST_anomaly, color = "Columbia River")) +
+  geom_line(aes(y = SanFrancisco_SST_anomaly, color = "San Francisco")) +
+  geom_line(aes(y = Huntington_SST_anomaly, color = "Huntington")) +
+  scale_x_discrete(breaks = anomaly_SST$time[seq(1, nrow(anomaly_SST), by = 12)]) +
+  labs(title = "Monthly SST Anomalies", x = "Time", y = "SST Anomaly (degC)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+#Plotting subset
+anomaly_SST <- anomaly_SST %>% 
+  mutate(time = as.character(time))
+subset_anomalySST <- anomaly_SST %>% 
+  filter(time >= "2006-01")
+ggplot(data = subset_anomalySST, aes(x = time, group = 1)) + 
+  geom_line(aes(y = tropPacific_SST_anomaly, color = "Tropical Pacific")) +
+  geom_line(aes(y = ColumbiaRiver_SST_anomaly, color = "Columbia River")) +
+  geom_line(aes(y = SanFrancisco_SST_anomaly, color = "San Francisco")) +
+  geom_line(aes(y = Huntington_SST_anomaly, color = "Huntington")) +
+  scale_x_discrete(breaks = subset_anomalySST$time[seq(1, nrow(subset_anomalySST), by = 3)]) +
+  labs(title = "Monthly SST Anomalies (2006 - 2015)", x = "Time", y = "SST Anomaly (degC)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+
+#####################
+#Computing running annual mean ie mean temperature for one year starting that month
+running_annual_mean_sst <- annual_monthly_sst_full
+for (k in locations) {
+  temp_col <- paste0(k, "_MeanMonthlySST")
+  run_ann_mean_col <- paste0(k, "_SST_run_ann_mean")
+  running_annual_mean_sst[[run_ann_mean_col]] <- NA #creates empty new column
+  
+  for (m in 1:(nrow(annual_monthly_sst_full) - 11)) { #will not calculate for 2015
+    range <- annual_monthly_sst_full[[temp_col]][m:(m+11)] 
+    #calculating and storing the running annual mean
+    running_annual_mean_sst[[run_ann_mean_col]][m] <- mean(range, na.rm = TRUE)
+    }
+  }
+
+ggplot(data = running_annual_mean_sst, aes(x = time, group = 1)) + 
+  geom_line(aes(y = tropPacific_SST_run_ann_mean, color = "Tropical Pacific")) +
+  geom_line(aes(y = ColumbiaRiver_SST_run_ann_mean, color = "Columbia River")) +
+  geom_line(aes(y = SanFrancisco_SST_run_ann_mean, color = "San Francisco")) +
+  geom_line(aes(y = Huntington_SST_run_ann_mean, color = "Huntington")) +
+  scale_x_discrete(breaks = running_annual_mean_sst$time[
+    seq(1, nrow(running_annual_mean_sst), by = 12)]) +
+  labs(title = "Monthly SST Running Annual Mean", x = "Time", 
+       y = "Running Annual Mean (degC)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+anomaly_sst_ram <- anomaly_SST
+for (n in locations) {
+  anom_col <- paste0(n, "_SST_anomaly")
+  anom_ram_col <- paste0(n, "_sst_anom_ram")
+  anomaly_sst_ram[[anom_ram_col]] <- NA #creates empty new column
+  
+  for (p in 1:(nrow(anomaly_SST) - 11)) { #will not calculate for 2015
+    range <- anomaly_SST[[anom_col]][p:(p+11)] 
+    #calculating and storing the running annual mean
+    anomaly_sst_ram[[anom_ram_col]][p] <- mean(range, na.rm = TRUE)
+    }
+  }
+
+
+ggplot(data = anomaly_sst_ram, aes(x = time, group = 1)) + 
+  geom_line(aes(y = tropPacific_sst_anom_ram, color = "Tropical Pacific")) +
+  geom_line(aes(y = ColumbiaRiver_sst_anom_ram, color = "Columbia River")) +
+  geom_line(aes(y = SanFrancisco_sst_anom_ram, color = "San Francisco")) +
+  geom_line(aes(y = Huntington_sst_anom_ram, color = "Huntington")) +
+  scale_x_discrete(breaks = anomaly_sst_ram$time[
+    seq(1, nrow(anomaly_sst_ram), by = 12)]) +
+  labs(title = "SST Anomaly Running Annual Mean", x = "Time", 
+       y = "SST Anomaly (degC)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+# #Plotting subset
+# anomaly_sst_ram <- anomaly_sst_ram %>% 
+#   mutate(time = as.character(time))
+# subset_anomalySST_ram <- anomaly_sst_ram %>% 
+#   filter(time >= "2010-01")
+# ggplot(data = subset_anomalySST_ram, aes(x = time, group = 1)) + 
+#   geom_line(aes(y = tropPacific_sst_anom_ram, color = "Tropical Pacific")) +
+#   geom_line(aes(y = ColumbiaRiver_sst_anom_ram, color = "Columbia River")) +
+#   geom_line(aes(y = SanFrancisco_sst_anom_ram, color = "San Francisco")) +
+#   geom_line(aes(y = Huntington_sst_anom_ram, color = "Huntington")) +
+#   scale_x_discrete(breaks = subset_anomalySST_ram$time[seq(1, nrow(subset_anomalySST_ram), by = 3)]) +
+#   labs(title = "Monthly SST Anomaly RAM (2010 - 2014)", x = "Time", y = "SST Anomaly RAM (degC)") +
+#   theme_minimal() +
+#   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+
+# #All 3 regions colors
+# ggplot() +
+#  geom_stars(data = tropP_jan2010_temp, aes(fill = "#C77CFF")) +
+#   geom_stars(data = colriv_jan2010_temp, aes(fill = "#F8766D")) +
+#   geom_stars(data = sanfran_jan2010_temp, aes(fill = "#00BFC4")) +
+#   geom_stars(data = hunt_jan2010_temp, aes(fill = "#7CAE00")) +
+#   borders("world", colour = "gray80", fill = "gray80") +
+#   labs(title = "CCS Test Regions",
+#        x = "Longitude",
+#        y = "Latitude") +
+#   theme_minimal() + 
+#   scale_fill_identity(guide = "legend", 
+#                       labels = c("Tropical Pacific", "Columbia River", "San Francisco", "Huntington"),
+#                       breaks = c("#C77CFF", "#F8766D", "#00BFC4", "#7CAE00")) +
+#   coord_quickmap(xlim = c(-170,-115), ylim = c(-10, 49.5))
+
+######################
+#Calculating correlation coefficients, pearson correlation test
+
+cor.test(anomaly_SST$tropPacific_SST_anomaly, anomaly_SST$ColumbiaRiver_SST_anomaly)
+cor.test(anomaly_SST$tropPacific_SST_anomaly, anomaly_SST$SanFrancisco_SST_anomaly)
+cor.test(anomaly_SST$tropPacific_SST_anomaly, anomaly_SST$Huntington_SST_anomaly)
+
+cor.test(running_annual_mean_sst$tropPacific_SST_run_ann_mean,
+         running_annual_mean_sst$ColumbiaRiver_SST_run_ann_mean)
+cor.test(running_annual_mean_sst$tropPacific_SST_run_ann_mean,
+         running_annual_mean_sst$SanFrancisco_SST_run_ann_mean)
+cor.test(running_annual_mean_sst$tropPacific_SST_run_ann_mean,
+         running_annual_mean_sst$Huntington_SST_run_ann_mean)
+
+cor.test(subset_anomalySST$tropPacific_SST_anomaly,
+         subset_anomalySST$ColumbiaRiver_SST_anomaly)
+cor.test(subset_anomalySST$tropPacific_SST_anomaly,
+         subset_anomalySST$SanFrancisco_SST_anomaly)
+cor.test(subset_anomalySST$tropPacific_SST_anomaly,
+         subset_anomalySST$Huntington_SST_anomaly)
+
+cor.test(anomaly_sst_ram$tropPacific_sst_anom_ram,
+         anomaly_sst_ram$ColumbiaRiver_sst_anom_ram)
+cor.test(anomaly_sst_ram$tropPacific_sst_anom_ram,
+         anomaly_sst_ram$SanFrancisco_sst_anom_ram)
+cor.test(anomaly_sst_ram$tropPacific_sst_anom_ram,
+         anomaly_sst_ram$Huntington_sst_anom_ram)
+
+
+```
+
+vhjgvj
+
+
+```{r plot_data}
+
+```
+
