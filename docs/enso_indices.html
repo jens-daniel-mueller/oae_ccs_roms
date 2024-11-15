@@ -12,7 +12,7 @@
 <meta name="author" content="Victoria Froh &amp; Jens Daniel Müller" />
 
 
-<title>ENSO evaluation metrics</title>
+<title>CCS ENSO evaluation metrics</title>
 
 <script src="site_libs/header-attrs-2.18/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -345,7 +345,7 @@ div.tocify {
   <a href="read_data.html">Read data</a>
 </li>
 <li>
-  <a href="temperature_indices.html">Temperature indices</a>
+  <a href="enso_indices.html">CCS ENSO indices</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -380,7 +380,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">ENSO evaluation metrics</h1>
+<h1 class="title toc-ignore">CCS ENSO evaluation metrics</h1>
 <h4 class="author">Victoria Froh &amp; Jens Daniel Müller</h4>
 <h4 class="date">15 November, 2024</h4>
 
@@ -542,15 +542,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree0437728aaee7a9a708c7d1841066d497631ffe14targetblank0437728a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreea2b33f074945de98ab56c7568735e00adbe71c8btargetblanka2b33f0a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/0437728aaee7a9a708c7d1841066d497631ffe14" target="_blank">0437728</a>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/a2b33f074945de98ab56c7568735e00adbe71c8b" target="_blank">a2b33f0</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree0437728aaee7a9a708c7d1841066d497631ffe14targetblank0437728a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreea2b33f074945de98ab56c7568735e00adbe71c8btargetblanka2b33f0a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -560,7 +560,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/0437728aaee7a9a708c7d1841066d497631ffe14" target="_blank">0437728</a>.
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/a2b33f074945de98ab56c7568735e00adbe71c8b" target="_blank">a2b33f0</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -626,6 +626,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/a2b33f074945de98ab56c7568735e00adbe71c8b/analysis/enso_indices.Rmd" target="_blank">a2b33f0</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-15
+</td>
+<td>
+Adding full enso indices file, removing just temperature file
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/fa48b3934fb82ba5a53e2cb94334e15f7d9c200e/docs/enso_indices.html" target="_blank">fa48b39</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -808,6 +842,43 @@ ggplot(data = annual_monthly_sst, aes(x = time, group = 1)) +
                                 &quot;Huntington&quot; = &quot;#7CAE00&quot;)) +
   custom_theme</code></pre>
 <p><img src="figure/enso_indices.Rmd/read_data-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-1">
+Past versions of read_data-1.png
+</button>
+</p>
+<div id="fig-read_data-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/fa48b3934fb82ba5a53e2cb94334e15f7d9c200e/docs/figure/enso_indices.Rmd/read_data-1.png" target="_blank">fa48b39</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#clearing
 rm(annual_cycles, days_list, subset, annual_monthly_sst_list, i)
 
@@ -868,6 +939,43 @@ ggplot(data = anomaly_sst, aes(x = time, group = 1)) +
                                 &quot;Huntington&quot; = &quot;#7CAE00&quot;)) +
   custom_theme</code></pre>
 <p><img src="figure/enso_indices.Rmd/read_data-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-2">
+Past versions of read_data-2.png
+</button>
+</p>
+<div id="fig-read_data-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/fa48b3934fb82ba5a53e2cb94334e15f7d9c200e/docs/figure/enso_indices.Rmd/read_data-2.png" target="_blank">fa48b39</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#clearing
 rm(anomaly_sst_data, anomaly_col, place)
 
@@ -914,6 +1022,43 @@ Removed 11 rows containing missing values (`geom_line()`).
 Removed 11 rows containing missing values (`geom_line()`).
 Removed 11 rows containing missing values (`geom_line()`).</code></pre>
 <p><img src="figure/enso_indices.Rmd/read_data-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-3">
+Past versions of read_data-3.png
+</button>
+</p>
+<div id="fig-read_data-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/fa48b3934fb82ba5a53e2cb94334e15f7d9c200e/docs/figure/enso_indices.Rmd/read_data-3.png" target="_blank">fa48b39</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#Clearing
 rm(anom_col, anom_ram_col, spot, val)
 
@@ -1070,6 +1215,43 @@ ggplot(data = annual_monthly_t50, aes(x = time, group = 1)) +
   custom_theme + 
   theme(legend.position = c(0.2, 0.06))</code></pre>
 <p><img src="figure/enso_indices.Rmd/read_data-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-4">
+Past versions of read_data-4.png
+</button>
+</p>
+<div id="fig-read_data-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/fa48b3934fb82ba5a53e2cb94334e15f7d9c200e/docs/figure/enso_indices.Rmd/read_data-4.png" target="_blank">fa48b39</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#Clearing
 rm(subset, annual_cycles, days_list, annual_monthly_t50_list, j)
 
@@ -1127,6 +1309,43 @@ ggplot(data = anomaly_t50, aes(x = time, group = 1)) +
   scale_color_manual(values = colors) +
   custom_theme</code></pre>
 <p><img src="figure/enso_indices.Rmd/read_data-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-5">
+Past versions of read_data-5.png
+</button>
+</p>
+<div id="fig-read_data-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/fa48b3934fb82ba5a53e2cb94334e15f7d9c200e/docs/figure/enso_indices.Rmd/read_data-5.png" target="_blank">fa48b39</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#Clearing
 rm(anomaly_t50_data, place, anomaly_col)
 
@@ -1171,6 +1390,43 @@ Removed 11 rows containing missing values (`geom_line()`).
 Removed 11 rows containing missing values (`geom_line()`).
 Removed 11 rows containing missing values (`geom_line()`).</code></pre>
 <p><img src="figure/enso_indices.Rmd/read_data-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-6">
+Past versions of read_data-6.png
+</button>
+</p>
+<div id="fig-read_data-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/fa48b3934fb82ba5a53e2cb94334e15f7d9c200e/docs/figure/enso_indices.Rmd/read_data-6.png" target="_blank">fa48b39</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#Clearing
 rm(anom_col, anom_ram_col, spot, val)
 
@@ -1589,6 +1845,43 @@ ggplot(data = annual_monthly_iso26, aes(x = time, group = 1)) +
   scale_color_manual(values = colors) +
   custom_theme</code></pre>
 <p><img src="figure/enso_indices.Rmd/read_data-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-7">
+Past versions of read_data-7.png
+</button>
+</p>
+<div id="fig-read_data-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/fa48b3934fb82ba5a53e2cb94334e15f7d9c200e/docs/figure/enso_indices.Rmd/read_data-7.png" target="_blank">fa48b39</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#plotting all 3 time series of mean salinity of the 26kg isopycnal
 ggplot(data = annual_monthly_iso26, aes(x = time, group = 1)) + 
   geom_line(aes(y = ColumbiaRiver_MonthlyIso26_Sal, color = &quot;Columbia River&quot;)) +
@@ -1612,6 +1905,43 @@ ggplot(data = annual_monthly_iso26, aes(x = time, group = 1)) +
   scale_color_manual(values = colors) +
   custom_theme</code></pre>
 <p><img src="figure/enso_indices.Rmd/read_data-8.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-8">
+Past versions of read_data-8.png
+</button>
+</p>
+<div id="fig-read_data-8" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/fa48b3934fb82ba5a53e2cb94334e15f7d9c200e/docs/figure/enso_indices.Rmd/read_data-8.png" target="_blank">fa48b39</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#Clearing
 rm(subset, annual_cycles, days_list, annual_monthly_iso26_list, j)
 
@@ -1695,6 +2025,43 @@ ggplot(data = anomaly_iso26, aes(x = time, group = 1)) +
   custom_theme + 
   theme(legend.position = c(0.2, 0.945))</code></pre>
 <p><img src="figure/enso_indices.Rmd/read_data-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-9">
+Past versions of read_data-9.png
+</button>
+</p>
+<div id="fig-read_data-9" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/fa48b3934fb82ba5a53e2cb94334e15f7d9c200e/docs/figure/enso_indices.Rmd/read_data-9.png" target="_blank">fa48b39</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot(data = anomaly_iso26, aes(x = time, group = 1)) + 
   geom_line(aes(y = ColumbiaRiver_iso26Sal_anomaly, color = &quot;Columbia River&quot;)) +
   geom_line(aes(y = SanFrancisco_iso26Sal_anomaly, color = &quot;San Francisco&quot;)) +
@@ -1716,6 +2083,43 @@ ggplot(data = anomaly_iso26, aes(x = time, group = 1)) +
   custom_theme + 
   theme(legend.position = c(0.16, 0.945))</code></pre>
 <p><img src="figure/enso_indices.Rmd/read_data-10.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-10">
+Past versions of read_data-10.png
+</button>
+</p>
+<div id="fig-read_data-10" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/fa48b3934fb82ba5a53e2cb94334e15f7d9c200e/docs/figure/enso_indices.Rmd/read_data-10.png" target="_blank">fa48b39</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#Clearing
 rm(anomaly_iso26_data, place, place2, anomaly_col)
 
@@ -1782,6 +2186,43 @@ ggplot(data = anomaly_iso26_ram, aes(x = time, group = 1)) +
 Removed 11 rows containing missing values (`geom_line()`).
 Removed 11 rows containing missing values (`geom_line()`).</code></pre>
 <p><img src="figure/enso_indices.Rmd/read_data-11.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-11">
+Past versions of read_data-11.png
+</button>
+</p>
+<div id="fig-read_data-11" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/fa48b3934fb82ba5a53e2cb94334e15f7d9c200e/docs/figure/enso_indices.Rmd/read_data-11.png" target="_blank">fa48b39</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot(data = anomaly_iso26_ram, aes(x = time, group = 1)) + 
   geom_line(aes(y = ColumbiaRiver_iso26Sal_anom_ram, color = &quot;Columbia River&quot;)) +
   geom_line(aes(y = SanFrancisco_iso26Sal_anom_ram, color = &quot;San Francisco&quot;)) +
@@ -1805,6 +2246,43 @@ Removed 11 rows containing missing values (`geom_line()`).</code></pre>
 Removed 11 rows containing missing values (`geom_line()`).
 Removed 11 rows containing missing values (`geom_line()`).</code></pre>
 <p><img src="figure/enso_indices.Rmd/read_data-12.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-12">
+Past versions of read_data-12.png
+</button>
+</p>
+<div id="fig-read_data-12" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/fa48b3934fb82ba5a53e2cb94334e15f7d9c200e/docs/figure/enso_indices.Rmd/read_data-12.png" target="_blank">fa48b39</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#Clearing
 rm(anom_col, anom_ram_col, spot, val)
 
