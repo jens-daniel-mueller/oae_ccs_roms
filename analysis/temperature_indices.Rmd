@@ -23,7 +23,7 @@ library(units)
 path_ROMSv2RG_results <- 
  "/net/sea/work/loher/ROMS/Alk_enh_formatted_2024_08/"
 
-#opening specific nc file to get overview
+# #opening specific nc file to get overview
 # view_nc <- nc_open(paste0(path_ROMSv2RG_results,
 #                      "ColumbiaRiver/ColumbiaRiver_2010-2015_control.nc"))
 # 
@@ -45,6 +45,7 @@ colriv_temp <- read_ncdf(paste0(path_ROMSv2RG_results,
 #              ),
 #            proxy = FALSE #need this on to override the proxy format
 #           )
+
 ###
 #plotting the first time point to look at the selected region
 colriv_jan2010_temp <- colriv_temp %>% 
@@ -60,7 +61,7 @@ ggplot() +
   scale_fill_viridis_c() +
   coord_quickmap(xlim = c(-130,-122.5), ylim = c(41, 51))
 
-#converts time dimension to regular, rest in temp file
+#converts time dimension to regular, set in temp file
 days_reg <- st_get_dimension_values(colriv_temp, "time") %>% ymd()
 colriv_temp <- st_set_dimensions(colriv_temp, "time", values = days_reg)
 
@@ -68,8 +69,8 @@ colriv_temp <- st_set_dimensions(colriv_temp, "time", values = days_reg)
 colriv_temp <- st_set_dimensions(colriv_temp, "time", values = format(
   days_reg,"%Y-%m"))
 
-#turning data into dataframe and editing for use
-colriv_temp <-colriv_temp %>%
+#turning data into dataframe and cleaning up
+colriv_temp <- colriv_temp %>%
   drop_units() %>% 
   as.data.frame(long = TRUE) %>% 
   select(-depth)
@@ -90,7 +91,7 @@ colriv_monthly_2010_2015 <- colriv_monthly_2010_2015 %>% slice(-n())
 # 
 # print(view_nc)
 
-#filtering for just SST in 2x2deg box (36.5N-38.5N, 122.5W-124.5W), full time
+#filtering for just SST in 2x2deg box (36.5N-38.5N, 122.5W-124.5W), full 2010 time
 sanfran_temp <- read_ncdf(paste0(path_ROMSv2RG_results,
                      "SanFrancisco/SanFrancisco_2010-2015_control.nc"),
            var = "temp",
@@ -99,14 +100,14 @@ sanfran_temp <- read_ncdf(paste0(path_ROMSv2RG_results,
            proxy = FALSE #need this on to override the proxy format
           )
 
-#plotting specific time points to look at the selected region
-sanfran_jan2016_temp <- sanfran_temp %>% 
-  slice(time, 1096)
+#plotting specific time point to look at the selected region
+sanfran_jan2010_temp <- sanfran_temp %>% 
+  slice(time, 1)
 
 ggplot() +
- geom_stars(data = sanfran_jan2016_temp, aes(fill = temp)) +
+ geom_stars(data = sanfran_jan2010_temp, aes(fill = temp)) +
   borders("world", colour = "gray80", fill = "gray80") +
-  labs(title = "San Francisco Surface Temperature Jan 2nd 2016",
+  labs(title = "San Francisco Surface Temperature Jan 2nd 2010",
        x = "Longitude",
        y = "Latitude") +
   theme_minimal() + 
@@ -121,8 +122,8 @@ sanfran_temp <- st_set_dimensions(sanfran_temp, "time", values = days_reg)
 sanfran_temp <- st_set_dimensions(sanfran_temp, "time", values = format(
   days_reg,"%Y-%m"))
 
-#turning data into dataframe and editing for use
-sanfran_temp <-sanfran_temp %>%
+#turning data into dataframe and cleaning up
+sanfran_temp <- sanfran_temp %>%
   drop_units() %>% 
   as.data.frame(long = TRUE) %>% 
   select(-depth)
@@ -143,7 +144,7 @@ sanfran_monthly_2010_2015 <- sanfran_monthly_2010_2015 %>% slice(-n())
 # 
 # print(view_nc)
 
-#filtering for just SST in 2x2deg box (32N-34N, 117W-119W), full time series
+#filtering for just SST in 2x2deg box (32N-34N, 117W-119W), full 2010 time series
 hunt_temp <- read_ncdf(paste0(path_ROMSv2RG_results,
                      "Huntington/Huntington_2010-2015_control.nc"),
            var = "temp",
@@ -187,8 +188,8 @@ hunt_temp <- st_set_dimensions(hunt_temp, "time", values = days_reg)
 hunt_temp <- st_set_dimensions(hunt_temp, "time", values = format(
   days_reg,"%Y-%m"))
 
-#turning data into dataframe and editing for use
-hunt_temp <-hunt_temp %>%
+#turning data into dataframe and cleaning up
+hunt_temp <- hunt_temp %>%
   drop_units() %>% #see if i need this
   as.data.frame(long = TRUE) %>% 
   select(-depth)
@@ -203,11 +204,6 @@ hunt_monthly_2010_2015 <- hunt_monthly_2010_2015 %>% slice(-n())
 
 #####################
 #For tropical 3.4 region: 5S->5N, 120W->170W
-#opening specific nc file to get overview
-# view_nc <- nc_open(paste0(path_ROMSv2RG_results,
-#                      "regrid_2024_10/surface_temp_tropPacific/Control_2010_monthly_tropPacific.nc"))
-# 
-# print(view_nc)
 
 #reading in all 6 years of monthly data and combining into 1 stars object
 years <- 2010:2015
@@ -243,8 +239,8 @@ tropP_temp <- st_set_dimensions(tropP_temp, "time", values = format(
   ymd_hms(days_reg),"%Y-%m"))
 
 
-#turning data into dataframe and editing for use
-tropP_temp <-tropP_temp %>%
+#turning data into dataframe and cleaning up
+tropP_temp <- tropP_temp %>%
   drop_units() %>% 
   as.data.frame(long = TRUE) %>% 
   select(-s_rho)
@@ -255,8 +251,8 @@ tropP_monthly_2010_2015 <- tropP_temp %>% group_by(time) %>%
 
 
 #####################
-#plotting all 4 time series of annual mean SST
-p <- ggplot(data = tropP_monthly_2010_2015, 
+#plotting all 4 time series of annual mean SST for 2010-2015
+ggplot(data = tropP_monthly_2010_2015, 
        aes(x = time, y = tropPacific_MeanMonthlySST, group = 1)) + 
   geom_line(aes(color = "Tropical Pacific")) +
   geom_line(data = colriv_monthly_2010_2015, 
@@ -319,24 +315,23 @@ annual_monthly_sst_full <- bind_rows(annual_monthly_sst, full_2010_2015)
 monthly_mean_baseline <- annual_monthly_sst_full %>% 
   mutate(month = format(as.Date(paste0(time, "-01")), "%m")) %>% 
   group_by(month) %>% 
-  summarise(
-    ColumbiaRiver_basemonthlySST = mean(ColumbiaRiver_MeanMonthlySST, 
+  summarise(ColumbiaRiver_basemonthlySST = mean(ColumbiaRiver_MeanMonthlySST, 
                                         na.rm = TRUE),
     Huntington_basemonthlySST = mean(Huntington_MeanMonthlySST, na.rm = TRUE),
     SanFrancisco_basemonthlySST = mean(SanFrancisco_MeanMonthlySST, na.rm = TRUE),
     tropPacific_basemonthlySST = mean(tropPacific_MeanMonthlySST, na.rm = TRUE),
     .groups = 'drop')
 
-
 ####################
 #Calculating anomaly index values
+
 #Extracting the month from the full time period and adding a column for it
 annual_monthly_sst_full$month <- substr(annual_monthly_sst_full$time, 6, 7)
 
 anomaly_SST_data <- merge(annual_monthly_sst_full, monthly_mean_baseline, 
                      by = "month") 
 
-#calculate the anomaly for each location/month ie time series - base month mean
+#calculate the anomaly for each location/month  (time series - base month mean)
 for (j in locations) {
   anomaly_col <- paste0(j, "_SST_anomaly")
   anomaly_SST_data <- anomaly_SST_data %>% 
@@ -351,7 +346,6 @@ anomaly_SST <- anomaly_SST_data %>%
   arrange(time)
 
 #plot temperature anomalies
-options(repr.plot.width = 50, repr.plot.height = 6) #not doing anything
 ggplot(data = anomaly_SST, aes(x = time, group = 1)) + 
   geom_line(aes(y = tropPacific_SST_anomaly, color = "Tropical Pacific")) +
   geom_line(aes(y = ColumbiaRiver_SST_anomaly, color = "Columbia River")) +
@@ -362,24 +356,9 @@ ggplot(data = anomaly_SST, aes(x = time, group = 1)) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 
-#Plotting subset
-anomaly_SST <- anomaly_SST %>% 
-  mutate(time = as.character(time))
-subset_anomalySST <- anomaly_SST %>% 
-  filter(time >= "2006-01")
-ggplot(data = subset_anomalySST, aes(x = time, group = 1)) + 
-  geom_line(aes(y = tropPacific_SST_anomaly, color = "Tropical Pacific")) +
-  geom_line(aes(y = ColumbiaRiver_SST_anomaly, color = "Columbia River")) +
-  geom_line(aes(y = SanFrancisco_SST_anomaly, color = "San Francisco")) +
-  geom_line(aes(y = Huntington_SST_anomaly, color = "Huntington")) +
-  scale_x_discrete(breaks = subset_anomalySST$time[seq(1, nrow(subset_anomalySST), by = 3)]) +
-  labs(title = "Monthly SST Anomalies (2006 - 2015)", x = "Time", y = "SST Anomaly (degC)") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
-
 
 #####################
-#Computing running annual mean ie mean temperature for one year starting that month
+#Computing running annual mean (mean temp for one year starting that month)
 running_annual_mean_sst <- annual_monthly_sst_full
 for (k in locations) {
   temp_col <- paste0(k, "_MeanMonthlySST")
@@ -393,6 +372,7 @@ for (k in locations) {
     }
   }
 
+#plotting sstram
 ggplot(data = running_annual_mean_sst, aes(x = time, group = 1)) + 
   geom_line(aes(y = tropPacific_SST_run_ann_mean, color = "Tropical Pacific")) +
   geom_line(aes(y = ColumbiaRiver_SST_run_ann_mean, color = "Columbia River")) +
@@ -405,6 +385,7 @@ ggplot(data = running_annual_mean_sst, aes(x = time, group = 1)) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 
+#Computing running annual mean for the sst anomaly
 anomaly_sst_ram <- anomaly_SST
 for (n in locations) {
   anom_col <- paste0(n, "_SST_anomaly")
@@ -418,7 +399,7 @@ for (n in locations) {
     }
   }
 
-
+#plotting
 ggplot(data = anomaly_sst_ram, aes(x = time, group = 1)) + 
   geom_line(aes(y = tropPacific_sst_anom_ram, color = "Tropical Pacific")) +
   geom_line(aes(y = ColumbiaRiver_sst_anom_ram, color = "Columbia River")) +
@@ -431,7 +412,7 @@ ggplot(data = anomaly_sst_ram, aes(x = time, group = 1)) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 
-# #Plotting subset
+# #Plotting subset: 2006 - 2015
 # anomaly_sst_ram <- anomaly_sst_ram %>% 
 #   mutate(time = as.character(time))
 # subset_anomalySST_ram <- anomaly_sst_ram %>% 
@@ -469,20 +450,6 @@ ggplot(data = anomaly_sst_ram, aes(x = time, group = 1)) +
 cor.test(anomaly_SST$tropPacific_SST_anomaly, anomaly_SST$ColumbiaRiver_SST_anomaly)
 cor.test(anomaly_SST$tropPacific_SST_anomaly, anomaly_SST$SanFrancisco_SST_anomaly)
 cor.test(anomaly_SST$tropPacific_SST_anomaly, anomaly_SST$Huntington_SST_anomaly)
-
-cor.test(running_annual_mean_sst$tropPacific_SST_run_ann_mean,
-         running_annual_mean_sst$ColumbiaRiver_SST_run_ann_mean)
-cor.test(running_annual_mean_sst$tropPacific_SST_run_ann_mean,
-         running_annual_mean_sst$SanFrancisco_SST_run_ann_mean)
-cor.test(running_annual_mean_sst$tropPacific_SST_run_ann_mean,
-         running_annual_mean_sst$Huntington_SST_run_ann_mean)
-
-cor.test(subset_anomalySST$tropPacific_SST_anomaly,
-         subset_anomalySST$ColumbiaRiver_SST_anomaly)
-cor.test(subset_anomalySST$tropPacific_SST_anomaly,
-         subset_anomalySST$SanFrancisco_SST_anomaly)
-cor.test(subset_anomalySST$tropPacific_SST_anomaly,
-         subset_anomalySST$Huntington_SST_anomaly)
 
 cor.test(anomaly_sst_ram$tropPacific_sst_anom_ram,
          anomaly_sst_ram$ColumbiaRiver_sst_anom_ram)
