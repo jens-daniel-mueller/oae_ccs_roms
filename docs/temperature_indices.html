@@ -382,7 +382,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">temperature_indices</h1>
 <h4 class="author">Victoria Froh &amp; Jens Daniel Müller</h4>
-<h4 class="date">05 November, 2024</h4>
+<h4 class="date">15 November, 2024</h4>
 
 </div>
 
@@ -411,7 +411,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-11-05
+<strong>Last updated:</strong> 2024-11-15
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -542,15 +542,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree0b73066a48ea6fd98b19e55e6e637bd2eeb5a893targetblank0b73066a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree0437728aaee7a9a708c7d1841066d497631ffe14targetblank0437728a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/0b73066a48ea6fd98b19e55e6e637bd2eeb5a893" target="_blank">0b73066</a>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/0437728aaee7a9a708c7d1841066d497631ffe14" target="_blank">0437728</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree0b73066a48ea6fd98b19e55e6e637bd2eeb5a893targetblank0b73066a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree0437728aaee7a9a708c7d1841066d497631ffe14targetblank0437728a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -560,7 +560,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/0b73066a48ea6fd98b19e55e6e637bd2eeb5a893" target="_blank">0b73066</a>.
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/0437728aaee7a9a708c7d1841066d497631ffe14" target="_blank">0437728</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -631,6 +631,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/0437728aaee7a9a708c7d1841066d497631ffe14/analysis/temperature_indices.Rmd" target="_blank">0437728</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-15
+</td>
+<td>
+Adding full enso indices file
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/36f52b01eec48f05e3570f599be8e1cd4d01b7df/docs/temperature_indices.html" target="_blank">36f52b0</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-05
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/0b73066a48ea6fd98b19e55e6e637bd2eeb5a893/analysis/temperature_indices.Rmd" target="_blank">0b73066</a>
 </td>
 <td>
@@ -688,7 +722,7 @@ The following objects are masked from &#39;package:base&#39;:
 path_ROMSv2RG_results &lt;- 
  &quot;/net/sea/work/loher/ROMS/Alk_enh_formatted_2024_08/&quot;
 
-#opening specific nc file to get overview
+# #opening specific nc file to get overview
 # view_nc &lt;- nc_open(paste0(path_ROMSv2RG_results,
 #                      &quot;ColumbiaRiver/ColumbiaRiver_2010-2015_control.nc&quot;))
 # 
@@ -713,6 +747,7 @@ colriv_temp &lt;- read_ncdf(paste0(path_ROMSv2RG_results,
 #              ),
 #            proxy = FALSE #need this on to override the proxy format
 #           )
+
 ###
 #plotting the first time point to look at the selected region
 colriv_jan2010_temp &lt;- colriv_temp %&gt;% 
@@ -728,7 +763,44 @@ ggplot() +
   scale_fill_viridis_c() +
   coord_quickmap(xlim = c(-130,-122.5), ylim = c(41, 51))</code></pre>
 <p><img src="figure/temperature_indices.Rmd/read_data-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>#converts time dimension to regular, rest in temp file
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-1">
+Past versions of read_data-1.png
+</button>
+</p>
+<div id="fig-read_data-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/36f52b01eec48f05e3570f599be8e1cd4d01b7df/docs/figure/temperature_indices.Rmd/read_data-1.png" target="_blank">36f52b0</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>#converts time dimension to regular, set in temp file
 days_reg &lt;- st_get_dimension_values(colriv_temp, &quot;time&quot;) %&gt;% ymd()
 colriv_temp &lt;- st_set_dimensions(colriv_temp, &quot;time&quot;, values = days_reg)
 
@@ -736,8 +808,8 @@ colriv_temp &lt;- st_set_dimensions(colriv_temp, &quot;time&quot;, values = days
 colriv_temp &lt;- st_set_dimensions(colriv_temp, &quot;time&quot;, values = format(
   days_reg,&quot;%Y-%m&quot;))
 
-#turning data into dataframe and editing for use
-colriv_temp &lt;-colriv_temp %&gt;%
+#turning data into dataframe and cleaning up
+colriv_temp &lt;- colriv_temp %&gt;%
   drop_units() %&gt;% 
   as.data.frame(long = TRUE) %&gt;% 
   select(-depth)
@@ -758,7 +830,7 @@ colriv_monthly_2010_2015 &lt;- colriv_monthly_2010_2015 %&gt;% slice(-n())
 # 
 # print(view_nc)
 
-#filtering for just SST in 2x2deg box (36.5N-38.5N, 122.5W-124.5W), full time
+#filtering for just SST in 2x2deg box (36.5N-38.5N, 122.5W-124.5W), full 2010 time
 sanfran_temp &lt;- read_ncdf(paste0(path_ROMSv2RG_results,
                      &quot;SanFrancisco/SanFrancisco_2010-2015_control.nc&quot;),
            var = &quot;temp&quot;,
@@ -769,20 +841,57 @@ sanfran_temp &lt;- read_ncdf(paste0(path_ROMSv2RG_results,
 <pre><code>No projection information found in nc file. 
  Coordinate variable units found to be degrees, 
  assuming WGS84 Lat/Lon.</code></pre>
-<pre class="r"><code>#plotting specific time points to look at the selected region
-sanfran_jan2016_temp &lt;- sanfran_temp %&gt;% 
-  slice(time, 1096)
+<pre class="r"><code>#plotting specific time point to look at the selected region
+sanfran_jan2010_temp &lt;- sanfran_temp %&gt;% 
+  slice(time, 1)
 
 ggplot() +
- geom_stars(data = sanfran_jan2016_temp, aes(fill = temp)) +
+ geom_stars(data = sanfran_jan2010_temp, aes(fill = temp)) +
   borders(&quot;world&quot;, colour = &quot;gray80&quot;, fill = &quot;gray80&quot;) +
-  labs(title = &quot;San Francisco Surface Temperature Jan 2nd 2016&quot;,
+  labs(title = &quot;San Francisco Surface Temperature Jan 2nd 2010&quot;,
        x = &quot;Longitude&quot;,
        y = &quot;Latitude&quot;) +
   theme_minimal() + 
   scale_fill_viridis_c() +
   coord_quickmap(xlim = c(-127,-120), ylim = c(34, 42))</code></pre>
 <p><img src="figure/temperature_indices.Rmd/read_data-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-2">
+Past versions of read_data-2.png
+</button>
+</p>
+<div id="fig-read_data-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/36f52b01eec48f05e3570f599be8e1cd4d01b7df/docs/figure/temperature_indices.Rmd/read_data-2.png" target="_blank">36f52b0</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#converts time dimension to regular , rest in temp file
 days_reg &lt;- st_get_dimension_values(sanfran_temp, &quot;time&quot;) %&gt;% ymd()
 sanfran_temp &lt;- st_set_dimensions(sanfran_temp, &quot;time&quot;, values = days_reg)
@@ -791,8 +900,8 @@ sanfran_temp &lt;- st_set_dimensions(sanfran_temp, &quot;time&quot;, values = da
 sanfran_temp &lt;- st_set_dimensions(sanfran_temp, &quot;time&quot;, values = format(
   days_reg,&quot;%Y-%m&quot;))
 
-#turning data into dataframe and editing for use
-sanfran_temp &lt;-sanfran_temp %&gt;%
+#turning data into dataframe and cleaning up
+sanfran_temp &lt;- sanfran_temp %&gt;%
   drop_units() %&gt;% 
   as.data.frame(long = TRUE) %&gt;% 
   select(-depth)
@@ -813,7 +922,7 @@ sanfran_monthly_2010_2015 &lt;- sanfran_monthly_2010_2015 %&gt;% slice(-n())
 # 
 # print(view_nc)
 
-#filtering for just SST in 2x2deg box (32N-34N, 117W-119W), full time series
+#filtering for just SST in 2x2deg box (32N-34N, 117W-119W), full 2010 time series
 hunt_temp &lt;- read_ncdf(paste0(path_ROMSv2RG_results,
                      &quot;Huntington/Huntington_2010-2015_control.nc&quot;),
            var = &quot;temp&quot;,
@@ -838,6 +947,43 @@ ggplot() +
   scale_fill_viridis_c() +
   coord_quickmap(xlim = c(-123,-115), ylim = c(26.5, 34.5))</code></pre>
 <p><img src="figure/temperature_indices.Rmd/read_data-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-3">
+Past versions of read_data-3.png
+</button>
+</p>
+<div id="fig-read_data-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/36f52b01eec48f05e3570f599be8e1cd4d01b7df/docs/figure/temperature_indices.Rmd/read_data-3.png" target="_blank">36f52b0</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># #All 3 regions
 # ggplot() +
 #  geom_stars(data = hunt_jan2010_temp, aes(fill = temp)) +
@@ -859,8 +1005,8 @@ hunt_temp &lt;- st_set_dimensions(hunt_temp, &quot;time&quot;, values = days_reg
 hunt_temp &lt;- st_set_dimensions(hunt_temp, &quot;time&quot;, values = format(
   days_reg,&quot;%Y-%m&quot;))
 
-#turning data into dataframe and editing for use
-hunt_temp &lt;-hunt_temp %&gt;%
+#turning data into dataframe and cleaning up
+hunt_temp &lt;- hunt_temp %&gt;%
   drop_units() %&gt;% #see if i need this
   as.data.frame(long = TRUE) %&gt;% 
   select(-depth)
@@ -875,11 +1021,6 @@ hunt_monthly_2010_2015 &lt;- hunt_monthly_2010_2015 %&gt;% slice(-n())
 
 #####################
 #For tropical 3.4 region: 5S-&gt;5N, 120W-&gt;170W
-#opening specific nc file to get overview
-# view_nc &lt;- nc_open(paste0(path_ROMSv2RG_results,
-#                      &quot;regrid_2024_10/surface_temp_tropPacific/Control_2010_monthly_tropPacific.nc&quot;))
-# 
-# print(view_nc)
 
 #reading in all 6 years of monthly data and combining into 1 stars object
 years &lt;- 2010:2015
@@ -922,6 +1063,43 @@ ggplot() +
   scale_fill_viridis_c() +
   coord_quickmap(xlim = c(-175,-115), ylim = c(-10.5, 10.5))</code></pre>
 <p><img src="figure/temperature_indices.Rmd/read_data-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-4">
+Past versions of read_data-4.png
+</button>
+</p>
+<div id="fig-read_data-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/36f52b01eec48f05e3570f599be8e1cd4d01b7df/docs/figure/temperature_indices.Rmd/read_data-4.png" target="_blank">36f52b0</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#converts time dimension to regular , rest in temp file
 days_reg &lt;- st_get_dimension_values(tropP_temp, &quot;time&quot;)
 tropP_temp &lt;- st_set_dimensions(tropP_temp, &quot;time&quot;, values = days_reg)
@@ -931,8 +1109,8 @@ tropP_temp &lt;- st_set_dimensions(tropP_temp, &quot;time&quot;, values = format
   ymd_hms(days_reg),&quot;%Y-%m&quot;))
 
 
-#turning data into dataframe and editing for use
-tropP_temp &lt;-tropP_temp %&gt;%
+#turning data into dataframe and cleaning up
+tropP_temp &lt;- tropP_temp %&gt;%
   drop_units() %&gt;% 
   as.data.frame(long = TRUE) %&gt;% 
   select(-s_rho)
@@ -943,8 +1121,8 @@ tropP_monthly_2010_2015 &lt;- tropP_temp %&gt;% group_by(time) %&gt;%
 
 
 #####################
-#plotting all 4 time series of annual mean SST
-p &lt;- ggplot(data = tropP_monthly_2010_2015, 
+#plotting all 4 time series of annual mean SST for 2010-2015
+ggplot(data = tropP_monthly_2010_2015, 
        aes(x = time, y = tropPacific_MeanMonthlySST, group = 1)) + 
   geom_line(aes(color = &quot;Tropical Pacific&quot;)) +
   geom_line(data = colriv_monthly_2010_2015, 
@@ -955,9 +1133,46 @@ p &lt;- ggplot(data = tropP_monthly_2010_2015,
                                                color = &quot;Huntington&quot;)) +
   labs(title = &quot;Monthly Mean SST&quot;, x = &quot;Month&quot;, y = &quot;Mean SST&quot;) +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
-
-####################
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))</code></pre>
+<p><img src="figure/temperature_indices.Rmd/read_data-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-5">
+Past versions of read_data-5.png
+</button>
+</p>
+<div id="fig-read_data-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/36f52b01eec48f05e3570f599be8e1cd4d01b7df/docs/figure/temperature_indices.Rmd/read_data-5.png" target="_blank">36f52b0</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>####################
 #30 year time series of historical monthly averages for all 4 locations
 years_past &lt;- 1979:2009
 locations &lt;- c(&quot;ColumbiaRiver&quot;, &quot;Huntington&quot;, &quot;SanFrancisco&quot;, &quot;tropPacific&quot;)
@@ -1378,24 +1593,23 @@ annual_monthly_sst_full &lt;- bind_rows(annual_monthly_sst, full_2010_2015)
 monthly_mean_baseline &lt;- annual_monthly_sst_full %&gt;% 
   mutate(month = format(as.Date(paste0(time, &quot;-01&quot;)), &quot;%m&quot;)) %&gt;% 
   group_by(month) %&gt;% 
-  summarise(
-    ColumbiaRiver_basemonthlySST = mean(ColumbiaRiver_MeanMonthlySST, 
+  summarise(ColumbiaRiver_basemonthlySST = mean(ColumbiaRiver_MeanMonthlySST, 
                                         na.rm = TRUE),
     Huntington_basemonthlySST = mean(Huntington_MeanMonthlySST, na.rm = TRUE),
     SanFrancisco_basemonthlySST = mean(SanFrancisco_MeanMonthlySST, na.rm = TRUE),
     tropPacific_basemonthlySST = mean(tropPacific_MeanMonthlySST, na.rm = TRUE),
     .groups = &#39;drop&#39;)
 
-
 ####################
 #Calculating anomaly index values
+
 #Extracting the month from the full time period and adding a column for it
 annual_monthly_sst_full$month &lt;- substr(annual_monthly_sst_full$time, 6, 7)
 
 anomaly_SST_data &lt;- merge(annual_monthly_sst_full, monthly_mean_baseline, 
                      by = &quot;month&quot;) 
 
-#calculate the anomaly for each location/month ie time series - base month mean
+#calculate the anomaly for each location/month  (time series - base month mean)
 for (j in locations) {
   anomaly_col &lt;- paste0(j, &quot;_SST_anomaly&quot;)
   anomaly_SST_data &lt;- anomaly_SST_data %&gt;% 
@@ -1410,7 +1624,6 @@ anomaly_SST &lt;- anomaly_SST_data %&gt;%
   arrange(time)
 
 #plot temperature anomalies
-options(repr.plot.width = 50, repr.plot.height = 6) #not doing anything
 ggplot(data = anomaly_SST, aes(x = time, group = 1)) + 
   geom_line(aes(y = tropPacific_SST_anomaly, color = &quot;Tropical Pacific&quot;)) +
   geom_line(aes(y = ColumbiaRiver_SST_anomaly, color = &quot;Columbia River&quot;)) +
@@ -1420,24 +1633,46 @@ ggplot(data = anomaly_SST, aes(x = time, group = 1)) +
   labs(title = &quot;Monthly SST Anomalies&quot;, x = &quot;Time&quot;, y = &quot;SST Anomaly (degC)&quot;) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))</code></pre>
-<p><img src="figure/temperature_indices.Rmd/read_data-5.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>#Plotting subset
-anomaly_SST &lt;- anomaly_SST %&gt;% 
-  mutate(time = as.character(time))
-subset_anomalySST &lt;- anomaly_SST %&gt;% 
-  filter(time &gt;= &quot;2006-01&quot;)
-ggplot(data = subset_anomalySST, aes(x = time, group = 1)) + 
-  geom_line(aes(y = tropPacific_SST_anomaly, color = &quot;Tropical Pacific&quot;)) +
-  geom_line(aes(y = ColumbiaRiver_SST_anomaly, color = &quot;Columbia River&quot;)) +
-  geom_line(aes(y = SanFrancisco_SST_anomaly, color = &quot;San Francisco&quot;)) +
-  geom_line(aes(y = Huntington_SST_anomaly, color = &quot;Huntington&quot;)) +
-  scale_x_discrete(breaks = subset_anomalySST$time[seq(1, nrow(subset_anomalySST), by = 3)]) +
-  labs(title = &quot;Monthly SST Anomalies (2006 - 2015)&quot;, x = &quot;Time&quot;, y = &quot;SST Anomaly (degC)&quot;) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))</code></pre>
 <p><img src="figure/temperature_indices.Rmd/read_data-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-6">
+Past versions of read_data-6.png
+</button>
+</p>
+<div id="fig-read_data-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/36f52b01eec48f05e3570f599be8e1cd4d01b7df/docs/figure/temperature_indices.Rmd/read_data-6.png" target="_blank">36f52b0</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####################
-#Computing running annual mean ie mean temperature for one year starting that month
+#Computing running annual mean (mean temp for one year starting that month)
 running_annual_mean_sst &lt;- annual_monthly_sst_full
 for (k in locations) {
   temp_col &lt;- paste0(k, &quot;_MeanMonthlySST&quot;)
@@ -1451,6 +1686,7 @@ for (k in locations) {
     }
   }
 
+#plotting sstram
 ggplot(data = running_annual_mean_sst, aes(x = time, group = 1)) + 
   geom_line(aes(y = tropPacific_SST_run_ann_mean, color = &quot;Tropical Pacific&quot;)) +
   geom_line(aes(y = ColumbiaRiver_SST_run_ann_mean, color = &quot;Columbia River&quot;)) +
@@ -1467,7 +1703,45 @@ Removed 11 rows containing missing values (`geom_line()`).
 Removed 11 rows containing missing values (`geom_line()`).
 Removed 11 rows containing missing values (`geom_line()`).</code></pre>
 <p><img src="figure/temperature_indices.Rmd/read_data-7.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>anomaly_sst_ram &lt;- anomaly_SST
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-7">
+Past versions of read_data-7.png
+</button>
+</p>
+<div id="fig-read_data-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/36f52b01eec48f05e3570f599be8e1cd4d01b7df/docs/figure/temperature_indices.Rmd/read_data-7.png" target="_blank">36f52b0</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>#Computing running annual mean for the sst anomaly
+anomaly_sst_ram &lt;- anomaly_SST
 for (n in locations) {
   anom_col &lt;- paste0(n, &quot;_SST_anomaly&quot;)
   anom_ram_col &lt;- paste0(n, &quot;_sst_anom_ram&quot;)
@@ -1480,7 +1754,7 @@ for (n in locations) {
     }
   }
 
-
+#plotting
 ggplot(data = anomaly_sst_ram, aes(x = time, group = 1)) + 
   geom_line(aes(y = tropPacific_sst_anom_ram, color = &quot;Tropical Pacific&quot;)) +
   geom_line(aes(y = ColumbiaRiver_sst_anom_ram, color = &quot;Columbia River&quot;)) +
@@ -1497,7 +1771,44 @@ Removed 11 rows containing missing values (`geom_line()`).
 Removed 11 rows containing missing values (`geom_line()`).
 Removed 11 rows containing missing values (`geom_line()`).</code></pre>
 <p><img src="figure/temperature_indices.Rmd/read_data-8.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code># #Plotting subset
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-8">
+Past versions of read_data-8.png
+</button>
+</p>
+<div id="fig-read_data-8" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/36f52b01eec48f05e3570f599be8e1cd4d01b7df/docs/figure/temperature_indices.Rmd/read_data-8.png" target="_blank">36f52b0</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code># #Plotting subset: 2006 - 2015
 # anomaly_sst_ram &lt;- anomaly_sst_ram %&gt;% 
 #   mutate(time = as.character(time))
 # subset_anomalySST_ram &lt;- anomaly_sst_ram %&gt;% 
@@ -1568,84 +1879,6 @@ alternative hypothesis: true correlation is not equal to 0
 sample estimates:
       cor 
 0.4341188 </code></pre>
-<pre class="r"><code>cor.test(running_annual_mean_sst$tropPacific_SST_run_ann_mean,
-         running_annual_mean_sst$ColumbiaRiver_SST_run_ann_mean)</code></pre>
-<pre><code>
-    Pearson&#39;s product-moment correlation
-
-data:  running_annual_mean_sst$tropPacific_SST_run_ann_mean and running_annual_mean_sst$ColumbiaRiver_SST_run_ann_mean
-t = 15.188, df = 431, p-value &lt; 2.2e-16
-alternative hypothesis: true correlation is not equal to 0
-95 percent confidence interval:
- 0.5254327 0.6485840
-sample estimates:
-      cor 
-0.5904345 </code></pre>
-<pre class="r"><code>cor.test(running_annual_mean_sst$tropPacific_SST_run_ann_mean,
-         running_annual_mean_sst$SanFrancisco_SST_run_ann_mean)</code></pre>
-<pre><code>
-    Pearson&#39;s product-moment correlation
-
-data:  running_annual_mean_sst$tropPacific_SST_run_ann_mean and running_annual_mean_sst$SanFrancisco_SST_run_ann_mean
-t = 15.877, df = 431, p-value &lt; 2.2e-16
-alternative hypothesis: true correlation is not equal to 0
-95 percent confidence interval:
- 0.5444195 0.6637299
-sample estimates:
-      cor 
-0.6074898 </code></pre>
-<pre class="r"><code>cor.test(running_annual_mean_sst$tropPacific_SST_run_ann_mean,
-         running_annual_mean_sst$Huntington_SST_run_ann_mean)</code></pre>
-<pre><code>
-    Pearson&#39;s product-moment correlation
-
-data:  running_annual_mean_sst$tropPacific_SST_run_ann_mean and running_annual_mean_sst$Huntington_SST_run_ann_mean
-t = 12.883, df = 431, p-value &lt; 2.2e-16
-alternative hypothesis: true correlation is not equal to 0
-95 percent confidence interval:
- 0.4556806 0.5920925
-sample estimates:
-      cor 
-0.5272757 </code></pre>
-<pre class="r"><code>cor.test(subset_anomalySST$tropPacific_SST_anomaly,
-         subset_anomalySST$ColumbiaRiver_SST_anomaly)</code></pre>
-<pre><code>
-    Pearson&#39;s product-moment correlation
-
-data:  subset_anomalySST$tropPacific_SST_anomaly and subset_anomalySST$ColumbiaRiver_SST_anomaly
-t = 9.8751, df = 118, p-value &lt; 2.2e-16
-alternative hypothesis: true correlation is not equal to 0
-95 percent confidence interval:
- 0.5610752 0.7602463
-sample estimates:
-      cor 
-0.6726678 </code></pre>
-<pre class="r"><code>cor.test(subset_anomalySST$tropPacific_SST_anomaly,
-         subset_anomalySST$SanFrancisco_SST_anomaly)</code></pre>
-<pre><code>
-    Pearson&#39;s product-moment correlation
-
-data:  subset_anomalySST$tropPacific_SST_anomaly and subset_anomalySST$SanFrancisco_SST_anomaly
-t = 6.7299, df = 118, p-value = 6.467e-10
-alternative hypothesis: true correlation is not equal to 0
-95 percent confidence interval:
- 0.3836302 0.6450105
-sample estimates:
-      cor 
-0.5266573 </code></pre>
-<pre class="r"><code>cor.test(subset_anomalySST$tropPacific_SST_anomaly,
-         subset_anomalySST$Huntington_SST_anomaly)</code></pre>
-<pre><code>
-    Pearson&#39;s product-moment correlation
-
-data:  subset_anomalySST$tropPacific_SST_anomaly and subset_anomalySST$Huntington_SST_anomaly
-t = 9.3118, df = 118, p-value = 8.526e-16
-alternative hypothesis: true correlation is not equal to 0
-95 percent confidence interval:
- 0.5338603 0.7433504
-sample estimates:
-      cor 
-0.6508243 </code></pre>
 <pre class="r"><code>cor.test(anomaly_sst_ram$tropPacific_sst_anom_ram,
          anomaly_sst_ram$ColumbiaRiver_sst_anom_ram)</code></pre>
 <pre><code>
