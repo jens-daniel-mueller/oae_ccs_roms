@@ -1,5 +1,5 @@
 ---
-title: "ENSO evaluation metrics"
+title: "CCS ENSO evaluation metrics"
 author: "Victoria Froh & Jens Daniel Müller"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: workflowr::wflow_html
