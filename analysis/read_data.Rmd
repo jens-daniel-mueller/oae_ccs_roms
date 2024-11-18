@@ -11,7 +11,7 @@ editor_options:
 
 this is the script to open the data
 
-```{r read_data, results='hide'}
+```{r read_data, results='hide', message=FALSE}
 
 #loading packages
 library(ncdf4)
