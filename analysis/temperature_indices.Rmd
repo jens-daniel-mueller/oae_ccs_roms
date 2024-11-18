@@ -10,7 +10,7 @@ editor_options:
 ## Read this
 this is the script to open the data
 
-```{r read_data}
+```{r read_data, message=FALSE}
 
 #loading packages
 library(ncdf4)
