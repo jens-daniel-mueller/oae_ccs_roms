@@ -541,20 +541,26 @@ region_temp <-
 
 #plotting the first time point to look at the selected region
 
-region_temp %>% 
-  filter(time == min(time)) %>% 
+region_temp %>%
+  filter(time == min(time)) %>%
   ggplot() +
-  geom_raster(aes(lon,
-                 lat,
-                 fill = temp)) +
-  # borders("world", colour = "gray80", fill = "gray80") +
-  labs(title = "Columbia River Surface Temperature Jan 2nd 2010",
-       x = "Longitude",
-       y = "Latitude") +
-  theme_bw() + 
-  facet_wrap(~ region) +
-  scale_fill_viridis_c() +
-  coord_quickmap(xlim = c(-128,-116), ylim = c(30, 48), expand = FALSE)
+  annotation_map(map_data("world"),
+                 colour = "gray80",
+                 fill = "gray80") +
+  geom_tile(aes(
+    lon,
+    lat,
+    width = 0.125,
+    height = 0.125,
+    fill = temp
+  )) +
+  labs(title = "Jan 2nd 2010", x = "Longitude", y = "Latitude") +
+  theme_bw() +
+  # facet_wrap(~ region) +
+  scale_fill_viridis_c(name = "SST (°C)") +
+  coord_quickmap(xlim = c(-128, -116),
+                 ylim = c(30, 48),
+                 expand = FALSE)
 
 #creating new data frame with grouped month and the mean SST for each
 region_temp_monthly_mean <- region_temp %>% 
