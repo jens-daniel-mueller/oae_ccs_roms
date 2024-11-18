@@ -344,6 +344,9 @@ div.tocify {
         <li>
   <a href="read_data.html">Read data</a>
 </li>
+<li>
+  <a href="temperature_indices.html">Temperature indices</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -539,15 +542,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreeb3057024aa3cbca71b34072895254e7d086a19cdtargetblankb305702a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreec9042253f2f681567929a236ade489939762be7btargetblankc904225a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/b3057024aa3cbca71b34072895254e7d086a19cd" target="_blank">b305702</a>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/c9042253f2f681567929a236ade489939762be7b" target="_blank">c904225</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreeb3057024aa3cbca71b34072895254e7d086a19cdtargetblankb305702a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreec9042253f2f681567929a236ade489939762be7btargetblankc904225a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -557,7 +560,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/b3057024aa3cbca71b34072895254e7d086a19cd" target="_blank">b305702</a>.
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/c9042253f2f681567929a236ade489939762be7b" target="_blank">c904225</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -574,6 +577,10 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+
+Unstaged changes:
+    Modified:   analysis/_site.yml
+    Modified:   code/Workflowr_project_managment.R
 
 </code></pre>
 <p>
@@ -619,6 +626,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/c9042253f2f681567929a236ade489939762be7b/analysis/read_data.Rmd" target="_blank">c904225</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-11-18
+</td>
+<td>
+rebuild after code review
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/3facddd62b75e22faf0c0a5b63940fccc0cb8d4f/docs/read_data.html" target="_blank">3facddd</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-11-18
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1040,25 +1081,10 @@ setup project
 <pre class="r"><code>#loading packages
 library(ncdf4)
 library(tidync)
-library(stars)</code></pre>
-<pre><code>Loading required package: abind</code></pre>
-<pre><code>Loading required package: sf</code></pre>
-<pre><code>Linking to GEOS 3.11.1, GDAL 3.4.1, PROJ 7.2.1; sf_use_s2() is TRUE</code></pre>
-<pre><code>WARNING: different compile-time and runtime versions for GEOS found:</code></pre>
-<pre><code>Linked against: 3.11.1-CAPI-1.17.1 compiled against: 3.9.1-CAPI-1.14.2</code></pre>
-<pre><code>It is probably a good idea to reinstall sf, and maybe rgeos and rgdal too</code></pre>
-<pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>── Attaching packages
-───────────────────────────────────────
-tidyverse 1.3.2 ──</code></pre>
-<pre><code>✔ ggplot2 3.4.4     ✔ purrr   1.0.2
-✔ tibble  3.2.1     ✔ dplyr   1.1.3
-✔ tidyr   1.3.0     ✔ stringr 1.5.0
-✔ readr   2.1.3     ✔ forcats 0.5.2
-── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()</code></pre>
-<pre class="r"><code>#For the regridded standard files, path:
+library(stars)
+library(tidyverse)
+
+#For the regridded standard files, path:
 path_ROMSv2RG_results &lt;- 
  &quot;/net/sea/work/loher/ROMS/Alk_enh_formatted_2024_08/&quot;
 
@@ -1077,9 +1103,6 @@ nc_alk &lt;- read_ncdf(paste0(path_ROMSv2RG_results,
            proxy = FALSE #need this on to override the proxy format
           )</code></pre>
 <pre><code>Warning: ignoring unrecognized unit: mMol m-3</code></pre>
-<pre><code>No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.</code></pre>
 <pre class="r"><code>nc_dic &lt;- read_ncdf(paste0(path_ROMSv2RG_results,
                      &quot;ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc&quot;),
            var = &quot;DIC&quot;,
@@ -1088,9 +1111,6 @@ nc_alk &lt;- read_ncdf(paste0(path_ROMSv2RG_results,
            proxy = FALSE #need this on to override the proxy format
           )</code></pre>
 <pre><code>Warning: ignoring unrecognized unit: mMol C m-3</code></pre>
-<pre><code>No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.</code></pre>
 <pre class="r"><code>#creating a blank plot and loading in the nc data layers 
 ggplot() +
  geom_stars(data = nc_alk, aes(fill = Alk)) +
@@ -1401,22 +1421,10 @@ vgfroh
 </div>
 <pre class="r"><code>##########################
 # Using sea carb:
-library(seacarb)</code></pre>
-<pre><code>Loading required package: oce
-Loading required package: gsw
-Loading required package: SolveSAPHE</code></pre>
-<pre class="r"><code>library(metR)</code></pre>
-<pre><code>
-Attaching package: &#39;metR&#39;
+library(seacarb)
+library(metR)
 
-The following object is masked from &#39;package:oce&#39;:
-
-    coriolis
-
-The following object is masked from &#39;package:purrr&#39;:
-
-    cross</code></pre>
-<pre class="r"><code>#load in data from tidync file in main active grid w/ T1 surface slice
+#load in data from tidync file in main active grid w/ T1 surface slice
 surface_data &lt;- nc %&gt;%
      hyper_filter(depth = index == 1, time = index == 1) %&gt;% 
      hyper_tibble(force = TRUE)
@@ -1428,9 +1436,9 @@ surface_data_pco2 &lt;- nc %&gt;%
   hyper_tibble(select_var = c(&quot;PCO2OC&quot;), #  produces a tibble object
                   force = TRUE)
 
-merged_surface &lt;- full_join(surface_data, surface_data_pco2)</code></pre>
-<pre><code>Joining with `by = join_by(lon, lat, time)`</code></pre>
-<pre class="r"><code>#running carb to produce the pCO2 values
+merged_surface &lt;- full_join(surface_data, surface_data_pco2)
+
+#running carb to produce the pCO2 values
 merged_surface_orig &lt;-
   merged_surface %&gt;%
   #head(6) %&gt;% #testing subsset
@@ -1780,9 +1788,9 @@ vgfroh
 <pre class="r"><code>#New df w/ the difference in pCO2 after Alk perturbation
 pco2_pert_delta &lt;- full_join(surface_pert, pco2_delta) %&gt;% 
   select(lon, lat, pco2_calc_pert, pco2_calc) %&gt;% 
-  mutate(dpco2 = pco2_calc_pert - pco2_calc)</code></pre>
-<pre><code>Joining with `by = join_by(lon, lat, PCO2OC, pco2_calc)`</code></pre>
-<pre class="r"><code>#Plotting difference
+  mutate(dpco2 = pco2_calc_pert - pco2_calc)
+
+#Plotting difference
 ggplot(data = pco2_pert_delta) +
   geom_tile(aes(lon, lat, fill = dpco2)) + 
   labs(title = &quot;Difference in pCO2 after Added Alkalinity&quot;, 
