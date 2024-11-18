@@ -28,7 +28,7 @@ wflow_publish(here::here(
 message = "setup project")
 
 # commit regular changes (locally) and rebuild site
-wflow_publish(all = TRUE, message = "added interior storage")
+wflow_publish(all = TRUE, message = "rebuild after code review")
 
 # commit changes including _site.yml (locally) and rebuild site
 wflow_publish(c("analysis/*Rmd"), message = "include G19 comparison", republish = TRUE)
@@ -38,10 +38,11 @@ wflow_publish(here::here(
   "analysis",
   c(
     "index.Rmd",
-    "read_data.Rmd"
+    "read_data.Rmd",
+    "temperature_indices.Rmd"
   )
 ),
-message = "setup project",
+message = "testrun code compilation and builduing website",
 republish = TRUE)
 
 
