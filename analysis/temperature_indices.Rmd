@@ -1,5 +1,5 @@
 ---
-title: "temperature_indices"
+title: "Temperature indices"
 author: "Victoria Froh & Jens Daniel Müller"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: workflowr::wflow_html
@@ -9,7 +9,7 @@ editor_options:
 
 ## Read this
 this is the script to open the data
-```{r read_data}
+```{r read_data, message=FALSE}
 
 #loading packages
 library(ncdf4)
@@ -37,6 +37,7 @@ colriv_temp <- read_ncdf(paste0(path_ROMSv2RG_results,
              ),
            proxy = FALSE #need this on to override the proxy format
           )
+
 ### ebbC project box
 # ebbproj_temp <- read_ncdf(paste0(path_ROMSv2RG_results,
 #                      "ColumbiaRiver/ColumbiaRiver_2010-2015_control.nc"),
@@ -57,9 +58,9 @@ ggplot() +
   labs(title = "Columbia River Surface Temperature Jan 2nd 2010",
        x = "Longitude",
        y = "Latitude") +
-  theme_minimal() + 
+  theme_bw() + 
   scale_fill_viridis_c() +
-  coord_quickmap(xlim = c(-130,-122.5), ylim = c(41, 51))
+  coord_quickmap(xlim = c(-130,-122.5), ylim = c(41, 51), expand = FALSE)
 
 #converts time dimension to regular, set in temp file
 days_reg <- st_get_dimension_values(colriv_temp, "time") %>% ymd()
@@ -110,7 +111,7 @@ ggplot() +
   labs(title = "San Francisco Surface Temperature Jan 2nd 2010",
        x = "Longitude",
        y = "Latitude") +
-  theme_minimal() + 
+  theme_bw() + 
   scale_fill_viridis_c() +
   coord_quickmap(xlim = c(-127,-120), ylim = c(34, 42))
 
@@ -163,7 +164,7 @@ ggplot() +
   labs(title = "Huntington Surface Temperature Jan 2nd 2010",
        x = "Longitude",
        y = "Latitude") +
-  theme_minimal() + 
+  theme_bw() + 
   scale_fill_viridis_c() +
   coord_quickmap(xlim = c(-123,-115), ylim = c(26.5, 34.5))
 
@@ -176,7 +177,7 @@ ggplot() +
 #   labs(title = "CCS Surface Temperature Jan 2nd 2010",
 #        x = "Longitude",
 #        y = "Latitude") +
-#   theme_minimal() + 
+#   theme_bw() + 
 #   scale_fill_viridis_c() +
 #   coord_quickmap(xlim = c(-130,-115), ylim = c(26.5, 49.5))
 
@@ -225,7 +226,7 @@ ggplot() +
   labs(title = "Tropical Pacific 3.4 Surface Temperature Jan 2nd 2010",
        x = "Longitude",
        y = "Latitude") +
-  theme_minimal() + 
+  theme_bw() + 
   scale_fill_viridis_c() +
   coord_quickmap(xlim = c(-175,-115), ylim = c(-10.5, 10.5))
 
@@ -262,7 +263,7 @@ ggplot(data = tropP_monthly_2010_2015,
   geom_line(data = hunt_monthly_2010_2015, aes(y = Huntington_MeanMonthlySST,
                                                color = "Huntington")) +
   labs(title = "Monthly Mean SST", x = "Month", y = "Mean SST") +
-  theme_minimal() +
+  theme_bw() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 
 ####################
@@ -353,7 +354,7 @@ ggplot(data = anomaly_SST, aes(x = time, group = 1)) +
   geom_line(aes(y = Huntington_SST_anomaly, color = "Huntington")) +
   scale_x_discrete(breaks = anomaly_SST$time[seq(1, nrow(anomaly_SST), by = 12)]) +
   labs(title = "Monthly SST Anomalies", x = "Time", y = "SST Anomaly (degC)") +
-  theme_minimal() +
+  theme_bw() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 
 
@@ -382,7 +383,7 @@ ggplot(data = running_annual_mean_sst, aes(x = time, group = 1)) +
     seq(1, nrow(running_annual_mean_sst), by = 12)]) +
   labs(title = "Monthly SST Running Annual Mean", x = "Time", 
        y = "Running Annual Mean (degC)") +
-  theme_minimal() +
+  theme_bw() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 
 #Computing running annual mean for the sst anomaly
@@ -409,7 +410,7 @@ ggplot(data = anomaly_sst_ram, aes(x = time, group = 1)) +
     seq(1, nrow(anomaly_sst_ram), by = 12)]) +
   labs(title = "SST Anomaly Running Annual Mean", x = "Time", 
        y = "SST Anomaly (degC)") +
-  theme_minimal() +
+  theme_bw() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 
 # #Plotting subset: 2006 - 2015
@@ -424,7 +425,7 @@ ggplot(data = anomaly_sst_ram, aes(x = time, group = 1)) +
 #   geom_line(aes(y = Huntington_sst_anom_ram, color = "Huntington")) +
 #   scale_x_discrete(breaks = subset_anomalySST_ram$time[seq(1, nrow(subset_anomalySST_ram), by = 3)]) +
 #   labs(title = "Monthly SST Anomaly RAM (2010 - 2014)", x = "Time", y = "SST Anomaly RAM (degC)") +
-#   theme_minimal() +
+#   theme_bw() +
 #   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 
 
@@ -438,7 +439,7 @@ ggplot(data = anomaly_sst_ram, aes(x = time, group = 1)) +
 #   labs(title = "CCS Test Regions",
 #        x = "Longitude",
 #        y = "Latitude") +
-#   theme_minimal() + 
+#   theme_bw() + 
 #   scale_fill_identity(guide = "legend", 
 #                       labels = c("Tropical Pacific", "Columbia River", "San Francisco", "Huntington"),
 #                       breaks = c("#C77CFF", "#F8766D", "#00BFC4", "#7CAE00")) +
@@ -460,11 +461,3 @@ cor.test(anomaly_sst_ram$tropPacific_sst_anom_ram,
 
 
 ```
-
-vhjgvj
-
-
-```{r plot_data}
-
-```
-
