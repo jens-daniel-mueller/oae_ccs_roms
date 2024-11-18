@@ -12,7 +12,7 @@
 <meta name="author" content="Victoria Froh &amp; Jens Daniel Müller" />
 
 
-<title>read_data</title>
+<title>Read data</title>
 
 <script src="site_libs/header-attrs-2.18/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -377,7 +377,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">read_data</h1>
+<h1 class="title toc-ignore">Read data</h1>
 <h4 class="author">Victoria Froh &amp; Jens Daniel Müller</h4>
 <h4 class="date">18 November, 2024</h4>
 
@@ -539,15 +539,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree9508443f5c6a8173022877e0676f5aca17cd2ff4targetblank9508443a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreebe4b879041561884eca261496ac22133c8c245b7targetblankbe4b879a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/9508443f5c6a8173022877e0676f5aca17cd2ff4" target="_blank">9508443</a>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/be4b879041561884eca261496ac22133c8c245b7" target="_blank">be4b879</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree9508443f5c6a8173022877e0676f5aca17cd2ff4targetblank9508443a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreebe4b879041561884eca261496ac22133c8c245b7targetblankbe4b879a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -557,7 +557,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/9508443f5c6a8173022877e0676f5aca17cd2ff4" target="_blank">9508443</a>.
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/be4b879041561884eca261496ac22133c8c245b7" target="_blank">be4b879</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -574,9 +574,6 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-
-Unstaged changes:
-    Modified:   code/Workflowr_project_managment.R
 
 </code></pre>
 <p>
@@ -622,6 +619,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/be4b879041561884eca261496ac22133c8c245b7/analysis/read_data.Rmd" target="_blank">be4b879</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-11-18
+</td>
+<td>
+rebuild after code review
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/2509718fa5dcab2965b83eb1577612e177968200/docs/read_data.html" target="_blank">2509718</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-11-18
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1018,86 +1049,9 @@ path_ROMSv2RG_results &lt;-
 view_nc &lt;- nc_open(paste0(path_ROMSv2RG_results,
                      &quot;ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc&quot;))
 
-print(view_nc)</code></pre>
-<pre><code>File /net/sea/work/loher/ROMS/Alk_enh_formatted_2024_08/ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc (NC_FORMAT_NETCDF4):
+print(view_nc)
 
-     9 variables (excluding dimension variables):
-        float Alk[lon,lat,depth,time]   (Chunking: [96,88,1,1])  
-            long_name: averaged Alkalinity
-            units: mMol m-3
-            missing_value: NaN
-            _FillValue: NaN
-        float DIC[lon,lat,depth,time]   (Chunking: [96,88,1,1])  
-            long_name: averaged Dissolved inorganic carbon
-            units: mMol C m-3
-            missing_value: NaN
-            _FillValue: NaN
-        float PO4[lon,lat,depth,time]   (Chunking: [96,88,1,1])  
-            long_name: averaged Phosphate
-            units: mMol P m-3
-            missing_value: NaN
-            _FillValue: NaN
-        float SiO3[lon,lat,depth,time]   (Chunking: [96,88,1,1])  
-            long_name: averaged Silicate
-            units: mMol Si m-3
-            missing_value: NaN
-            _FillValue: NaN
-        float salt[lon,lat,depth,time]   (Chunking: [96,88,1,1])  
-            long_name: averaged salinity
-            units: PSU
-            missing_value: NaN
-            _FillValue: NaN
-        float temp[lon,lat,depth,time]   (Chunking: [96,88,1,1])  
-            long_name: averaged potential temperature
-            units: Celsius
-            missing_value: NaN
-            _FillValue: NaN
-        float FG_CO2[lon,lat,time]   (Chunking: [96,88,1])  
-            long_name: averaged Air-sea flux of CO2
-            units: mmol/m2/s
-            missing_value: NaN
-            _FillValue: NaN
-        float PCO2OC[lon,lat,time]   (Chunking: [96,88,1])  
-            long_name: averaged PCO2OC
-            units: not looked up yet
-            missing_value: NaN
-            _FillValue: NaN
-        float pCO2air[lon,lat,time]   (Chunking: [96,88,1])  
-            long_name: averaged Atmospheric pCO2
-            units: ppm
-            missing_value: NaN
-            _FillValue: NaN
-
-     4 dimensions:
-        time  Size:1096   *** is unlimited *** 
-            standard_name: time
-            calendar: 365_day
-            axis: T
-            long_name: Averaged time since 2010-01-01
-            units: days since 2010-01-01
-        lon  Size:96 
-            standard_name: longitude
-            long_name: longitude
-            units: degrees_east
-            axis: X
-        lat  Size:88 
-            standard_name: latitude
-            long_name: latitude
-            units: degrees_north
-            axis: Y
-        depth  Size:16 
-            axis: Z
-            long_name: depth
-            units: m
-            remark: positive down
-
-    5 global attributes:
-        CDI: Climate Data Interface version 2.2.1 (https://mpimet.mpg.de/cdi)
-        Conventions: CF-1.6
-        history: Tue Aug 20 20:38:27 2024: cdo --history -s -P 12 -f nc4 -selvar,Alk,DIC,PO4,salt,SiO3,temp -remapbil,/net/sea/work/loher/ROMS/Alk_enh_formatted_2024_08/griddes_ColumbiaRiver /nfs/sea/work/loher/ROMS/Pactcs30_Alk_enhanced_2024_08/Pactcs30_Alk_enhanced_ColumbiaRiver_1x/avg/z_pactcs30_2010-2015_avg.00000.nc /net/sea/work/loher/ROMS/Alk_enh_formatted_2024_08/ColumbiaRiver/pactcs30_2010-2015_avg.00000_1x.nc
-        CDO: Climate Data Operators version 2.2.0 (https://mpimet.mpg.de/cdo)
-        cdo_openmp_thread_number: 12</code></pre>
-<pre class="r"><code>#filtering for just one variable w/ stars package + time and depth slice
+#filtering for just one variable w/ stars package + time and depth slice
 nc_alk &lt;- read_ncdf(paste0(path_ROMSv2RG_results,
                      &quot;ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc&quot;),
            var = &quot;Alk&quot;,
@@ -1126,9 +1080,9 @@ ggplot() +
   labs(title = &quot;Columbia River Surface Alkalinity @ T1&quot;,
        x = &quot;Longitude&quot;,
        y = &quot;Latitude&quot;) +
-  theme_minimal() + 
+  theme_bw() + 
   scale_fill_viridis_c() +
-  coord_quickmap()</code></pre>
+  coord_quickmap(expand = 0)</code></pre>
 <p><img src="figure/read_data.Rmd/read_data-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-1">
@@ -1205,9 +1159,9 @@ vgfroh
   labs(title = &quot;Columbia River Surface DIC @ T1&quot;,
        x = &quot;Longitude&quot;,
        y = &quot;Latitude&quot;) +
-  theme_minimal() + 
+  theme_bw() + 
   scale_fill_viridis_c() +
-  coord_quickmap()</code></pre>
+  coord_quickmap(expand = 0)</code></pre>
 <p><img src="figure/read_data.Rmd/read_data-2.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-2">
@@ -1276,24 +1230,20 @@ nc &lt;- tidync(paste0(path_ROMSv2RG_results,
 #filtering nc file for just the surface @ the first time index, outputting tbl_df
 alk_surface_t1 &lt;- nc %&gt;%
   hyper_filter(depth = index == 1, time = index == 1) %&gt;% 
-  hyper_tibble(select_var = c(&quot;Alk&quot;) 
-               ) %&gt;% 
-  mutate(lon = as.numeric(lon), lat = as.numeric(lat))
+  hyper_tibble(select_var = c(&quot;Alk&quot;))
 
 dic_surface_t1 &lt;- nc %&gt;%
   hyper_filter(depth = index == 1, time = index == 1) %&gt;% 
-  hyper_tibble(select_var = c(&quot;DIC&quot;), 
-               )  %&gt;% 
-  mutate(lon = as.numeric(lon), lat = as.numeric(lat))
+  hyper_tibble(select_var = c(&quot;DIC&quot;))
 
 #plotting variables
 ggplot(data = alk_surface_t1) + 
   geom_tile(aes(lon, lat, fill = Alk)) +
   labs(title = &quot;Columbia River Surface Alkalinity @ T1&quot;, 
        x = &quot;Longitude&quot;, y = &quot;Latitude&quot;) + 
-  theme_minimal() +
+  theme_bw() +
   scale_fill_viridis_c() +
-  coord_quickmap()</code></pre>
+  coord_quickmap(expand = 0)</code></pre>
 <p><img src="figure/read_data.Rmd/read_data-3.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-3">
@@ -1347,9 +1297,9 @@ vgfroh
   geom_tile(aes(lon, lat, fill = DIC)) +
   labs(title = &quot;Columbia River Surface DIC @ T1&quot;, 
        x = &quot;Longitude&quot;, y = &quot;Latitude&quot;) + 
-  theme_minimal() +
+  theme_bw() +
   scale_fill_viridis_c() +
-  coord_quickmap()</code></pre>
+  coord_quickmap(expand = 0)</code></pre>
 <p><img src="figure/read_data.Rmd/read_data-4.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-4">
@@ -1408,16 +1358,14 @@ The following object is masked from &#39;package:purrr&#39;:
 <pre class="r"><code>#load in data from tidync file in main active grid w/ T1 surface slice
 surface_data &lt;- nc %&gt;%
      hyper_filter(depth = index == 1, time = index == 1) %&gt;% 
-     hyper_tibble(force = TRUE) %&gt;% 
-     mutate(lon = as.numeric(lon), lat = as.numeric(lat))
+     hyper_tibble(force = TRUE)
 
 #loading in data in other grid ie surface variables
 surface_data_pco2 &lt;- nc %&gt;%
   activate(&quot;D1,D2,D0&quot;) %&gt;% #activating surface grid for PCO2OC variable
   hyper_filter(time = index == 1) %&gt;% 
   hyper_tibble(select_var = c(&quot;PCO2OC&quot;), #  produces a tibble object
-                  force = TRUE) %&gt;% 
-  mutate(lon = as.numeric(lon), lat = as.numeric(lat))
+                  force = TRUE)
 
 merged_surface &lt;- full_join(surface_data, surface_data_pco2)</code></pre>
 <pre><code>Joining with `by = join_by(lon, lat, time)`</code></pre>
@@ -1447,11 +1395,11 @@ merged_surface_orig &lt;-
 ggplot(data = merged_surface_orig) + 
   geom_tile(aes(lon, lat, fill = pco2_calc)) +
   labs(title = &quot;Columbia River Calculated PCO2 @ T1&quot;, 
-       x = &quot;Longitude&quot;, y = &quot;Latitude&quot;, fill = &quot;pCO2 (ppm)&quot;) + 
-  theme_minimal() +
+       x = &quot;Longitude&quot;, y = &quot;Latitude&quot;, fill = &quot;pCO2 (µatm)&quot;) + 
+  theme_bw() +
   theme(plot.title = element_text(hjust = 0.5)) +
-  scale_fill_viridis_c(na.value = &quot;red&quot;) + #will show any tiles w/ var=NA
-  coord_quickmap()</code></pre>
+  scale_fill_viridis_c() +
+  coord_quickmap(expand = 0)</code></pre>
 <p><img src="figure/read_data.Rmd/read_data-5.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-5">
@@ -1517,10 +1465,10 @@ ggplot(data = pco2_compare) +
   geom_tile(aes(lon, lat, fill = pCO2)) +
   facet_grid(cols = vars(Variant)) + 
   labs(title = &quot;Calculated pCO2 vs Model pCO2&quot;, 
-       x = &quot;Longitude&quot;, y = &quot;Latitude&quot;, fill = &quot;pCO2 (ppm)&quot;) +
-  theme_minimal() + 
+       x = &quot;Longitude&quot;, y = &quot;Latitude&quot;, fill = &quot;pCO2 (µatm)&quot;) +
+  theme_bw() + 
   theme(plot.title = element_text(hjust = 0.5)) +
-  coord_quickmap() + 
+  coord_quickmap(expand = 0) + 
   scale_fill_viridis_c()</code></pre>
 <p><img src="figure/read_data.Rmd/read_data-6.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -1580,12 +1528,11 @@ pco2_delta &lt;- merged_surface_orig %&gt;%
 ggplot(data = pco2_delta) +
   geom_tile(aes(lon, lat, fill = dpco2)) + 
   labs(title = &quot;Model pCO2 - Calculated pCO2&quot;, 
-       x = &quot;Longitude&quot;, y = &quot;Latitude&quot;, fill = &quot;dpCO2 (ppm)&quot;) +
+       x = &quot;Longitude&quot;, y = &quot;Latitude&quot;, fill = &quot;dpCO2 (µatm)&quot;) +
   scale_fill_divergent() + 
-  #scale_fill_viridis_c() +
-  coord_quickmap() +
+  coord_quickmap(expand = 0) +
   theme(plot.title = element_text(hjust = 0.5)) +
-  theme_minimal()</code></pre>
+  theme_bw()</code></pre>
 <p><img src="figure/read_data.Rmd/read_data-7.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-7">
@@ -1638,7 +1585,7 @@ vgfroh
 <pre class="r"><code>#####################
 #Perturbation of 10 mmol Alk/m^3 in all grid cells
 surface_pert &lt;- 
-  surface_data %&gt;%
+  merged_surface_orig %&gt;%
   #head(6) %&gt;% #testing subsset
   drop_na() %&gt;% #drops all rows with an NA
   mutate(
@@ -1649,33 +1596,32 @@ surface_pert &lt;-
       S = salt,
       T = temp,
       P = 0,
-      #surface = 0
       Pt = PO4 * 1e-6 / 1.02518,
       Sit = SiO3 * 1e-6 / 1.02518,
       kf=&quot;dg&quot;,
       k1k2=&quot;m06&quot;,
       ks=&quot;d&quot;
-    )$pCO2 #to just save the pco2 output
+    )$pCO2
   )
 
 #New dataframe w/ reorganized pCO2_pert data to compare
-pco2_pert_compare &lt;- full_join(surface_pert, pco2_delta) %&gt;% 
+pco2_pert_compare &lt;- surface_pert %&gt;% 
   select(lon, lat, pco2_calc_pert, pco2_calc) %&gt;% 
   pivot_longer(
     cols = c(pco2_calc_pert, pco2_calc),
     names_to = &quot;Variant&quot;,
     values_to = &quot;pCO2&quot;
-  )</code></pre>
-<pre><code>Joining with `by = join_by(lon, lat)`</code></pre>
-<pre class="r"><code>#Plotting side-by-side comparison  
+  )
+
+#Plotting side-by-side comparison  
 ggplot(data = pco2_pert_compare) + 
   geom_tile(aes(lon, lat, fill = pCO2)) +
   facet_grid(cols = vars(Variant)) + 
   labs(title = &quot;Initial pCO2 vs pCO2 after Added Alkalinity&quot;, 
-       x = &quot;Longitude&quot;, y = &quot;Latitude&quot;, fill = &quot;pCO2 (ppm)&quot;) +
-  theme_minimal() + 
+       x = &quot;Longitude&quot;, y = &quot;Latitude&quot;, fill = &quot;pCO2 (µatm)&quot;) +
+  theme_bw() + 
   theme(plot.title = element_text(hjust = 0.5)) +
-  coord_quickmap() + 
+  coord_quickmap(expand = 0) + 
   scale_fill_viridis_c()</code></pre>
 <p><img src="figure/read_data.Rmd/read_data-8.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -1730,17 +1676,17 @@ vgfroh
 pco2_pert_delta &lt;- full_join(surface_pert, pco2_delta) %&gt;% 
   select(lon, lat, pco2_calc_pert, pco2_calc) %&gt;% 
   mutate(dpco2 = pco2_calc_pert - pco2_calc)</code></pre>
-<pre><code>Joining with `by = join_by(lon, lat)`</code></pre>
+<pre><code>Joining with `by = join_by(lon, lat, PCO2OC, pco2_calc)`</code></pre>
 <pre class="r"><code>#Plotting difference
 ggplot(data = pco2_pert_delta) +
   geom_tile(aes(lon, lat, fill = dpco2)) + 
   labs(title = &quot;Difference in pCO2 after Added Alkalinity&quot;, 
-       x = &quot;Longitude&quot;, y = &quot;Latitude&quot;, fill = &quot;dpCO2 (ppm)&quot;) +
+       x = &quot;Longitude&quot;, y = &quot;Latitude&quot;, fill = &quot;dpCO2 (µatm)&quot;) +
   #scale_fill_divergent() + 
-  scale_fill_viridis_c() +
-  coord_quickmap() + 
+  scale_fill_viridis_c(option = &quot;magma&quot;) +
+  coord_quickmap(expand = 0) + 
   theme(plot.title = element_text(hjust = 0.5)) +
-  theme_minimal()</code></pre>
+  theme_bw()</code></pre>
 <p><img src="figure/read_data.Rmd/read_data-9.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-9">
@@ -1793,13 +1739,13 @@ vgfroh
 <pre class="r"><code>####################
 #Alkalinity Perturbation, looking at how DIC changes with constant pCO2
 surface_pert_dic &lt;- 
-  merged_surface %&gt;%
+  merged_surface_orig %&gt;%
   #head(6) %&gt;% #testing subsset
   drop_na() %&gt;% #drops all rows with an NA
   mutate(
     DIC_pert = carb(
       flag = 24,
-      var1 = PCO2OC,
+      var1 = pco2_calc, # for consistency, use the calculate pCO2 here, otherwise you compute a DIC perturbation that is partly due to differences in the computational routines
       var2 = (Alk + 10) * 1e-6 / 1.02518,
       S = salt,
       T = temp,
@@ -1815,24 +1761,23 @@ surface_pert_dic &lt;-
   )
 
 #New dataframe w/ reorganized DIC data to compare
-dic_pert_compare &lt;- full_join(surface_pert_dic, merged_surface) %&gt;% 
+dic_pert_compare &lt;- surface_pert_dic %&gt;% 
   select(lon, lat, DIC_pert, DIC) %&gt;% 
   pivot_longer(
     cols = c(DIC_pert, DIC),
     names_to = &quot;Variant&quot;,
     values_to = &quot;DIC&quot;
-  )</code></pre>
-<pre><code>Joining with `by = join_by(Alk, DIC, PO4, SiO3, salt, temp, lon, lat, depth,
-time, PCO2OC)`</code></pre>
-<pre class="r"><code>#Plotting side-by-side comparison  
+  )
+
+#Plotting side-by-side comparison  
 ggplot(data = dic_pert_compare) + 
   geom_tile(aes(lon, lat, fill = DIC)) +
   facet_grid(cols = vars(Variant)) + 
   labs(title = &quot;Initial Model DIC vs DIC after Added Alkalinity&quot;, 
        x = &quot;Longitude&quot;, y = &quot;Latitude&quot;, fill = &quot;DIC (mmol/m^3)&quot;) +
-  theme_minimal() + 
+  theme_bw() + 
   theme(plot.title = element_text(hjust = 0.5)) +
-  coord_quickmap() + 
+  coord_quickmap(expand = 0) + 
   scale_fill_viridis_c()</code></pre>
 <p><img src="figure/read_data.Rmd/read_data-10.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -1873,20 +1818,19 @@ vgfroh
 </div>
 </div>
 <pre class="r"><code>#New df w/ the difference in DIC after Alk perturbation
-dic_pert_delta &lt;- full_join(surface_pert_dic, merged_surface) %&gt;% 
+dic_pert_delta &lt;- surface_pert_dic %&gt;% 
   select(lon, lat, DIC_pert, DIC) %&gt;% 
-  mutate(dDIC = DIC_pert - DIC)</code></pre>
-<pre><code>Joining with `by = join_by(Alk, DIC, PO4, SiO3, salt, temp, lon, lat, depth,
-time, PCO2OC)`</code></pre>
-<pre class="r"><code>#Plotting difference
+  mutate(dDIC = DIC_pert - DIC)
+
+#Plotting difference
 ggplot(data = dic_pert_delta) +
   geom_tile(aes(lon, lat, fill = dDIC)) + 
   labs(title = &quot;Difference in DIC after Added Alkalinity&quot;, 
        x = &quot;Longitude&quot;, y = &quot;Latitude&quot;, fill = &quot;dDIC (mmol/m^3)&quot;) +
   #scale_fill_divergent() + 
-  scale_fill_viridis_c() +
-  coord_quickmap() + 
-  theme_minimal() +
+  scale_fill_viridis_c(option = &quot;magma&quot;, direction = -1) +
+  coord_quickmap(expand = 0) + 
+  theme_bw() +
   theme(plot.title = element_text(hjust = 0.5))</code></pre>
 <p><img src="figure/read_data.Rmd/read_data-11.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -1926,7 +1870,6 @@ vgfroh
 </table>
 </div>
 </div>
-<p>vhjgvj</p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
