@@ -12,7 +12,7 @@
 <meta name="author" content="Victoria Froh &amp; Jens Daniel Müller" />
 
 
-<title>temperature_indices</title>
+<title>Temperature indices</title>
 
 <script src="site_libs/header-attrs-2.18/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -380,7 +380,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">temperature_indices</h1>
+<h1 class="title toc-ignore">Temperature indices</h1>
 <h4 class="author">Victoria Froh &amp; Jens Daniel Müller</h4>
 <h4 class="date">18 November, 2024</h4>
 
@@ -542,15 +542,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreec9042253f2f681567929a236ade489939762be7btargetblankc904225a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreec0c3eac930c42c326830e74cc625df4510f8f656targetblankc0c3eaca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/c9042253f2f681567929a236ade489939762be7b" target="_blank">c904225</a>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/c0c3eac930c42c326830e74cc625df4510f8f656" target="_blank">c0c3eac</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreec9042253f2f681567929a236ade489939762be7btargetblankc904225a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreec0c3eac930c42c326830e74cc625df4510f8f656targetblankc0c3eaca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -560,7 +560,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/c9042253f2f681567929a236ade489939762be7b" target="_blank">c904225</a>.
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/c0c3eac930c42c326830e74cc625df4510f8f656" target="_blank">c0c3eac</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -578,8 +578,12 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
 
+Untracked files:
+    Untracked:  code/enso_indices.Rmd
+
 Unstaged changes:
     Modified:   analysis/_site.yml
+    Deleted:    analysis/enso_indices.Rmd
     Modified:   code/Workflowr_project_managment.R
 
 </code></pre>
@@ -626,6 +630,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/c0c3eac930c42c326830e74cc625df4510f8f656/analysis/temperature_indices.Rmd" target="_blank">c0c3eac</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-11-18
+</td>
+<td>
+rebuild after code review
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/02a42aad659d78445f93ea7358e40c7d80928357/docs/temperature_indices.html" target="_blank">02a42aa</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-11-18
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -757,35 +795,12 @@ Adding temperature indices
 <p>this is the script to open the data</p>
 <pre class="r"><code>#loading packages
 library(ncdf4)
-library(stars)</code></pre>
-<pre><code>Loading required package: abind</code></pre>
-<pre><code>Loading required package: sf</code></pre>
-<pre><code>Linking to GEOS 3.11.1, GDAL 3.4.1, PROJ 7.2.1; sf_use_s2() is TRUE</code></pre>
-<pre><code>WARNING: different compile-time and runtime versions for GEOS found:</code></pre>
-<pre><code>Linked against: 3.11.1-CAPI-1.17.1 compiled against: 3.9.1-CAPI-1.14.2</code></pre>
-<pre><code>It is probably a good idea to reinstall sf, and maybe rgeos and rgdal too</code></pre>
-<pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>── Attaching packages
-───────────────────────────────────────
-tidyverse 1.3.2 ──</code></pre>
-<pre><code>✔ ggplot2 3.4.4     ✔ purrr   1.0.2
-✔ tibble  3.2.1     ✔ dplyr   1.1.3
-✔ tidyr   1.3.0     ✔ stringr 1.5.0
-✔ readr   2.1.3     ✔ forcats 0.5.2
-── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()</code></pre>
-<pre class="r"><code>library(lubridate)</code></pre>
-<pre><code>Loading required package: timechange
+library(stars)
+library(tidyverse)
+library(lubridate)
+library(units)
 
-Attaching package: &#39;lubridate&#39;
-
-The following objects are masked from &#39;package:base&#39;:
-
-    date, intersect, setdiff, union</code></pre>
-<pre class="r"><code>library(units)</code></pre>
-<pre><code>udunits database from /usr/share/udunits/udunits2.xml</code></pre>
-<pre class="r"><code>#For Columbia location
+#For Columbia location
 #For the regridded standard files, path:
 path_ROMSv2RG_results &lt;- 
  &quot;/net/sea/work/loher/ROMS/Alk_enh_formatted_2024_08/&quot;
@@ -803,11 +818,9 @@ colriv_temp &lt;- read_ncdf(paste0(path_ROMSv2RG_results,
            ncsub = cbind(start = c(70, 40, 1, 1), count = c(16, 16, 1, 1096)
              ),
            proxy = FALSE #need this on to override the proxy format
-          )</code></pre>
-<pre><code>No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.</code></pre>
-<pre class="r"><code>### ebbC project box
+          )
+
+### ebbC project box
 # ebbproj_temp &lt;- read_ncdf(paste0(path_ROMSv2RG_results,
 #                      &quot;ColumbiaRiver/ColumbiaRiver_2010-2015_control.nc&quot;),
 #            var = &quot;temp&quot;,
@@ -827,9 +840,9 @@ ggplot() +
   labs(title = &quot;Columbia River Surface Temperature Jan 2nd 2010&quot;,
        x = &quot;Longitude&quot;,
        y = &quot;Latitude&quot;) +
-  theme_minimal() + 
+  theme_bw() + 
   scale_fill_viridis_c() +
-  coord_quickmap(xlim = c(-130,-122.5), ylim = c(41, 51))</code></pre>
+  coord_quickmap(xlim = c(-130,-122.5), ylim = c(41, 51), expand = FALSE)</code></pre>
 <p><img src="figure/temperature_indices.Rmd/read_data-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-1">
@@ -905,11 +918,9 @@ sanfran_temp &lt;- read_ncdf(paste0(path_ROMSv2RG_results,
            ncsub = cbind(start = c(33, 39, 1, 1), count = c(16, 16, 1, 1096)
              ),
            proxy = FALSE #need this on to override the proxy format
-          )</code></pre>
-<pre><code>No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.</code></pre>
-<pre class="r"><code>#plotting specific time point to look at the selected region
+          )
+
+#plotting specific time point to look at the selected region
 sanfran_jan2010_temp &lt;- sanfran_temp %&gt;% 
   slice(time, 1)
 
@@ -919,7 +930,7 @@ ggplot() +
   labs(title = &quot;San Francisco Surface Temperature Jan 2nd 2010&quot;,
        x = &quot;Longitude&quot;,
        y = &quot;Latitude&quot;) +
-  theme_minimal() + 
+  theme_bw() + 
   scale_fill_viridis_c() +
   coord_quickmap(xlim = c(-127,-120), ylim = c(34, 42))</code></pre>
 <p><img src="figure/temperature_indices.Rmd/read_data-2.png" width="672" style="display: block; margin: auto;" /></p>
@@ -1008,11 +1019,9 @@ hunt_temp &lt;- read_ncdf(paste0(path_ROMSv2RG_results,
            ncsub = cbind(start = c(50, 44, 1, 1), count = c(16, 16, 1, 1096)
              ),
            proxy = FALSE #need this on to override the proxy format
-          )</code></pre>
-<pre><code>No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.</code></pre>
-<pre class="r"><code>#plotting the first time point to look at the selected region
+          )
+
+#plotting the first time point to look at the selected region
 hunt_jan2010_temp &lt;- hunt_temp %&gt;% 
   slice(time, 1)
 
@@ -1022,7 +1031,7 @@ ggplot() +
   labs(title = &quot;Huntington Surface Temperature Jan 2nd 2010&quot;,
        x = &quot;Longitude&quot;,
        y = &quot;Latitude&quot;) +
-  theme_minimal() + 
+  theme_bw() + 
   scale_fill_viridis_c() +
   coord_quickmap(xlim = c(-123,-115), ylim = c(26.5, 34.5))</code></pre>
 <p><img src="figure/temperature_indices.Rmd/read_data-3.png" width="672" style="display: block; margin: auto;" /></p>
@@ -1072,7 +1081,7 @@ vgfroh
 #   labs(title = &quot;CCS Surface Temperature Jan 2nd 2010&quot;,
 #        x = &quot;Longitude&quot;,
 #        y = &quot;Latitude&quot;) +
-#   theme_minimal() + 
+#   theme_bw() + 
 #   scale_fill_viridis_c() +
 #   coord_quickmap(xlim = c(-130,-115), ylim = c(26.5, 49.5))
 
@@ -1109,26 +1118,9 @@ tropP_temp &lt;- do.call(c, lapply(years, function(year) (
                    &quot;_monthly_tropPacific.nc&quot;),
            var = &quot;temp&quot;,
            proxy = FALSE #need this on to override the proxy format
-          ))))</code></pre>
-<pre><code>No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.</code></pre>
-<pre class="r"><code>#plotting the first time point to look at the selected region
+          ))))
+
+#plotting the first time point to look at the selected region
 tropP_jan2010_temp &lt;- tropP_temp %&gt;% 
   slice(time, 1)
 
@@ -1138,7 +1130,7 @@ ggplot() +
   labs(title = &quot;Tropical Pacific 3.4 Surface Temperature Jan 2nd 2010&quot;,
        x = &quot;Longitude&quot;,
        y = &quot;Latitude&quot;) +
-  theme_minimal() + 
+  theme_bw() + 
   scale_fill_viridis_c() +
   coord_quickmap(xlim = c(-175,-115), ylim = c(-10.5, 10.5))</code></pre>
 <p><img src="figure/temperature_indices.Rmd/read_data-4.png" width="672" style="display: block; margin: auto;" /></p>
@@ -1211,7 +1203,7 @@ ggplot(data = tropP_monthly_2010_2015,
   geom_line(data = hunt_monthly_2010_2015, aes(y = Huntington_MeanMonthlySST,
                                                color = &quot;Huntington&quot;)) +
   labs(title = &quot;Monthly Mean SST&quot;, x = &quot;Month&quot;, y = &quot;Mean SST&quot;) +
-  theme_minimal() +
+  theme_bw() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))</code></pre>
 <p><img src="figure/temperature_indices.Rmd/read_data-5.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -1297,380 +1289,9 @@ for (i in locations){
     summarise(mean_value = mean(temp, na.rm = TRUE), .groups = &#39;drop&#39;) %&gt;% 
     rename(!!paste0(i, &quot;_MeanMonthlySST&quot;) := mean_value)
   
-}</code></pre>
-<pre><code>No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.</code></pre>
-<pre class="r"><code>#combining 30-year data into a single data frame + the 2010-2015 data
+}
+  
+#combining 30-year data into a single data frame + the 2010-2015 data
 annual_monthly_sst &lt;- reduce(annual_monthly_SST_list, left_join, by = &quot;time&quot;)
 
 full_2010_2015 &lt;- list(colriv_monthly_2010_2015, hunt_monthly_2010_2015, 
@@ -1721,7 +1342,7 @@ ggplot(data = anomaly_SST, aes(x = time, group = 1)) +
   geom_line(aes(y = Huntington_SST_anomaly, color = &quot;Huntington&quot;)) +
   scale_x_discrete(breaks = anomaly_SST$time[seq(1, nrow(anomaly_SST), by = 12)]) +
   labs(title = &quot;Monthly SST Anomalies&quot;, x = &quot;Time&quot;, y = &quot;SST Anomaly (degC)&quot;) +
-  theme_minimal() +
+  theme_bw() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))</code></pre>
 <p><img src="figure/temperature_indices.Rmd/read_data-6.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -1797,7 +1418,7 @@ ggplot(data = running_annual_mean_sst, aes(x = time, group = 1)) +
     seq(1, nrow(running_annual_mean_sst), by = 12)]) +
   labs(title = &quot;Monthly SST Running Annual Mean&quot;, x = &quot;Time&quot;, 
        y = &quot;Running Annual Mean (degC)&quot;) +
-  theme_minimal() +
+  theme_bw() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))</code></pre>
 <pre><code>Warning: Removed 11 rows containing missing values (`geom_line()`).
 Removed 11 rows containing missing values (`geom_line()`).
@@ -1865,7 +1486,7 @@ ggplot(data = anomaly_sst_ram, aes(x = time, group = 1)) +
     seq(1, nrow(anomaly_sst_ram), by = 12)]) +
   labs(title = &quot;SST Anomaly Running Annual Mean&quot;, x = &quot;Time&quot;, 
        y = &quot;SST Anomaly (degC)&quot;) +
-  theme_minimal() +
+  theme_bw() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))</code></pre>
 <pre><code>Warning: Removed 11 rows containing missing values (`geom_line()`).
 Removed 11 rows containing missing values (`geom_line()`).
@@ -1921,7 +1542,7 @@ vgfroh
 #   geom_line(aes(y = Huntington_sst_anom_ram, color = &quot;Huntington&quot;)) +
 #   scale_x_discrete(breaks = subset_anomalySST_ram$time[seq(1, nrow(subset_anomalySST_ram), by = 3)]) +
 #   labs(title = &quot;Monthly SST Anomaly RAM (2010 - 2014)&quot;, x = &quot;Time&quot;, y = &quot;SST Anomaly RAM (degC)&quot;) +
-#   theme_minimal() +
+#   theme_bw() +
 #   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 
 
@@ -1935,7 +1556,7 @@ vgfroh
 #   labs(title = &quot;CCS Test Regions&quot;,
 #        x = &quot;Longitude&quot;,
 #        y = &quot;Latitude&quot;) +
-#   theme_minimal() + 
+#   theme_bw() + 
 #   scale_fill_identity(guide = &quot;legend&quot;, 
 #                       labels = c(&quot;Tropical Pacific&quot;, &quot;Columbia River&quot;, &quot;San Francisco&quot;, &quot;Huntington&quot;),
 #                       breaks = c(&quot;#C77CFF&quot;, &quot;#F8766D&quot;, &quot;#00BFC4&quot;, &quot;#7CAE00&quot;)) +
@@ -2019,7 +1640,6 @@ alternative hypothesis: true correlation is not equal to 0
 sample estimates:
       cor 
 0.5272757 </code></pre>
-<p>vhjgvj</p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
