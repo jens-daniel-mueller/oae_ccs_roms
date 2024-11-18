@@ -542,15 +542,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree043c11394c5b3bf8562754c8220d05c363cdeaf8targetblank043c113a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree853675f2ffd2dfa304c2ff59bbe8fa7d35d35ee8targetblank853675fa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/043c11394c5b3bf8562754c8220d05c363cdeaf8" target="_blank">043c113</a>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/853675f2ffd2dfa304c2ff59bbe8fa7d35d35ee8" target="_blank">853675f</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree043c11394c5b3bf8562754c8220d05c363cdeaf8targetblank043c113a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree853675f2ffd2dfa304c2ff59bbe8fa7d35d35ee8targetblank853675fa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -560,7 +560,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/043c11394c5b3bf8562754c8220d05c363cdeaf8" target="_blank">043c113</a>.
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/853675f2ffd2dfa304c2ff59bbe8fa7d35d35ee8" target="_blank">853675f</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -625,6 +625,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/853675f2ffd2dfa304c2ff59bbe8fa7d35d35ee8/analysis/temperature_indices.Rmd" target="_blank">853675f</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-11-18
+</td>
+<td>
+rebuild after code review
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/66cd7d961721b1116384411c52fe391d3fa5714e/docs/temperature_indices.html" target="_blank">66cd7d9</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-11-18
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -824,35 +858,12 @@ Adding temperature indices
 <p>this is the script to open the data</p>
 <pre class="r"><code>#loading packages
 library(ncdf4)
-library(stars)</code></pre>
-<pre><code>Loading required package: abind</code></pre>
-<pre><code>Loading required package: sf</code></pre>
-<pre><code>Linking to GEOS 3.11.1, GDAL 3.4.1, PROJ 7.2.1; sf_use_s2() is TRUE</code></pre>
-<pre><code>WARNING: different compile-time and runtime versions for GEOS found:</code></pre>
-<pre><code>Linked against: 3.11.1-CAPI-1.17.1 compiled against: 3.9.1-CAPI-1.14.2</code></pre>
-<pre><code>It is probably a good idea to reinstall sf, and maybe rgeos and rgdal too</code></pre>
-<pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>── Attaching packages
-───────────────────────────────────────
-tidyverse 1.3.2 ──</code></pre>
-<pre><code>✔ ggplot2 3.4.4     ✔ purrr   1.0.2
-✔ tibble  3.2.1     ✔ dplyr   1.1.3
-✔ tidyr   1.3.0     ✔ stringr 1.5.0
-✔ readr   2.1.3     ✔ forcats 0.5.2
-── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()</code></pre>
-<pre class="r"><code>library(lubridate)</code></pre>
-<pre><code>Loading required package: timechange
+library(stars)
+library(tidyverse)
+library(lubridate)
+library(units)
 
-Attaching package: &#39;lubridate&#39;
-
-The following objects are masked from &#39;package:base&#39;:
-
-    date, intersect, setdiff, union</code></pre>
-<pre class="r"><code>library(units)</code></pre>
-<pre><code>udunits database from /usr/share/udunits/udunits2.xml</code></pre>
-<pre class="r"><code>#For Columbia location
+#For Columbia location
 #For the regridded standard files, path:
 path_ROMSv2RG_results &lt;- 
  &quot;/net/sea/work/loher/ROMS/Alk_enh_formatted_2024_08/&quot;
@@ -870,11 +881,8 @@ colriv_temp &lt;- read_ncdf(paste0(path_ROMSv2RG_results,
            ncsub = cbind(start = c(70, 40, 1, 1), count = c(16, 16, 1, 1096)
              ),
            proxy = FALSE #need this on to override the proxy format
-          )</code></pre>
-<pre><code>No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.</code></pre>
-<pre class="r"><code>### ebbC project box
+          )
+### ebbC project box
 # ebbproj_temp &lt;- read_ncdf(paste0(path_ROMSv2RG_results,
 #                      &quot;ColumbiaRiver/ColumbiaRiver_2010-2015_control.nc&quot;),
 #            var = &quot;temp&quot;,
@@ -920,6 +928,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/66cd7d961721b1116384411c52fe391d3fa5714e/docs/figure/temperature_indices.Rmd/read_data-1.png" target="_blank">66cd7d9</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-11-18
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/3aadd3726ae6897294e09a77d0466276d715e108/docs/figure/temperature_indices.Rmd/read_data-1.png" target="_blank">3aadd37</a>
@@ -983,11 +1002,9 @@ sanfran_temp &lt;- read_ncdf(paste0(path_ROMSv2RG_results,
            ncsub = cbind(start = c(33, 39, 1, 1), count = c(16, 16, 1, 1096)
              ),
            proxy = FALSE #need this on to override the proxy format
-          )</code></pre>
-<pre><code>No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.</code></pre>
-<pre class="r"><code>#plotting specific time point to look at the selected region
+          )
+
+#plotting specific time point to look at the selected region
 sanfran_jan2010_temp &lt;- sanfran_temp %&gt;% 
   slice(time, 1)
 
@@ -1023,6 +1040,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/66cd7d961721b1116384411c52fe391d3fa5714e/docs/figure/temperature_indices.Rmd/read_data-2.png" target="_blank">66cd7d9</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-11-18
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/3aadd3726ae6897294e09a77d0466276d715e108/docs/figure/temperature_indices.Rmd/read_data-2.png" target="_blank">3aadd37</a>
@@ -1097,11 +1125,9 @@ hunt_temp &lt;- read_ncdf(paste0(path_ROMSv2RG_results,
            ncsub = cbind(start = c(50, 44, 1, 1), count = c(16, 16, 1, 1096)
              ),
            proxy = FALSE #need this on to override the proxy format
-          )</code></pre>
-<pre><code>No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.</code></pre>
-<pre class="r"><code>#plotting the first time point to look at the selected region
+          )
+
+#plotting the first time point to look at the selected region
 hunt_jan2010_temp &lt;- hunt_temp %&gt;% 
   slice(time, 1)
 
@@ -1137,6 +1163,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/66cd7d961721b1116384411c52fe391d3fa5714e/docs/figure/temperature_indices.Rmd/read_data-3.png" target="_blank">66cd7d9</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-11-18
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/3aadd3726ae6897294e09a77d0466276d715e108/docs/figure/temperature_indices.Rmd/read_data-3.png" target="_blank">3aadd37</a>
@@ -1209,26 +1246,9 @@ tropP_temp &lt;- do.call(c, lapply(years, function(year) (
                    &quot;_monthly_tropPacific.nc&quot;),
            var = &quot;temp&quot;,
            proxy = FALSE #need this on to override the proxy format
-          ))))</code></pre>
-<pre><code>No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.</code></pre>
-<pre class="r"><code>#plotting the first time point to look at the selected region
+          ))))
+
+#plotting the first time point to look at the selected region
 tropP_jan2010_temp &lt;- tropP_temp %&gt;% 
   slice(time, 1)
 
@@ -1264,6 +1284,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/66cd7d961721b1116384411c52fe391d3fa5714e/docs/figure/temperature_indices.Rmd/read_data-4.png" target="_blank">66cd7d9</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-11-18
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/3aadd3726ae6897294e09a77d0466276d715e108/docs/figure/temperature_indices.Rmd/read_data-4.png" target="_blank">3aadd37</a>
@@ -1349,6 +1380,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/66cd7d961721b1116384411c52fe391d3fa5714e/docs/figure/temperature_indices.Rmd/read_data-5.png" target="_blank">66cd7d9</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-11-18
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/3aadd3726ae6897294e09a77d0466276d715e108/docs/figure/temperature_indices.Rmd/read_data-5.png" target="_blank">3aadd37</a>
 </td>
 <td>
@@ -1419,380 +1461,9 @@ for (i in locations){
     summarise(mean_value = mean(temp, na.rm = TRUE), .groups = &#39;drop&#39;) %&gt;% 
     rename(!!paste0(i, &quot;_MeanMonthlySST&quot;) := mean_value)
   
-}</code></pre>
-<pre><code>No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.
-No projection information found in nc file. 
- Coordinate variable units found to be degrees, 
- assuming WGS84 Lat/Lon.</code></pre>
-<pre class="r"><code>#combining 30-year data into a single data frame + the 2010-2015 data
+}
+  
+#combining 30-year data into a single data frame + the 2010-2015 data
 annual_monthly_sst &lt;- reduce(annual_monthly_SST_list, left_join, by = &quot;time&quot;)
 
 full_2010_2015 &lt;- list(colriv_monthly_2010_2015, hunt_monthly_2010_2015, 
@@ -1868,6 +1539,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/66cd7d961721b1116384411c52fe391d3fa5714e/docs/figure/temperature_indices.Rmd/read_data-6.png" target="_blank">66cd7d9</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-11-18
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/3aadd3726ae6897294e09a77d0466276d715e108/docs/figure/temperature_indices.Rmd/read_data-6.png" target="_blank">3aadd37</a>
@@ -1961,6 +1643,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/66cd7d961721b1116384411c52fe391d3fa5714e/docs/figure/temperature_indices.Rmd/read_data-7.png" target="_blank">66cd7d9</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-11-18
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/3aadd3726ae6897294e09a77d0466276d715e108/docs/figure/temperature_indices.Rmd/read_data-7.png" target="_blank">3aadd37</a>
 </td>
 <td>
@@ -2038,6 +1731,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/66cd7d961721b1116384411c52fe391d3fa5714e/docs/figure/temperature_indices.Rmd/read_data-8.png" target="_blank">66cd7d9</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-11-18
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/3aadd3726ae6897294e09a77d0466276d715e108/docs/figure/temperature_indices.Rmd/read_data-8.png" target="_blank">3aadd37</a>
@@ -2270,6 +1974,43 @@ region_temp %&gt;%
 Raster pixels are placed at uneven horizontal intervals and will be shifted
 ℹ Consider using `geom_tile()` instead.</code></pre>
 <p><img src="figure/temperature_indices.Rmd/read_data_revised-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data_revised-1">
+Past versions of read_data_revised-1.png
+</button>
+</p>
+<div id="fig-read_data_revised-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/66cd7d961721b1116384411c52fe391d3fa5714e/docs/figure/temperature_indices.Rmd/read_data_revised-1.png" target="_blank">66cd7d9</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-11-18
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#creating new data frame with grouped month and the mean SST for each
 region_temp_monthly_mean &lt;- region_temp %&gt;% 
   mutate(yr_mon = paste0(format(time, &quot;%Y-%m&quot;),&quot;-15&quot;),
@@ -2309,6 +2050,43 @@ ggplot() +
   scale_fill_viridis_c() +
   coord_quickmap(xlim = c(-175,-115), ylim = c(-10.5, 10.5), expand = 0)</code></pre>
 <p><img src="figure/temperature_indices.Rmd/read_data_revised-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data_revised-2">
+Past versions of read_data_revised-2.png
+</button>
+</p>
+<div id="fig-read_data_revised-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/66cd7d961721b1116384411c52fe391d3fa5714e/docs/figure/temperature_indices.Rmd/read_data_revised-2.png" target="_blank">66cd7d9</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-11-18
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#turning data into dataframe and cleaning up
 tropP_temp &lt;- tropP_temp %&gt;%
   drop_units() %&gt;% 
@@ -2339,6 +2117,43 @@ region_temp_monthly_mean %&gt;%
   theme(axis.title.x = element_blank(),
         legend.title = element_blank())</code></pre>
 <p><img src="figure/temperature_indices.Rmd/read_data_revised-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data_revised-3">
+Past versions of read_data_revised-3.png
+</button>
+</p>
+<div id="fig-read_data_revised-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/66cd7d961721b1116384411c52fe391d3fa5714e/docs/figure/temperature_indices.Rmd/read_data_revised-3.png" target="_blank">66cd7d9</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-11-18
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>####################
 #30 year time series of historical monthly averages for all 4 locations
 years_past &lt;- 1979:2009
@@ -2395,6 +2210,43 @@ monthly_mean_baseline %&gt;%
   scale_x_continuous(breaks = seq(1,12,3)) +
   theme(legend.title = element_blank())</code></pre>
 <p><img src="figure/temperature_indices.Rmd/read_data_revised-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data_revised-4">
+Past versions of read_data_revised-4.png
+</button>
+</p>
+<div id="fig-read_data_revised-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/66cd7d961721b1116384411c52fe391d3fa5714e/docs/figure/temperature_indices.Rmd/read_data_revised-4.png" target="_blank">66cd7d9</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-11-18
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>####################
 #Calculating anomaly index values
 
@@ -2415,6 +2267,43 @@ annual_monthly_sst_full %&gt;%
   theme(axis.title.x = element_blank(),
         legend.title = element_blank())</code></pre>
 <p><img src="figure/temperature_indices.Rmd/read_data_revised-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data_revised-5">
+Past versions of read_data_revised-5.png
+</button>
+</p>
+<div id="fig-read_data_revised-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/66cd7d961721b1116384411c52fe391d3fa5714e/docs/figure/temperature_indices.Rmd/read_data_revised-5.png" target="_blank">66cd7d9</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-11-18
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####################
 #Computing running annual mean (mean temp for one year starting that month)
 library(zoo)
@@ -2437,6 +2326,43 @@ running_annual_mean_sst %&gt;%
         legend.title = element_blank())</code></pre>
 <pre><code>Warning: Removed 88 rows containing missing values (`geom_path()`).</code></pre>
 <p><img src="figure/temperature_indices.Rmd/read_data_revised-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data_revised-6">
+Past versions of read_data_revised-6.png
+</button>
+</p>
+<div id="fig-read_data_revised-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/66cd7d961721b1116384411c52fe391d3fa5714e/docs/figure/temperature_indices.Rmd/read_data_revised-6.png" target="_blank">66cd7d9</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-11-18
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>######################
 #Calculating correlation coefficients, pearson correlation test
 
@@ -2452,6 +2378,43 @@ annual_monthly_sst_full %&gt;%
   ggplot(aes(name, cor)) +
   geom_col()</code></pre>
 <p><img src="figure/temperature_indices.Rmd/read_data_revised-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data_revised-7">
+Past versions of read_data_revised-7.png
+</button>
+</p>
+<div id="fig-read_data_revised-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/66cd7d961721b1116384411c52fe391d3fa5714e/docs/figure/temperature_indices.Rmd/read_data_revised-7.png" target="_blank">66cd7d9</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-11-18
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
