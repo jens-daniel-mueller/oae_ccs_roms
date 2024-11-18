@@ -542,15 +542,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree853675f2ffd2dfa304c2ff59bbe8fa7d35d35ee8targetblank853675fa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreec7ce8effdbe9d7981900d3c016e5b469c9357fa8targetblankc7ce8efa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/853675f2ffd2dfa304c2ff59bbe8fa7d35d35ee8" target="_blank">853675f</a>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/c7ce8effdbe9d7981900d3c016e5b469c9357fa8" target="_blank">c7ce8ef</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree853675f2ffd2dfa304c2ff59bbe8fa7d35d35ee8targetblank853675fa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreec7ce8effdbe9d7981900d3c016e5b469c9357fa8targetblankc7ce8efa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -560,7 +560,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/853675f2ffd2dfa304c2ff59bbe8fa7d35d35ee8" target="_blank">853675f</a>.
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/c7ce8effdbe9d7981900d3c016e5b469c9357fa8" target="_blank">c7ce8ef</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -625,6 +625,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/c7ce8effdbe9d7981900d3c016e5b469c9357fa8/analysis/temperature_indices.Rmd" target="_blank">c7ce8ef</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-11-18
+</td>
+<td>
+rebuild after code review
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/60a6c6fb30315ec3d93f92bc2c80edc557907fd6/docs/temperature_indices.html" target="_blank">60a6c6f</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-11-18
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1955,24 +1989,26 @@ region_temp &lt;-
 
 #plotting the first time point to look at the selected region
 
-region_temp %&gt;% 
-  filter(time == min(time)) %&gt;% 
+region_temp %&gt;%
+  filter(time == min(time)) %&gt;%
   ggplot() +
-  geom_raster(aes(lon,
-                 lat,
-                 fill = temp)) +
-  # borders(&quot;world&quot;, colour = &quot;gray80&quot;, fill = &quot;gray80&quot;) +
-  labs(title = &quot;Columbia River Surface Temperature Jan 2nd 2010&quot;,
-       x = &quot;Longitude&quot;,
-       y = &quot;Latitude&quot;) +
-  theme_bw() + 
-  facet_wrap(~ region) +
-  scale_fill_viridis_c() +
-  coord_quickmap(xlim = c(-128,-116), ylim = c(30, 48), expand = FALSE)</code></pre>
-<pre><code>Warning: Raster pixels are placed at uneven horizontal intervals and will be shifted
-ℹ Consider using `geom_tile()` instead.
-Raster pixels are placed at uneven horizontal intervals and will be shifted
-ℹ Consider using `geom_tile()` instead.</code></pre>
+  annotation_map(map_data(&quot;world&quot;),
+                 colour = &quot;gray80&quot;,
+                 fill = &quot;gray80&quot;) +
+  geom_tile(aes(
+    lon,
+    lat,
+    width = 0.125,
+    height = 0.125,
+    fill = temp
+  )) +
+  labs(title = &quot;Jan 2nd 2010&quot;, x = &quot;Longitude&quot;, y = &quot;Latitude&quot;) +
+  theme_bw() +
+  # facet_wrap(~ region) +
+  scale_fill_viridis_c(name = &quot;SST (°C)&quot;) +
+  coord_quickmap(xlim = c(-128, -116),
+                 ylim = c(30, 48),
+                 expand = FALSE)</code></pre>
 <p><img src="figure/temperature_indices.Rmd/read_data_revised-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data_revised-1">
