@@ -22,10 +22,11 @@ wflow_publish(here::here(
   "analysis",
   c(
     "index.Rmd",
-    "read_data.Rmd"
+    "read_data.Rmd",
+    "temperature_indices.Rmd"
   )
 ),
-message = "setup project")
+message = "rebuild after code review")
 
 # commit regular changes (locally) and rebuild site
 wflow_publish(all = TRUE, message = "rebuild after code review")
@@ -42,7 +43,7 @@ wflow_publish(here::here(
     "temperature_indices.Rmd"
   )
 ),
-message = "testrun code compilation and builduing website",
+message = "rebuild after code review",
 republish = TRUE)
 
 
