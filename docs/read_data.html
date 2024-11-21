@@ -12,7 +12,7 @@
 <meta name="author" content="Victoria Froh &amp; Jens Daniel Müller" />
 
 
-<title>Read data</title>
+<title>Data practice</title>
 
 <script src="site_libs/header-attrs-2.18/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -345,7 +345,7 @@ div.tocify {
   <a href="read_data.html">Read data</a>
 </li>
 <li>
-  <a href="temperature_indices.html">Temperature indices</a>
+  <a href="enso_indices.html">CCS ENSO Indices</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -380,9 +380,9 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Read data</h1>
+<h1 class="title toc-ignore">Data practice</h1>
 <h4 class="author">Victoria Froh &amp; Jens Daniel Müller</h4>
-<h4 class="date">18 November, 2024</h4>
+<h4 class="date">21 November, 2024</h4>
 
 </div>
 
@@ -411,7 +411,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-11-18
+<strong>Last updated:</strong> 2024-11-21
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -542,15 +542,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreec0c3eac930c42c326830e74cc625df4510f8f656targetblankc0c3eaca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree163f18c0a36a30ae3f5da695809e44038371c67etargetblank163f18ca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/c0c3eac930c42c326830e74cc625df4510f8f656" target="_blank">c0c3eac</a>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/163f18c0a36a30ae3f5da695809e44038371c67e" target="_blank">163f18c</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreec0c3eac930c42c326830e74cc625df4510f8f656targetblankc0c3eaca"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree163f18c0a36a30ae3f5da695809e44038371c67etargetblank163f18ca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -560,7 +560,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/c0c3eac930c42c326830e74cc625df4510f8f656" target="_blank">c0c3eac</a>.
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/163f18c0a36a30ae3f5da695809e44038371c67e" target="_blank">163f18c</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -579,12 +579,13 @@ Ignored files:
     Ignored:    .Rproj.user/
 
 Untracked files:
-    Untracked:  code/enso_indices.Rmd
+    Untracked:  code/temperature_indices.Rmd
 
 Unstaged changes:
     Modified:   analysis/_site.yml
-    Deleted:    analysis/enso_indices.Rmd
+    Deleted:    analysis/temperature_indices.Rmd
     Modified:   code/Workflowr_project_managment.R
+    Deleted:    code/enso_indices.Rmd
 
 </code></pre>
 <p>
@@ -630,6 +631,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/163f18c0a36a30ae3f5da695809e44038371c67e/analysis/read_data.Rmd" target="_blank">163f18c</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-21
+</td>
+<td>
+rebuild after code update and new enso file
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/3aadd3726ae6897294e09a77d0466276d715e108/docs/read_data.html" target="_blank">3aadd37</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-11-18
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1098,12 +1133,14 @@ setup project
 </div>
 <div id="read-this" class="section level2">
 <h2>Read this</h2>
-<p>this is the script to open the data</p>
+<p>Practice working with OAE ROMS data</p>
 <pre class="r"><code>#loading packages
 library(ncdf4)
 library(tidync)
 library(stars)
 library(tidyverse)
+library(seacarb)
+library(metR)
 
 #For the regridded standard files, path:
 path_ROMSv2RG_results &lt;- 
@@ -1113,9 +1150,8 @@ path_ROMSv2RG_results &lt;-
 view_nc &lt;- nc_open(paste0(path_ROMSv2RG_results,
                      &quot;ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc&quot;))
 
-print(view_nc)
-
-#filtering for just one variable w/ stars package + time and depth slice
+print(view_nc)</code></pre>
+<pre class="r"><code>#filtering for just one variable w/ stars package + time and depth slice
 nc_alk &lt;- read_ncdf(paste0(path_ROMSv2RG_results,
                      &quot;ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc&quot;),
            var = &quot;Alk&quot;,
@@ -1141,88 +1177,7 @@ ggplot() +
   theme_bw() + 
   scale_fill_viridis_c() +
   coord_quickmap(expand = 0)</code></pre>
-<p><img src="figure/read_data.Rmd/read_data-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-1">
-Past versions of read_data-1.png
-</button>
-</p>
-<div id="fig-read_data-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/b3057024aa3cbca71b34072895254e7d086a19cd/docs/figure/read_data.Rmd/read_data-1.png" target="_blank">b305702</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-11-18
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/95e822c5af59767ad7f8520e90d751f4bbb1f96a/docs/figure/read_data.Rmd/read_data-1.png" target="_blank">95e822c</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-10-01
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/1271b4b8bedaa0b5a3ea6df1392b3d9975c6fb26/docs/figure/read_data.Rmd/read_data-1.png" target="_blank">1271b4b</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-09-30
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/a2f17f6da2e022b2b672b6c5a47ab5fb1b6c9dd2/docs/figure/read_data.Rmd/read_data-1.png" target="_blank">a2f17f6</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-09-25
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/5eca06c9c894ffd5d3a58c89c34d021a205909c9/docs/figure/read_data.Rmd/read_data-1.png" target="_blank">5eca06c</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-09-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/read_data.Rmd/load_data_with_stars-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>ggplot() +
  geom_stars(data = nc_dic, aes(fill = DIC)) +
   labs(title = &quot;Columbia River Surface DIC @ T1&quot;,
@@ -1231,80 +1186,8 @@ vgfroh
   theme_bw() + 
   scale_fill_viridis_c() +
   coord_quickmap(expand = 0)</code></pre>
-<p><img src="figure/read_data.Rmd/read_data-2.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-2">
-Past versions of read_data-2.png
-</button>
-</p>
-<div id="fig-read_data-2" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/b3057024aa3cbca71b34072895254e7d086a19cd/docs/figure/read_data.Rmd/read_data-2.png" target="_blank">b305702</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-11-18
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/95e822c5af59767ad7f8520e90d751f4bbb1f96a/docs/figure/read_data.Rmd/read_data-2.png" target="_blank">95e822c</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-10-01
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/1271b4b8bedaa0b5a3ea6df1392b3d9975c6fb26/docs/figure/read_data.Rmd/read_data-2.png" target="_blank">1271b4b</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-09-30
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/a2f17f6da2e022b2b672b6c5a47ab5fb1b6c9dd2/docs/figure/read_data.Rmd/read_data-2.png" target="_blank">a2f17f6</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-09-25
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>###################
-#using tidync instead
-nc &lt;- tidync(paste0(path_ROMSv2RG_results,
+<p><img src="figure/read_data.Rmd/load_data_with_stars-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>nc &lt;- tidync(paste0(path_ROMSv2RG_results,
                      &quot;ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc&quot;))
 
 #filtering nc file for just the surface @ the first time index, outputting tbl_df
@@ -1324,66 +1207,7 @@ ggplot(data = alk_surface_t1) +
   theme_bw() +
   scale_fill_viridis_c() +
   coord_quickmap(expand = 0)</code></pre>
-<p><img src="figure/read_data.Rmd/read_data-3.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-3">
-Past versions of read_data-3.png
-</button>
-</p>
-<div id="fig-read_data-3" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/b3057024aa3cbca71b34072895254e7d086a19cd/docs/figure/read_data.Rmd/read_data-3.png" target="_blank">b305702</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-11-18
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/95e822c5af59767ad7f8520e90d751f4bbb1f96a/docs/figure/read_data.Rmd/read_data-3.png" target="_blank">95e822c</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-10-01
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/1271b4b8bedaa0b5a3ea6df1392b3d9975c6fb26/docs/figure/read_data.Rmd/read_data-3.png" target="_blank">1271b4b</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-09-30
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/read_data.Rmd/load_data_with_tidync-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>ggplot(data = dic_surface_t1) + 
   geom_tile(aes(lon, lat, fill = DIC)) +
   labs(title = &quot;Columbia River Surface DIC @ T1&quot;, 
@@ -1391,61 +1215,8 @@ vgfroh
   theme_bw() +
   scale_fill_viridis_c() +
   coord_quickmap(expand = 0)</code></pre>
-<p><img src="figure/read_data.Rmd/read_data-4.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-4">
-Past versions of read_data-4.png
-</button>
-</p>
-<div id="fig-read_data-4" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/b3057024aa3cbca71b34072895254e7d086a19cd/docs/figure/read_data.Rmd/read_data-4.png" target="_blank">b305702</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-11-18
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/95e822c5af59767ad7f8520e90d751f4bbb1f96a/docs/figure/read_data.Rmd/read_data-4.png" target="_blank">95e822c</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-10-01
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>##########################
-# Using sea carb:
-library(seacarb)
-library(metR)
-
-#load in data from tidync file in main active grid w/ T1 surface slice
+<p><img src="figure/read_data.Rmd/load_data_with_tidync-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#load in data from tidync file in main active grid w/ T1 surface slice
 surface_data &lt;- nc %&gt;%
      hyper_filter(depth = index == 1, time = index == 1) %&gt;% 
      hyper_tibble(force = TRUE)
@@ -1490,68 +1261,9 @@ ggplot(data = merged_surface_orig) +
   theme(plot.title = element_text(hjust = 0.5)) +
   scale_fill_viridis_c() +
   coord_quickmap(expand = 0)</code></pre>
-<p><img src="figure/read_data.Rmd/read_data-5.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-5">
-Past versions of read_data-5.png
-</button>
-</p>
-<div id="fig-read_data-5" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/b3057024aa3cbca71b34072895254e7d086a19cd/docs/figure/read_data.Rmd/read_data-5.png" target="_blank">b305702</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-11-18
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/77644c30260db601c75898b2467e47b9c72e4e64/docs/figure/read_data.Rmd/read_data-5.png" target="_blank">77644c3</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-10-02
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/95e822c5af59767ad7f8520e90d751f4bbb1f96a/docs/figure/read_data.Rmd/read_data-5.png" target="_blank">95e822c</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-10-01
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>######################
-#Comparing Outputs
+<p><img src="figure/read_data.Rmd/seacarb_calc-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#Comparing Outputs
+
 #New dataframe w/ reorganized pCO2 data
 pco2_compare &lt;- merged_surface_orig %&gt;% 
   select(lon, lat, pco2_calc, PCO2OC) %&gt;% 
@@ -1571,66 +1283,7 @@ ggplot(data = pco2_compare) +
   theme(plot.title = element_text(hjust = 0.5)) +
   coord_quickmap(expand = 0) + 
   scale_fill_viridis_c()</code></pre>
-<p><img src="figure/read_data.Rmd/read_data-6.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-6">
-Past versions of read_data-6.png
-</button>
-</p>
-<div id="fig-read_data-6" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/b3057024aa3cbca71b34072895254e7d086a19cd/docs/figure/read_data.Rmd/read_data-6.png" target="_blank">b305702</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-11-18
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/77644c30260db601c75898b2467e47b9c72e4e64/docs/figure/read_data.Rmd/read_data-6.png" target="_blank">77644c3</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-10-02
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/95e822c5af59767ad7f8520e90d751f4bbb1f96a/docs/figure/read_data.Rmd/read_data-6.png" target="_blank">95e822c</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-10-01
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/read_data.Rmd/seacarb_calc-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>#New df w/ the difference between model and calculated pCO2
 pco2_delta &lt;- merged_surface_orig %&gt;% 
   select(lon, lat, pco2_calc, PCO2OC) %&gt;% 
@@ -1645,68 +1298,8 @@ ggplot(data = pco2_delta) +
   coord_quickmap(expand = 0) +
   theme(plot.title = element_text(hjust = 0.5)) +
   theme_bw()</code></pre>
-<p><img src="figure/read_data.Rmd/read_data-7.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-7">
-Past versions of read_data-7.png
-</button>
-</p>
-<div id="fig-read_data-7" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/b3057024aa3cbca71b34072895254e7d086a19cd/docs/figure/read_data.Rmd/read_data-7.png" target="_blank">b305702</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-11-18
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/77644c30260db601c75898b2467e47b9c72e4e64/docs/figure/read_data.Rmd/read_data-7.png" target="_blank">77644c3</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-10-02
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/95e822c5af59767ad7f8520e90d751f4bbb1f96a/docs/figure/read_data.Rmd/read_data-7.png" target="_blank">95e822c</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-10-01
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>#####################
-#Perturbation of 10 mmol Alk/m^3 in all grid cells
+<p><img src="figure/read_data.Rmd/seacarb_calc-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#Perturbation of 10 mmol Alk/m^3 in all grid cells
 surface_pert &lt;- 
   merged_surface_orig %&gt;%
   #head(6) %&gt;% #testing subsset
@@ -1746,66 +1339,7 @@ ggplot(data = pco2_pert_compare) +
   theme(plot.title = element_text(hjust = 0.5)) +
   coord_quickmap(expand = 0) + 
   scale_fill_viridis_c()</code></pre>
-<p><img src="figure/read_data.Rmd/read_data-8.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-8">
-Past versions of read_data-8.png
-</button>
-</p>
-<div id="fig-read_data-8" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/b3057024aa3cbca71b34072895254e7d086a19cd/docs/figure/read_data.Rmd/read_data-8.png" target="_blank">b305702</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-11-18
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/77644c30260db601c75898b2467e47b9c72e4e64/docs/figure/read_data.Rmd/read_data-8.png" target="_blank">77644c3</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-10-02
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/95e822c5af59767ad7f8520e90d751f4bbb1f96a/docs/figure/read_data.Rmd/read_data-8.png" target="_blank">95e822c</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-10-01
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/read_data.Rmd/seacarb_perturbation_calc-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>#New df w/ the difference in pCO2 after Alk perturbation
 pco2_pert_delta &lt;- full_join(surface_pert, pco2_delta) %&gt;% 
   select(lon, lat, pco2_calc_pert, pco2_calc) %&gt;% 
@@ -1821,68 +1355,8 @@ ggplot(data = pco2_pert_delta) +
   coord_quickmap(expand = 0) + 
   theme(plot.title = element_text(hjust = 0.5)) +
   theme_bw()</code></pre>
-<p><img src="figure/read_data.Rmd/read_data-9.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-9">
-Past versions of read_data-9.png
-</button>
-</p>
-<div id="fig-read_data-9" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/b3057024aa3cbca71b34072895254e7d086a19cd/docs/figure/read_data.Rmd/read_data-9.png" target="_blank">b305702</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-11-18
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/77644c30260db601c75898b2467e47b9c72e4e64/docs/figure/read_data.Rmd/read_data-9.png" target="_blank">77644c3</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-10-02
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/95e822c5af59767ad7f8520e90d751f4bbb1f96a/docs/figure/read_data.Rmd/read_data-9.png" target="_blank">95e822c</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-10-01
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>####################
-#Alkalinity Perturbation, looking at how DIC changes with constant pCO2
+<p><img src="figure/read_data.Rmd/seacarb_perturbation_calc-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#Alooking at how DIC changes for perturbation with constant pCO2
 surface_pert_dic &lt;- 
   merged_surface_orig %&gt;%
   #head(6) %&gt;% #testing subsset
@@ -1890,7 +1364,9 @@ surface_pert_dic &lt;-
   mutate(
     DIC_pert = carb(
       flag = 24,
-      var1 = pco2_calc, # for consistency, use the calculate pCO2 here, otherwise you compute a DIC perturbation that is partly due to differences in the computational routines
+      var1 = pco2_calc, # for consistency, use the calculate pCO2 here, 
+      #otherwise you compute a DIC perturbation that is partly due to 
+      #differences in the computational routines (vs the model)
       var2 = (Alk + 10) * 1e-6 / 1.02518,
       S = salt,
       T = temp,
@@ -1924,55 +1400,7 @@ ggplot(data = dic_pert_compare) +
   theme(plot.title = element_text(hjust = 0.5)) +
   coord_quickmap(expand = 0) + 
   scale_fill_viridis_c()</code></pre>
-<p><img src="figure/read_data.Rmd/read_data-10.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-10">
-Past versions of read_data-10.png
-</button>
-</p>
-<div id="fig-read_data-10" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/b3057024aa3cbca71b34072895254e7d086a19cd/docs/figure/read_data.Rmd/read_data-10.png" target="_blank">b305702</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-11-18
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/77644c30260db601c75898b2467e47b9c72e4e64/docs/figure/read_data.Rmd/read_data-10.png" target="_blank">77644c3</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-10-02
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/read_data.Rmd/seacarb_perturbation_calc-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>#New df w/ the difference in DIC after Alk perturbation
 dic_pert_delta &lt;- surface_pert_dic %&gt;% 
   select(lon, lat, DIC_pert, DIC) %&gt;% 
@@ -1988,55 +1416,7 @@ ggplot(data = dic_pert_delta) +
   coord_quickmap(expand = 0) + 
   theme_bw() +
   theme(plot.title = element_text(hjust = 0.5))</code></pre>
-<p><img src="figure/read_data.Rmd/read_data-11.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-read_data-11">
-Past versions of read_data-11.png
-</button>
-</p>
-<div id="fig-read_data-11" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/b3057024aa3cbca71b34072895254e7d086a19cd/docs/figure/read_data.Rmd/read_data-11.png" target="_blank">b305702</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-11-18
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/77644c30260db601c75898b2467e47b9c72e4e64/docs/figure/read_data.Rmd/read_data-11.png" target="_blank">77644c3</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-10-02
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/read_data.Rmd/seacarb_perturbation_calc-4.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -2066,11 +1446,11 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] metR_0.13.0      seacarb_3.3.1    SolveSAPHE_2.1.0 oce_1.7-10      
+ [1] metR_0.13.0      seacarb_3.3.3    SolveSAPHE_2.1.0 oce_1.7-10      
  [5] gsw_1.1-1        forcats_0.5.2    stringr_1.5.0    dplyr_1.1.3     
  [9] purrr_1.0.2      readr_2.1.3      tidyr_1.3.0      tibble_3.2.1    
 [13] ggplot2_3.4.4    tidyverse_1.3.2  stars_0.6-0      sf_1.0-9        
-[17] abind_1.4-5      tidync_0.3.0     ncdf4_1.19       workflowr_1.7.0 
+[17] abind_1.4-5      tidync_0.4.0     ncdf4_1.19       workflowr_1.7.0 
 
 loaded via a namespace (and not attached):
  [1] fs_1.5.2            lubridate_1.9.0     httr_1.4.4         
@@ -2088,21 +1468,21 @@ loaded via a namespace (and not attached):
 [37] readxl_1.4.1        rstudioapi_0.15.0   PCICt_0.5-4.3      
 [40] farver_2.1.1        jquerylib_0.1.4     generics_0.1.3     
 [43] jsonlite_1.8.3      googlesheets4_1.0.1 magrittr_2.0.3     
-[46] ncmeta_0.3.5        Rcpp_1.0.11         munsell_0.5.0      
+[46] ncmeta_0.3.5        Rcpp_1.0.10         munsell_0.5.0      
 [49] fansi_1.0.3         lifecycle_1.0.3     stringi_1.7.8      
 [52] whisker_0.4         yaml_2.3.6          grid_4.2.2         
 [55] parallel_4.2.2      promises_1.2.0.1    crayon_1.5.2       
-[58] haven_2.5.1         hms_1.1.2           knitr_1.41         
-[61] ps_1.7.2            pillar_1.9.0        reprex_2.0.2       
-[64] glue_1.6.2          evaluate_0.18       getPass_0.2-2      
-[67] data.table_1.14.6   modelr_0.1.10       vctrs_0.6.4        
-[70] tzdb_0.3.0          httpuv_1.6.6        cellranger_1.1.0   
-[73] gtable_0.3.1        assertthat_0.2.1    cachem_1.0.6       
-[76] xfun_0.35           lwgeom_0.2-10       broom_1.0.5        
-[79] e1071_1.7-12        later_1.3.0         class_7.3-20       
-[82] googledrive_2.0.0   viridisLite_0.4.1   gargle_1.2.1       
-[85] memoise_2.0.1       units_0.8-0         timechange_0.1.1   
-[88] ellipsis_0.3.2     </code></pre>
+[58] CFtime_1.4.0        haven_2.5.1         hms_1.1.2          
+[61] knitr_1.41          ps_1.7.2            pillar_1.9.0       
+[64] reprex_2.0.2        glue_1.6.2          evaluate_0.18      
+[67] getPass_0.2-2       data.table_1.14.6   modelr_0.1.10      
+[70] vctrs_0.6.4         tzdb_0.3.0          httpuv_1.6.6       
+[73] cellranger_1.1.0    gtable_0.3.1        assertthat_0.2.1   
+[76] cachem_1.0.6        xfun_0.35           lwgeom_0.2-10      
+[79] broom_1.0.5         e1071_1.7-12        later_1.3.0        
+[82] viridisLite_0.4.1   class_7.3-20        googledrive_2.0.0  
+[85] gargle_1.2.1        memoise_2.0.1       units_0.8-0        
+[88] timechange_0.1.1    ellipsis_0.3.2     </code></pre>
 </div>
 </div>
 
