@@ -1,0 +1,326 @@
+---
+title: "Temperature indices"
+author: "Victoria Froh & Jens Daniel Müller"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Read this
+this is the script to open the data
+
+```{r setup, message=FALSE}
+# loading packages
+library(ncdf4)
+library(stars)
+library(tidyverse)
+library(lubridate)
+library(units)
+library(zoo)
+
+# For the regridded standard files, path:
+path_ROMSv2RG_results <- 
+ "/net/sea/work/loher/ROMS/Alk_enh_formatted_2024_08/"
+
+```
+
+```{r load_data, message=FALSE, warning=FALSE}
+
+# Columbia SST in 2x2deg box (45N-47N, 124W-126W), 2010 time series
+colriv_temp <- read_ncdf(
+  paste0(
+    path_ROMSv2RG_results,
+    "ColumbiaRiver/ColumbiaRiver_2010-2015_control.nc"
+  ),
+  var = "temp",
+  ncsub = cbind(start = c(70, 40, 1, 1), count = c(16, 16, 1, 1096)),
+  proxy = FALSE #need this on to override the proxy format
+)
+
+# turning data into dataframe and cleaning up
+colriv_temp <- colriv_temp %>%
+  drop_units() %>% 
+  as_tibble() %>% 
+  select(-depth)
+
+
+# San Francisco SST in 2x2deg box (36.5N-38.5N, 122.5W-124.5W), full 2010 time
+sanfran_temp <- read_ncdf(
+  paste0(
+    path_ROMSv2RG_results,
+    "SanFrancisco/SanFrancisco_2010-2015_control.nc"
+  ),
+  var = "temp",
+  ncsub = cbind(start = c(33, 39, 1, 1), count = c(16, 16, 1, 1096)),
+  proxy = FALSE #need this on to override the proxy format
+)
+
+# turning data into dataframe and cleaning up
+sanfran_temp <- sanfran_temp %>%
+  drop_units() %>% 
+  as_tibble() %>% 
+  select(-depth)
+
+
+# Huntington SST in 2x2deg box (32N-34N, 117W-119W), full 2010 time series
+hunt_temp <- read_ncdf(
+  paste0(
+    path_ROMSv2RG_results,
+    "Huntington/Huntington_2010-2015_control.nc"
+  ),
+  var = "temp",
+  ncsub = cbind(start = c(50, 44, 1, 1), count = c(16, 16, 1, 1096)),
+  proxy = FALSE #need this on to override the proxy format
+)
+
+# turning data into dataframe and cleaning up
+hunt_temp <- hunt_temp %>%
+  drop_units() %>% 
+  as_tibble() %>% 
+  select(-depth)
+
+
+# join regional data frames
+
+region_temp <-
+  bind_rows(
+    colriv_temp %>% mutate(region = "ColumbiaRiver"),
+    sanfran_temp %>% mutate(region = "SanFrancisco"),
+    hunt_temp %>% mutate(region = "Huntington")
+  )
+
+```
+
+```{r region_plot, message=FALSE}
+
+# plotting the first time point to look at the selected regions
+
+region_temp %>%
+  filter(time == min(time)) %>%
+  ggplot() +
+  annotation_map(map_data("world"),
+                 colour = "gray80",
+                 fill = "gray80") +
+  geom_tile(aes(
+    lon,
+    lat,
+    width = 0.125,
+    height = 0.125,
+    fill = temp
+  )) +
+  labs(title = "Jan 2nd 2010", x = "Longitude", y = "Latitude") +
+  theme_bw() +
+  # facet_wrap(~ region) + # displays 3 regions in separate panels
+  scale_fill_viridis_c(name = "SST (°C)") +
+  coord_quickmap(xlim = c(-128, -116),
+                 ylim = c(30, 48),
+                 expand = FALSE)
+
+```
+
+```{r mean_sst_calc, message=FALSE}
+
+# creating new data frame with grouped month and calculated mean SST for each
+
+region_temp_monthly_mean <- region_temp %>% 
+  mutate(yr_mon = paste0(format(time, "%Y-%m"),"-15"), 
+         # new time column, removes day then addes -15 to all of them
+         yr_mon = ymd(yr_mon)) %>% # converts time column to date object
+  group_by(yr_mon, region) %>%
+  summarise(SST_mean = mean(temp, na.rm = TRUE)) %>% 
+  ungroup()
+
+# since this data includes the first data point of 2016 and we don't need
+region_temp_monthly_mean <- region_temp_monthly_mean %>% slice(-n())
+
+```
+
+```{r mean_sst_tropP, message=FALSE}
+
+# For tropical 3.4 region: 5S->5N, 120W->170W
+
+# reading in all 6 years of monthly data and combining into 1 stars object
+years <- 2010:2015
+tropP_temp <- do.call(c, lapply(years, function(year) (
+  read_ncdf(paste0(path_ROMSv2RG_results,
+                   "regrid_2024_10/surface_temp_tropPacific/Control_", year, 
+                   "_monthly_tropPacific.nc"),
+           var = "temp",
+           proxy = FALSE #need this on to override the proxy format
+          ))))
+
+# plotting the first time point to look at the selected region
+tropP_jan2010_temp <- tropP_temp %>% 
+  slice(time, 1)
+
+ggplot() +
+ geom_stars(data = tropP_jan2010_temp, aes(fill = temp)) +
+  borders("world", colour = "gray80", fill = "gray80") +
+  labs(title = "Tropical Pacific 3.4 Surface Temperature Jan 2nd 2010",
+       x = "Longitude",
+       y = "Latitude") +
+  theme_bw() + 
+  scale_fill_viridis_c() +
+  coord_quickmap(xlim = c(-175,-115), ylim = c(-10.5, 10.5), expand = 0)
+
+# turning data into dataframe and cleaning up
+tropP_temp <- tropP_temp %>%
+  drop_units() %>% 
+  as_tibble() %>% 
+  select(-s_rho)
+
+# creating new data frame with grouped month and the mean SSTs, add to big df
+tropP_monthly_2010_2015 <- tropP_temp %>%
+  mutate(yr_mon = paste0(format(time, "%Y-%m"), "-15"), 
+         yr_mon = ymd(yr_mon)) %>%
+  group_by(yr_mon) %>%
+  summarise(SST_mean = mean(temp, na.rm = TRUE)) %>%
+  ungroup()
+
+region_temp_monthly_mean <- 
+  bind_rows(region_temp_monthly_mean,
+            tropP_monthly_2010_2015 %>% mutate(region = "tropPacific"))
+
+```
+
+```{r mean_sst_plot, message=FALSE}
+
+# plotting all 4 time series of annual mean SST for 2010-2015
+
+region_temp_monthly_mean %>% 
+  ggplot(aes(x = yr_mon, y = SST_mean, color = region)) +
+  geom_path() +
+  labs(y = "Monthly Mean SST (°C)") +
+  scale_color_brewer(palette = "Dark2") +
+  theme_bw() +
+  theme(axis.title.x = element_blank(),
+        legend.title = element_blank())
+```
+
+
+```{r load_historical_data, message=FALSE}
+
+# 30 year time series of historical monthly averages for all 4 locations
+years_past <- 1979:2009
+locations <- c("ColumbiaRiver", "Huntington", "SanFrancisco", "tropPacific")
+annual_cycles <- list()
+annual_monthly_SST_list <- list()
+
+for (i in locations){
+  #reading in all 30 years of data for each location into a stars object
+  annual_cycles[[i]] <- do.call(c, lapply(years_past, function(year)(
+    read_ncdf(paste0(path_ROMSv2RG_results,
+                     "regrid_2024_10/1979-2009/pactcs30_", year, 
+                     "_avg_", i, ".nc"),
+              var = "temp",
+              proxy = FALSE
+  ))))
+
+  # converting each stars object into a data frame and cleaning up
+  annual_cycles[[i]] <- annual_cycles[[i]] %>%
+    drop_units() %>%
+    as_tibble() %>%
+    select(-s_rho)
+  
+  # creating a new data frame with the monthly averages over each region
+  annual_monthly_SST_list[[i]] <- annual_cycles[[i]] %>% 
+    mutate(yr_mon = paste0(format(time, "%Y-%m"), "-15"), yr_mon = ymd(yr_mon)) %>%
+    group_by(yr_mon) %>%
+    summarise(SST_mean = mean(temp, na.rm = TRUE)) %>%
+    ungroup() %>% 
+    mutate(region = i)
+  
+}
+  
+# combining 30-year data into a single data frame + the 2010-2015 data
+annual_monthly_sst <- reduce(annual_monthly_SST_list, bind_rows)
+annual_monthly_sst_full <- bind_rows(annual_monthly_sst, region_temp_monthly_mean)
+
+# computing the mean over the full period for each month at each location
+monthly_mean_baseline <- annual_monthly_sst_full %>%
+  mutate(month = format(as.Date(yr_mon), "%m")) %>%
+  group_by(month, region) %>%
+  summarise(SST_clim = mean(SST_mean)) %>%
+  ungroup()
+
+# plot
+monthly_mean_baseline %>% 
+  mutate(month = as.numeric(month)) %>% 
+  ggplot(aes(month, SST_clim, col = region)) +
+  geom_path() +
+  labs(y = "Climatological Monthly Mean SST (°C)") +
+  scale_color_brewer(palette = "Dark2") +
+  theme_bw() +
+  scale_x_continuous(breaks = seq(1,12,3)) +
+  theme(legend.title = element_blank())
+  
+```
+
+```{r sst_anomaly, message=FALSE}
+
+# Calculating anomaly index values
+
+annual_monthly_sst_full <- annual_monthly_sst_full %>%
+  mutate(month = format(as.Date(yr_mon), "%m")) %>%
+  group_by(month, region) %>%
+  mutate(SST_clim = mean(SST_mean)) %>%
+  ungroup() %>% 
+  mutate(SST_anom = SST_mean - SST_clim)
+
+# plot
+annual_monthly_sst_full %>% 
+  ggplot(aes(x = yr_mon, y = SST_anom, color = region)) +
+  geom_path() +
+  labs(y = "Monthly Mean SST anomaly (°C)") +
+  scale_color_brewer(palette = "Dark2") +
+  theme_bw() +
+  theme(axis.title.x = element_blank(),
+        legend.title = element_blank())
+
+
+```
+
+```{r running_annual_mean, message=FALSE}
+
+# Computing running annual mean (sst and anomaly for one year starting that month)
+
+running_annual_mean_sst <- annual_monthly_sst_full %>%
+  select(yr_mon, region, SST_mean, SST_anom) %>% 
+  pivot_longer(starts_with("SST")) %>% 
+  group_by(region, name) %>% 
+  mutate(value = rollmean(value, k=12, fill=NA, align = "left")) %>% 
+  ungroup()
+
+# plot
+running_annual_mean_sst %>% 
+  ggplot(aes(x = yr_mon, y = value, color = region)) +
+  geom_path() +
+  labs(y = "Annual Running Mean (°C)") +
+  scale_color_brewer(palette = "Dark2") +
+  facet_grid(name ~ ., scales = "free_y") +
+  theme_bw() +
+  theme(axis.title.x = element_blank(),
+        legend.title = element_blank())
+
+```
+
+```{r correlation_coeffs, message=FALSE}
+
+# Calculating correlation coefficients, pearson correlation test and plot
+
+annual_monthly_sst_full %>% 
+  select(yr_mon, region, SST_anom) %>% 
+  pivot_wider(names_from = region,
+              values_from = SST_anom) %>% 
+  pivot_longer(-c(yr_mon, tropPacific)) %>% 
+  drop_na() %>% 
+  group_by(name) %>% 
+  summarise(cor = cor(tropPacific, value)) %>% 
+  ungroup() %>% 
+  ggplot(aes(name, cor)) +
+  geom_col()
+
+
+```
+

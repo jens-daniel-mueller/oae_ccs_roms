@@ -242,7 +242,7 @@ rm(annual_cycles, annual_monthly_t50_list)
 
 ```
 
-```{r load_data_iso26, message=FALSE}
+```{r load_data_iso26, message=FALSE, warning=FALSE}
 
 # 42 year time series of historical monthly averages for all 4 locations
 

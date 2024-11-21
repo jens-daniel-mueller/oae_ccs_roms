@@ -5,8 +5,8 @@ navbar:
   left:
   - text: Read data
     href: read_data.html
-  - text: Temperature indices
-    href: temperature_indices.html
+  - text: CCS ENSO Indices
+    href: enso_indices.html
   right:
   - icon: fa-home
     text: Jens' homepage

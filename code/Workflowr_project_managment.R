@@ -40,11 +40,11 @@ wflow_publish(here::here(
   c(
     "index.Rmd",
     "read_data.Rmd",
-    "temperature_indices.Rmd"
+    "enso_indices.Rmd"
   )
 ),
-message = "rebuild after code review",
-republish = TRUE)
+message = "rebuild after code update and new enso file",
+republish = TRUE) #USE THIS ONE
 
 
 
