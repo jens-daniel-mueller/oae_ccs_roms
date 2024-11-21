@@ -1,5 +1,5 @@
 ---
-title: "Read data"
+title: "Data practice"
 author: "Victoria Froh & Jens Daniel Müller"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: workflowr::wflow_html
@@ -8,16 +8,17 @@ editor_options:
 ---
 
 ## Read this
+Practice working with OAE ROMS data
 
-this is the script to open the data
-
-```{r read_data, results='hide', message=FALSE}
+```{r setup, message=FALSE, results='hide'}
 
 #loading packages
 library(ncdf4)
 library(tidync)
 library(stars)
 library(tidyverse)
+library(seacarb)
+library(metR)
 
 #For the regridded standard files, path:
 path_ROMSv2RG_results <- 
@@ -28,6 +29,10 @@ view_nc <- nc_open(paste0(path_ROMSv2RG_results,
                      "ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc"))
 
 print(view_nc)
+
+```
+
+```{r load_data_with_stars, results='hide', message=FALSE}
 
 #filtering for just one variable w/ stars package + time and depth slice
 nc_alk <- read_ncdf(paste0(path_ROMSv2RG_results,
@@ -65,8 +70,10 @@ ggplot() +
   scale_fill_viridis_c() +
   coord_quickmap(expand = 0)
 
-###################
-#using tidync instead
+```
+
+```{r  load_data_with_tidync, results='hide', message=FALSE}
+
 nc <- tidync(paste0(path_ROMSv2RG_results,
                      "ColumbiaRiver/ColumbiaRiver_2010-2015_1x.nc"))
 
@@ -96,10 +103,9 @@ ggplot(data = dic_surface_t1) +
   scale_fill_viridis_c() +
   coord_quickmap(expand = 0)
 
-##########################
-# Using sea carb:
-library(seacarb)
-library(metR)
+```
+
+```{r seacarb_calc, results='hide', message=FALSE}
 
 #load in data from tidync file in main active grid w/ T1 surface slice
 surface_data <- nc %>%
@@ -147,8 +153,8 @@ ggplot(data = merged_surface_orig) +
   scale_fill_viridis_c() +
   coord_quickmap(expand = 0)
 
-######################
 #Comparing Outputs
+
 #New dataframe w/ reorganized pCO2 data
 pco2_compare <- merged_surface_orig %>% 
   select(lon, lat, pco2_calc, PCO2OC) %>% 
@@ -185,7 +191,10 @@ ggplot(data = pco2_delta) +
   theme(plot.title = element_text(hjust = 0.5)) +
   theme_bw()
 
-#####################
+```
+
+```{r seacarb_perturbation_calc, results='hide', message=FALSE}
+
 #Perturbation of 10 mmol Alk/m^3 in all grid cells
 surface_pert <- 
   merged_surface_orig %>%
@@ -244,8 +253,7 @@ ggplot(data = pco2_pert_delta) +
   theme(plot.title = element_text(hjust = 0.5)) +
   theme_bw()
 
-####################
-#Alkalinity Perturbation, looking at how DIC changes with constant pCO2
+#Alooking at how DIC changes for perturbation with constant pCO2
 surface_pert_dic <- 
   merged_surface_orig %>%
   #head(6) %>% #testing subsset
@@ -253,7 +261,9 @@ surface_pert_dic <-
   mutate(
     DIC_pert = carb(
       flag = 24,
-      var1 = pco2_calc, # for consistency, use the calculate pCO2 here, otherwise you compute a DIC perturbation that is partly due to differences in the computational routines
+      var1 = pco2_calc, # for consistency, use the calculate pCO2 here, 
+      #otherwise you compute a DIC perturbation that is partly due to 
+      #differences in the computational routines (vs the model)
       var2 = (Alk + 10) * 1e-6 / 1.02518,
       S = salt,
       T = temp,
@@ -288,7 +298,6 @@ ggplot(data = dic_pert_compare) +
   coord_quickmap(expand = 0) + 
   scale_fill_viridis_c()
   
-
 #New df w/ the difference in DIC after Alk perturbation
 dic_pert_delta <- surface_pert_dic %>% 
   select(lon, lat, DIC_pert, DIC) %>% 
@@ -305,6 +314,5 @@ ggplot(data = dic_pert_delta) +
   theme_bw() +
   theme(plot.title = element_text(hjust = 0.5))
 
-
-
 ```
+

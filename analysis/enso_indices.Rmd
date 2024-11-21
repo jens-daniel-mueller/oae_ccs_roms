@@ -1,0 +1,418 @@
+---
+title: "CCS ENSO evaluation metrics"
+author: "Victoria Froh & Jens Daniel Müller"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Read this
+this is the script to open the data
+```{r setup, message=FALSE}
+
+# loading packages
+library(ncdf4)
+library(stars)
+library(tidyverse)
+library(lubridate)
+library(units)
+library(zoo)
+
+# Path to the files:
+path_ROMSv2RG_results <- 
+ "/net/sea/work/loher/ROMS/Alk_enh_formatted_2024_08/regrid_2024_10/1979-2009_2/"
+
+#2x2 degree location boxes for each location + TrP 3.4 region:
+#Columbia = 45N-47N, 124W-126W
+#San Francisco = 36.5N-38.5N, 122.5W-124.5W
+#Huntington = 32N-34N, 117W-119W
+#Tropical Pacific = 5S-5N, 120W-170W
+
+# saving theme formatting for all plots in this code
+custom_theme <- theme_bw() + 
+  theme(axis.text.x = element_text(size = 11),
+        axis.text.y = element_text(size = 11),
+        axis.ticks = element_line(linewidth = 0.3, color = "black"),
+        axis.ticks.length = unit(-0.3, "cm"),
+        axis.title.x = element_blank() ,
+        axis.title.y = element_text(size = 12),
+        plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = c(0.2, 0.945),
+        legend.title = element_blank(),
+        legend.text = element_text(size = 10),
+        legend.direction = "horizontal",
+        legend.background = element_rect(color = "grey", linewidth = 0.25),
+        panel.border = element_rect(color = "black", linewidth = 0.5, fill = NA))
+
+colors <- c("tropPacific" = "black", "ColumbiaRiver" = "#F8766D",
+            "SanFrancisco" = "#00BFC4", "Huntington" = "#7CAE00")
+
+lines <- c("tropPacific" = "dashed", "ColumbiaRiver" = "solid", 
+           "SanFrancisco" = "solid", "Huntington" = "solid")
+
+```
+
+
+```{r load_data_sst, message=FALSE}
+
+# 42 year time series of historical monthly averages for all 4 locations
+
+years_past <- 1979:2021
+locations <- c("ColumbiaRiver", "SanFrancisco", "Huntington", "tropPacific")
+annual_cycles <- list()
+annual_monthly_sst_list <- list()
+
+for (i in locations){
+  # creating the 2x2 degree grid subsets for 3 CCS locations, tropP already set
+  subset <- if (i == "ColumbiaRiver") {
+    cbind(start = c(70, 40, 1, 1), count = c(16, 16, 1, 12))
+  } else if (i == "SanFrancisco") {
+    cbind(start = c(33, 39, 1, 1), count = c(16, 16, 1, 12))
+  } else if (i == "Huntington") {
+    cbind(start = c(50, 44, 1, 1), count = c(16, 16, 1, 12))
+  } else if (i == "tropPacific") {
+    cbind(start = c(1, 1, 1, 1), count = c(400, 80, 1, 12))
+  }
+
+  # reading in data for each location into a stars object
+  annual_cycles[[i]] <- do.call(c, lapply(years_past, function(year)(
+    read_ncdf(paste0(path_ROMSv2RG_results,
+                     "pactcs30_", year, "_monthly_", i, ".nc"),
+              ncsub = subset,
+              var = "temp",
+              proxy = FALSE
+  ))))
+  
+  # converting each stars object into a dataframe and cleaning up
+  annual_cycles[[i]] <- annual_cycles[[i]] %>% 
+    drop_units() %>% 
+    as_tibble %>% 
+    select(-s_rho)
+  
+  # creating a new data frame with the monthly average over each region
+  annual_monthly_sst_list[[i]] <- annual_cycles[[i]] %>% 
+    mutate(yr_mon = paste0(format(time, "%Y-%m"), "-15"), yr_mon = ymd(yr_mon)) %>%
+    group_by(yr_mon) %>% 
+    summarise(sst_mean = mean(temp, na.rm = TRUE)) %>%
+    ungroup() %>% 
+    mutate(region = i) 
+}
+
+# rearranging all location lists into a single data frame
+annual_monthly_sst <- reduce(annual_monthly_sst_list, bind_rows)
+
+# clearing unneeded objects
+rm(annual_cycles, annual_monthly_sst_list)
+
+```
+
+```{r sst_clim_baseline, message=FALSE}
+
+# computing the climatological monthly mean for each location
+monthly_mean_baseline <- annual_monthly_sst %>%
+  mutate(month = format(as.Date(yr_mon), "%m")) %>% 
+  group_by(month, region) %>% 
+  summarise(sst_clim = mean(sst_mean)) %>% 
+  ungroup()
+
+# plot
+monthly_mean_baseline %>% 
+  mutate(month = as.numeric(month)) %>% 
+  ggplot(aes(month, sst_clim, col = region)) +
+  geom_path() +
+  labs(x = "Month", y = "Climatological Monthly Mean SST (°C)") +
+  scale_color_manual(values = colors) +
+  custom_theme + 
+  scale_x_continuous(breaks = seq(1,12,3)) + 
+  theme(legend.position = c(0.7, 0.08))
+
+```
+
+```{r sst_anomalies, message=FALSE}
+
+# calculate the anomaly for each location/month  (time series - base month mean)
+annual_monthly_sst <- annual_monthly_sst %>%
+  mutate(month = format(as.Date(yr_mon), "%m")) %>%
+  group_by(month, region) %>%
+  mutate(sst_clim = mean(sst_mean)) %>%
+  ungroup() %>% 
+  mutate(sst_anom = sst_mean - sst_clim)
+
+# plot anomalies
+annual_monthly_sst %>% 
+  ggplot(aes(x = yr_mon, y = sst_anom, color = region, linetype = region)) +
+  geom_path() +
+  labs(y = "Monthly Mean SST anomaly (°C)") +
+  scale_color_manual(values = colors) +
+  scale_linetype_manual(values = lines) +
+  custom_theme
+
+```
+
+```{r sst_running_annual_mean, message=FALSE}
+
+# Computing running annual mean (mean sst/anom for one year starting each month)
+running_annual_mean_sst <- annual_monthly_sst %>%
+  select(yr_mon, region, sst_mean, sst_anom) %>% 
+  pivot_longer(starts_with("sst")) %>% 
+  group_by(region, name) %>% 
+  mutate(value = rollmean(value, k=12, fill=NA, align = "left")) %>% 
+  ungroup()
+
+# plot both RAMs
+running_annual_mean_sst %>% 
+  ggplot(aes(x = yr_mon, y = value, color = region, linetype = region)) +
+  geom_path() +
+  labs(y = "Annual Running Mean (°C)") +
+  scale_color_manual(values = colors) +
+  scale_linetype_manual(values = lines) +
+  facet_grid(name ~ ., scales = "free_y") +
+  scale_y_continuous(expand = expansion(mult = 0.07)) + # add more space
+  custom_theme + 
+  theme(legend.position = c(0.43, 0.965))
+
+```
+
+```{r sst_correlation_coeffs, message=FALSE}
+
+# Calculating correlation coefficients for the sst anomalies and plot
+annual_monthly_sst %>% 
+  select(yr_mon, region, sst_anom) %>% 
+  pivot_wider(names_from = region,
+              values_from = sst_anom) %>% 
+  pivot_longer(-c(yr_mon, tropPacific)) %>% 
+  drop_na() %>% 
+  group_by(name) %>% 
+  summarise(cor = cor(tropPacific, value)) %>% 
+  ungroup() %>% 
+  ggplot(aes(name, cor)) +
+  geom_col()
+
+```
+
+```{r load_data_t50, message=FALSE}
+
+# Loading in time series for temperature at 50m depth
+locations_2 <- c("ColumbiaRiver", "SanFrancisco", "Huntington")
+annual_cycles <- list()
+annual_monthly_t50_list <- list()
+
+for (j in locations_2){
+  # creating the 2x2 degree grid subsets for 3 CCS locations, tropP already set
+  subset <- if (j == "ColumbiaRiver") {
+    cbind(start = c(70, 40, 1), count = c(16, 16, 12))
+  } else if (j == "SanFrancisco") {
+    cbind(start = c(33, 39, 1), count = c(16, 16, 12))
+  } else if (j == "Huntington") {
+    cbind(start = c(50, 44, 1), count = c(16, 16, 12))
+  } 
+
+  # reading in data for each location into a stars object
+  annual_cycles[[j]] <- do.call(c, lapply(years_past, function(year)(
+    read_ncdf(paste0(path_ROMSv2RG_results,
+                     "pactcs30_", year, "_monthly_", j, "_50m.nc"),
+              ncsub = subset,
+              var = "temp",
+              proxy = FALSE
+  ))))
+  
+  # converting each stars object into a dataframe and cleaning up
+  annual_cycles[[j]] <- annual_cycles[[j]] %>% 
+    drop_units() %>% 
+    as_tibble()
+  
+  # creating a new data frame with the monthly average over each region
+  annual_monthly_t50_list[[j]] <- annual_cycles[[j]] %>% 
+    mutate(yr_mon = paste0(format(time, "%Y-%m"), "-15"), yr_mon = ymd(yr_mon)) %>%
+    group_by(yr_mon) %>% 
+    summarise(t50_mean = mean(temp, na.rm = TRUE)) %>% 
+    ungroup() %>% 
+    mutate(region = j)
+  
+}
+  
+# rearranging all stored location lists into a single data frame
+annual_monthly_t50 <- reduce(annual_monthly_t50_list, bind_rows)
+
+# clearing unneeded objects
+rm(annual_cycles, annual_monthly_t50_list)
+
+```
+
+```{r load_data_iso26, message=FALSE}
+
+# 42 year time series of historical monthly averages for all 4 locations
+
+annual_cycles <- list()
+annual_monthly_iso26_list <- list()
+
+for (j in locations_2){
+  # creating the 2x2 degree grid subsets for 3 CCS locations, tropP already set
+  subset <- if (j == "ColumbiaRiver") {
+    cbind(start = c(70, 40, 1), count = c(16, 16, 12))
+  } else if (j == "SanFrancisco") {
+    cbind(start = c(33, 39, 1), count = c(16, 16, 12))
+  } else if (j == "Huntington") {
+    cbind(start = c(50, 44, 1), count = c(16, 16, 12))
+  } 
+
+  # reading in data for each location into a stars object
+  annual_cycles[[j]] <- do.call(c, lapply(years_past, function(year)(
+    read_ncdf(paste0(path_ROMSv2RG_results, 
+                     "isopycnal_monthly_", year, "_", j, ".nc"),
+              ncsub = subset,
+              var = c("depth_26", "salt_26"),
+              proxy = FALSE
+  ))))
+  
+  # converting each stars object into a data frame and cleaning up
+  annual_cycles[[j]] <- annual_cycles[[j]] %>% 
+    drop_units() %>% 
+    as_tibble() 
+  
+  # Weird values showing up in SF, need to filter out
+  if (j == "SanFrancisco") {
+  annual_cycles[[j]] <- annual_cycles[[j]] %>%
+    filter(depth_26 >= 1, salt_26 >= 1)
+}
+  
+  # creating a new data frame with the monthly average over each region
+  annual_monthly_iso26_list[[j]] <- annual_cycles[[j]] %>% 
+    mutate(yr_mon = paste0(format(time, "%Y-%m"), "-15"), yr_mon = ymd(yr_mon)) %>%
+    group_by(yr_mon) %>% 
+    summarise(depth_26_mean = mean(depth_26, na.rm = TRUE),
+    salt_26_mean = mean(salt_26, na.rm = TRUE)) %>% 
+    ungroup() %>% 
+    mutate(region = j)
+  
+}
+
+# rearranging all stored location lists into a single data frame
+annual_monthly_iso26 <- reduce(annual_monthly_iso26_list, bind_rows)
+
+# clearing unneeded objects
+rm(annual_cycles, annual_monthly_iso26_list)
+
+```
+
+```{r metric_clim_baseline, message=FALSE, fig.dim = c(6, 4)}
+
+# Joining together the 50m T and iso26 dataframes and reorganizing
+enso_metric_monthly <- full_join(annual_monthly_t50, annual_monthly_iso26)
+enso_metric_monthly <- enso_metric_monthly %>% 
+  pivot_longer(
+    cols = c(t50_mean, depth_26_mean, salt_26_mean),
+    names_to = "metric",
+    values_to = "metric_mean",
+    names_transform = list(metric = ~ case_when(
+      . == "t50_mean" ~ "t50",
+      . == "depth_26_mean" ~ "depth26",
+      . == "salt_26_mean" ~ "salt26"
+      ))
+  )
+
+# computing the climatological monthly mean for each metric at each location
+monthly_mean_baseline <- enso_metric_monthly %>%
+  mutate(month = format(as.Date(yr_mon), "%m")) %>%
+  group_by(month, region, metric) %>%
+  summarise(metric_clim = mean(metric_mean)) %>%
+  ungroup()
+
+# plot (still want to update/change this later)
+monthly_mean_baseline %>% 
+  mutate(month = as.numeric(month)) %>% 
+  ggplot(aes(x = month, y = metric_clim, color = region)) +
+  geom_path() +
+  labs(x = "Month", y = "Climatological Monthly Mean") +
+  scale_color_manual(values = colors) +
+  facet_wrap(
+    ~ metric, scales = "free_y", ncol = 1, 
+    labeller = labeller(
+      metric = c(
+        "t50" = "50m Temperature (°C)",
+        "depth26" = "Isopycnal 26 kg/m³ Depth (m)",
+        "salt26" = "Isopycnal 26 kg/m³ Salinity (psu)"))) +
+  custom_theme + 
+  scale_x_continuous(breaks = 1:12, labels = month.abb) +
+  theme(legend.position = c(0.43, 0.965))
+
+```
+
+```{r metric_anomalies, message=FALSE}
+
+# Calculating anomaly index values
+enso_metric_monthly <- enso_metric_monthly %>%
+  mutate(month = format(as.Date(yr_mon), "%m")) %>%
+  group_by(month, region, metric) %>%
+  mutate(metric_clim = mean(metric_mean)) %>%
+  ungroup() %>% 
+  mutate(metric_anom = metric_mean - metric_clim)
+
+# plot (want to do more with this and add in tropP sst later)
+enso_metric_monthly %>% 
+  ggplot(aes(x = yr_mon, y = metric_anom, color = region)) +
+  geom_path() +
+  labs(y = "Monthly Mean Anomaly") +
+  scale_color_manual(values = colors) +
+  facet_wrap(
+    ~ metric, scales = "free_y", ncol = 1, 
+    labeller = labeller(
+      metric = c(
+        "t50" = "50m Temperature (°C)",
+        "depth26" = "Isopycnal 26 kg/m³ Depth (m)",
+        "salt26" = "Isopycnal 26 kg/m³ Salinity (psu)"))) +
+  custom_theme + 
+  theme(legend.position = c(0.6, 0.965))
+
+```
+
+```{r metric_running_annual_mean, message=FALSE}
+
+# Computing running annual mean (sst and anomaly for one year starting that month)
+running_annual_mean_metrics <- enso_metric_monthly %>%
+  select(yr_mon, region, metric, metric_mean, metric_anom) %>% 
+  pivot_longer(starts_with("metric_")) %>%
+  group_by(region, metric, name) %>% 
+  mutate(value = rollmean(value, k=12, fill=NA, align = "left")) %>%
+  ungroup()
+
+# plot (this is not correct currently and i want to add in tropP sst later)
+running_annual_mean_metrics %>% 
+  ggplot(aes(x = yr_mon, y = value, color = region)) +
+  geom_path() +
+  labs(y = "Annual Running Mean") +
+  scale_color_manual(values = colors) +
+  facet_wrap( ~ metric, scales = "free_y", ncol = 1, 
+    labeller = labeller(
+      metric = c(
+        "t50" = "50m Temperature (°C)",
+        "depth26" = "Isopycnal 26 kg/m³ Depth (m)",
+        "salt26" = "Isopycnal 26 kg/m³ Salinity (psu)"))) +
+  custom_theme + 
+  theme(legend.position = c(0.6, 0.965))
+
+```
+
+```{r metrics_correlation_coeffs, eval=FALSE, message=FALSE, include=FALSE}
+
+#Calculating correlation coeffs for the anomalies vs tropical Pacific sst
+#but i do not currently know how to be able to do this for all of the metrics
+corr_tbl <- enso_metric_monthly %>% 
+  select(yr_mon, region, metric, metric_anom) %>% 
+  pivot_wider(names_from = metric,
+              values_from = metric_anom) #%>%
+  # pivot_wider(names_from = region,
+              # values_from = t50)
+  # full_join()
+  # pivot_longer(-c(yr_mon, tropPacific)) %>% 
+  # drop_na() %>% 
+  # group_by(name) %>% 
+  # summarise(cor = cor(tropPacific, value)) %>% 
+  # ungroup() %>% 
+  # ggplot(aes(name, cor)) +
+  # geom_col()
+```
+
