@@ -382,7 +382,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">CCS ENSO evaluation metrics</h1>
 <h4 class="author">Victoria Froh &amp; Jens Daniel Müller</h4>
-<h4 class="date">21 November, 2024</h4>
+<h4 class="date">22 November, 2024</h4>
 
 </div>
 
@@ -411,7 +411,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-11-21
+<strong>Last updated:</strong> 2024-11-22
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -542,15 +542,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree163f18c0a36a30ae3f5da695809e44038371c67etargetblank163f18ca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreee8bd04465ff6acdf322d889d2325ce2da47a097atargetblanke8bd044a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/163f18c0a36a30ae3f5da695809e44038371c67e" target="_blank">163f18c</a>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/e8bd04465ff6acdf322d889d2325ce2da47a097a" target="_blank">e8bd044</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree163f18c0a36a30ae3f5da695809e44038371c67etargetblank163f18ca"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreee8bd04465ff6acdf322d889d2325ce2da47a097atargetblanke8bd044a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -560,7 +560,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/163f18c0a36a30ae3f5da695809e44038371c67e" target="_blank">163f18c</a>.
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/e8bd04465ff6acdf322d889d2325ce2da47a097a" target="_blank">e8bd044</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -578,14 +578,8 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
 
-Untracked files:
-    Untracked:  code/temperature_indices.Rmd
-
 Unstaged changes:
-    Modified:   analysis/_site.yml
-    Deleted:    analysis/temperature_indices.Rmd
     Modified:   code/Workflowr_project_managment.R
-    Deleted:    code/enso_indices.Rmd
 
 </code></pre>
 <p>
@@ -631,6 +625,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/e8bd04465ff6acdf322d889d2325ce2da47a097a/analysis/enso_indices.Rmd" target="_blank">e8bd044</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-22
+</td>
+<td>
+enso_indices update and plot edits
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/1cd653256bfaecd3a9919271839eaeb83065cb93/analysis/enso_indices.Rmd" target="_blank">1cd6532</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-21
+</td>
+<td>
+Manually committing updated enso file and file location changes
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/c12634a39e2bd5c4f3aea248c50689fafeba486e/docs/enso_indices.html" target="_blank">c12634a</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-21
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -912,12 +957,50 @@ monthly_mean_baseline %&gt;%
   mutate(month = as.numeric(month)) %&gt;% 
   ggplot(aes(month, sst_clim, col = region)) +
   geom_path() +
-  labs(x = &quot;Month&quot;, y = &quot;Climatological Monthly Mean SST (°C)&quot;) +
+  labs(title = &quot;Climatological Sea Surface Temperature Baseline&quot;,
+       x = &quot;Month&quot;, y = &quot;Monthly Mean SST (°C)&quot;) +
   scale_color_manual(values = colors) +
   custom_theme + 
-  scale_x_continuous(breaks = seq(1,12,3)) + 
+  scale_x_continuous(breaks = 1:12, labels = month.abb) +
   theme(legend.position = c(0.7, 0.08))</code></pre>
-<p><img src="figure/enso_indices.Rmd/sst_clim_baseline-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/enso_indices.Rmd/sst_clim_baseline-1.png" width="480" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-sst_clim_baseline-1">
+Past versions of sst_clim_baseline-1.png
+</button>
+</p>
+<div id="fig-sst_clim_baseline-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/c12634a39e2bd5c4f3aea248c50689fafeba486e/docs/figure/enso_indices.Rmd/sst_clim_baseline-1.png" target="_blank">c12634a</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># calculate the anomaly for each location/month  (time series - base month mean)
 annual_monthly_sst &lt;- annual_monthly_sst %&gt;%
   mutate(month = format(as.Date(yr_mon), &quot;%m&quot;)) %&gt;%
@@ -930,11 +1013,49 @@ annual_monthly_sst &lt;- annual_monthly_sst %&gt;%
 annual_monthly_sst %&gt;% 
   ggplot(aes(x = yr_mon, y = sst_anom, color = region, linetype = region)) +
   geom_path() +
-  labs(y = &quot;Monthly Mean SST anomaly (°C)&quot;) +
+  labs(title = &quot;Monthly Sea Surface Temperature Anomalies&quot;, 
+       y = &quot;SST anomaly (°C)&quot;) +
   scale_color_manual(values = colors) +
   scale_linetype_manual(values = lines) +
   custom_theme</code></pre>
-<p><img src="figure/enso_indices.Rmd/sst_anomalies-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/enso_indices.Rmd/sst_anomalies-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-sst_anomalies-1">
+Past versions of sst_anomalies-1.png
+</button>
+</p>
+<div id="fig-sst_anomalies-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/c12634a39e2bd5c4f3aea248c50689fafeba486e/docs/figure/enso_indices.Rmd/sst_anomalies-1.png" target="_blank">c12634a</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># Computing running annual mean (mean sst/anom for one year starting each month)
 running_annual_mean_sst &lt;- annual_monthly_sst %&gt;%
   select(yr_mon, region, sst_mean, sst_anom) %&gt;% 
@@ -947,28 +1068,108 @@ running_annual_mean_sst &lt;- annual_monthly_sst %&gt;%
 running_annual_mean_sst %&gt;% 
   ggplot(aes(x = yr_mon, y = value, color = region, linetype = region)) +
   geom_path() +
-  labs(y = &quot;Annual Running Mean (°C)&quot;) +
+  labs(title = &quot;Sea Surface Temperature Running Annual Means&quot;,
+       y = &quot;Running Annual Mean (°C)&quot;) +
   scale_color_manual(values = colors) +
   scale_linetype_manual(values = lines) +
   facet_grid(name ~ ., scales = &quot;free_y&quot;) +
   scale_y_continuous(expand = expansion(mult = 0.07)) + # add more space
   custom_theme + 
   theme(legend.position = c(0.43, 0.965))</code></pre>
-<pre><code>Warning: Removed 88 rows containing missing values (`geom_path()`).</code></pre>
 <p><img src="figure/enso_indices.Rmd/sst_running_annual_mean-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-sst_running_annual_mean-1">
+Past versions of sst_running_annual_mean-1.png
+</button>
+</p>
+<div id="fig-sst_running_annual_mean-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/c12634a39e2bd5c4f3aea248c50689fafeba486e/docs/figure/enso_indices.Rmd/sst_running_annual_mean-1.png" target="_blank">c12634a</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># Calculating correlation coefficients for the sst anomalies and plot
 annual_monthly_sst %&gt;% 
   select(yr_mon, region, sst_anom) %&gt;% 
   pivot_wider(names_from = region,
               values_from = sst_anom) %&gt;% 
-  pivot_longer(-c(yr_mon, tropPacific)) %&gt;% 
-  drop_na() %&gt;% 
-  group_by(name) %&gt;% 
-  summarise(cor = cor(tropPacific, value)) %&gt;% 
-  ungroup() %&gt;% 
+  pivot_longer(-c(yr_mon, tropPacific)) %&gt;% #this recombines the indices col
+  drop_na() %&gt;%
+  group_by(name) %&gt;% # name is now where the regions are stored
+  summarise(cor = cor(tropPacific, value)) %&gt;% #value is the indice
+  ungroup() %&gt;%
   ggplot(aes(name, cor)) +
-  geom_col()</code></pre>
+  geom_col() + 
+  labs(title = 
+           &quot;Correlation Coefficients of SST Anomalies with the Tropical Pacific&quot;,
+         y = &quot;Correlation Coefficient&quot;,
+         x = &quot;Region&quot;) + 
+  custom_theme + 
+  theme(panel.grid.major.y = element_line())</code></pre>
 <p><img src="figure/enso_indices.Rmd/sst_correlation_coeffs-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-sst_correlation_coeffs-1">
+Past versions of sst_correlation_coeffs-1.png
+</button>
+</p>
+<div id="fig-sst_correlation_coeffs-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/c12634a39e2bd5c4f3aea248c50689fafeba486e/docs/figure/enso_indices.Rmd/sst_correlation_coeffs-1.png" target="_blank">c12634a</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># Loading in time series for temperature at 50m depth
 locations_2 &lt;- c(&quot;ColumbiaRiver&quot;, &quot;SanFrancisco&quot;, &quot;Huntington&quot;)
 annual_cycles &lt;- list()
@@ -1057,265 +1258,9 @@ for (j in locations_2){
     ungroup() %&gt;% 
     mutate(region = j)
   
-}</code></pre>
-<pre><code>Warning: ignoring unrecognized unit: PSU
+}
 
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU
-
-Warning: ignoring unrecognized unit: PSU</code></pre>
-<pre class="r"><code># rearranging all stored location lists into a single data frame
+# rearranging all stored location lists into a single data frame
 annual_monthly_iso26 &lt;- reduce(annual_monthly_iso26_list, bind_rows)
 
 # clearing unneeded objects
@@ -1346,7 +1291,8 @@ monthly_mean_baseline %&gt;%
   mutate(month = as.numeric(month)) %&gt;% 
   ggplot(aes(x = month, y = metric_clim, color = region)) +
   geom_path() +
-  labs(x = &quot;Month&quot;, y = &quot;Climatological Monthly Mean&quot;) +
+  labs(title = &quot;Climatological Baseline&quot;, 
+       x = &quot;Month&quot;, y = &quot;Climatological Monthly Mean&quot;) +
   scale_color_manual(values = colors) +
   facet_wrap(
     ~ metric, scales = &quot;free_y&quot;, ncol = 1, 
@@ -1359,6 +1305,43 @@ monthly_mean_baseline %&gt;%
   scale_x_continuous(breaks = 1:12, labels = month.abb) +
   theme(legend.position = c(0.43, 0.965))</code></pre>
 <p><img src="figure/enso_indices.Rmd/metric_clim_baseline-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-metric_clim_baseline-1">
+Past versions of metric_clim_baseline-1.png
+</button>
+</p>
+<div id="fig-metric_clim_baseline-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/c12634a39e2bd5c4f3aea248c50689fafeba486e/docs/figure/enso_indices.Rmd/metric_clim_baseline-1.png" target="_blank">c12634a</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># Calculating anomaly index values
 enso_metric_monthly &lt;- enso_metric_monthly %&gt;%
   mutate(month = format(as.Date(yr_mon), &quot;%m&quot;)) %&gt;%
@@ -1371,7 +1354,8 @@ enso_metric_monthly &lt;- enso_metric_monthly %&gt;%
 enso_metric_monthly %&gt;% 
   ggplot(aes(x = yr_mon, y = metric_anom, color = region)) +
   geom_path() +
-  labs(y = &quot;Monthly Mean Anomaly&quot;) +
+  labs(title = &quot;Mean Monthly Anomalies&quot;, 
+       y = &quot;Anomaly&quot;) +
   scale_color_manual(values = colors) +
   facet_wrap(
     ~ metric, scales = &quot;free_y&quot;, ncol = 1, 
@@ -1383,6 +1367,43 @@ enso_metric_monthly %&gt;%
   custom_theme + 
   theme(legend.position = c(0.6, 0.965))</code></pre>
 <p><img src="figure/enso_indices.Rmd/metric_anomalies-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-metric_anomalies-1">
+Past versions of metric_anomalies-1.png
+</button>
+</p>
+<div id="fig-metric_anomalies-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/c12634a39e2bd5c4f3aea248c50689fafeba486e/docs/figure/enso_indices.Rmd/metric_anomalies-1.png" target="_blank">c12634a</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># Computing running annual mean (sst and anomaly for one year starting that month)
 running_annual_mean_metrics &lt;- enso_metric_monthly %&gt;%
   select(yr_mon, region, metric, metric_mean, metric_anom) %&gt;% 
@@ -1393,20 +1414,61 @@ running_annual_mean_metrics &lt;- enso_metric_monthly %&gt;%
 
 # plot (this is not correct currently and i want to add in tropP sst later)
 running_annual_mean_metrics %&gt;% 
-  ggplot(aes(x = yr_mon, y = value, color = region)) +
+  ggplot(aes(x = yr_mon, y = value, color = region)) + 
   geom_path() +
-  labs(y = &quot;Annual Running Mean&quot;) +
+  labs(title = &quot;Metric Running Annual Means&quot;,
+       y = &quot;Running Annual Mean&quot;) +
   scale_color_manual(values = colors) +
-  facet_wrap( ~ metric, scales = &quot;free_y&quot;, ncol = 1, 
+  scale_y_continuous(expand = expansion(mult = 0.07)) +
+  facet_wrap(~ metric + name, scales = &quot;free_y&quot;, ncol = 2, 
     labeller = labeller(
       metric = c(
         &quot;t50&quot; = &quot;50m Temperature (°C)&quot;,
         &quot;depth26&quot; = &quot;Isopycnal 26 kg/m³ Depth (m)&quot;,
-        &quot;salt26&quot; = &quot;Isopycnal 26 kg/m³ Salinity (psu)&quot;))) +
+        &quot;salt26&quot; = &quot;Isopycnal 26 kg/m³ Salinity (psu)&quot;),
+      name = label_value)) +
   custom_theme + 
-  theme(legend.position = c(0.6, 0.965))</code></pre>
-<pre><code>Warning: Removed 198 rows containing missing values (`geom_path()`).</code></pre>
+  theme(legend.position = &quot;top&quot;, legend.justification = &quot;right&quot;,
+        plot.title = element_text(hjust = 0.5, margin = margin(b = -20)), 
+        strip.text = element_text(size = 10))</code></pre>
 <p><img src="figure/enso_indices.Rmd/metric_running_annual_mean-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-metric_running_annual_mean-1">
+Past versions of metric_running_annual_mean-1.png
+</button>
+</p>
+<div id="fig-metric_running_annual_mean-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/c12634a39e2bd5c4f3aea248c50689fafeba486e/docs/figure/enso_indices.Rmd/metric_running_annual_mean-1.png" target="_blank">c12634a</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
