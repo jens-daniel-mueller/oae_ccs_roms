@@ -542,15 +542,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreee8bd04465ff6acdf322d889d2325ce2da47a097atargetblanke8bd044a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree2a4bfac10f07b9de2427edb6ab3787440b24190btargetblank2a4bfaca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/e8bd04465ff6acdf322d889d2325ce2da47a097a" target="_blank">e8bd044</a>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/2a4bfac10f07b9de2427edb6ab3787440b24190b" target="_blank">2a4bfac</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreee8bd04465ff6acdf322d889d2325ce2da47a097atargetblanke8bd044a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree2a4bfac10f07b9de2427edb6ab3787440b24190btargetblank2a4bfaca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -560,7 +560,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/e8bd04465ff6acdf322d889d2325ce2da47a097a" target="_blank">e8bd044</a>.
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/2a4bfac10f07b9de2427edb6ab3787440b24190b" target="_blank">2a4bfac</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -625,6 +625,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/2a4bfac10f07b9de2427edb6ab3787440b24190b/analysis/enso_indices.Rmd" target="_blank">2a4bfac</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-22
+</td>
+<td>
+enso_indices plot edits part 2
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/7c47c0f7810e851d7c83b3971555b457ead766f3/docs/enso_indices.html" target="_blank">7c47c0f</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-22
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -885,10 +919,10 @@ custom_theme &lt;- theme_bw() +
         plot.title = element_text(hjust = 0.5),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        legend.position = c(0.2, 0.945),
+        legend.position = &quot;right&quot;,
         legend.title = element_blank(),
         legend.text = element_text(size = 10),
-        legend.direction = &quot;horizontal&quot;,
+        legend.direction = &quot;vertical&quot;,
         legend.background = element_rect(color = &quot;grey&quot;, linewidth = 0.25),
         panel.border = element_rect(color = &quot;black&quot;, linewidth = 0.5, fill = NA))
 
@@ -961,9 +995,8 @@ monthly_mean_baseline %&gt;%
        x = &quot;Month&quot;, y = &quot;Monthly Mean SST (°C)&quot;) +
   scale_color_manual(values = colors) +
   custom_theme + 
-  scale_x_continuous(breaks = 1:12, labels = month.abb) +
-  theme(legend.position = c(0.7, 0.08))</code></pre>
-<p><img src="figure/enso_indices.Rmd/sst_clim_baseline-1.png" width="480" style="display: block; margin: auto;" /></p>
+  scale_x_continuous(breaks = 1:12, labels = month.abb)</code></pre>
+<p><img src="figure/enso_indices.Rmd/sst_clim_baseline-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-sst_clim_baseline-1">
 Past versions of sst_clim_baseline-1.png
@@ -986,6 +1019,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/7c47c0f7810e851d7c83b3971555b457ead766f3/docs/figure/enso_indices.Rmd/sst_clim_baseline-1.png" target="_blank">7c47c0f</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/c12634a39e2bd5c4f3aea248c50689fafeba486e/docs/figure/enso_indices.Rmd/sst_clim_baseline-1.png" target="_blank">c12634a</a>
@@ -1018,7 +1062,7 @@ annual_monthly_sst %&gt;%
   scale_color_manual(values = colors) +
   scale_linetype_manual(values = lines) +
   custom_theme</code></pre>
-<p><img src="figure/enso_indices.Rmd/sst_anomalies-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="figure/enso_indices.Rmd/sst_anomalies-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-sst_anomalies-1">
 Past versions of sst_anomalies-1.png
@@ -1041,6 +1085,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/7c47c0f7810e851d7c83b3971555b457ead766f3/docs/figure/enso_indices.Rmd/sst_anomalies-1.png" target="_blank">7c47c0f</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/c12634a39e2bd5c4f3aea248c50689fafeba486e/docs/figure/enso_indices.Rmd/sst_anomalies-1.png" target="_blank">c12634a</a>
@@ -1074,8 +1129,7 @@ running_annual_mean_sst %&gt;%
   scale_linetype_manual(values = lines) +
   facet_grid(name ~ ., scales = &quot;free_y&quot;) +
   scale_y_continuous(expand = expansion(mult = 0.07)) + # add more space
-  custom_theme + 
-  theme(legend.position = c(0.43, 0.965))</code></pre>
+  custom_theme </code></pre>
 <p><img src="figure/enso_indices.Rmd/sst_running_annual_mean-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-sst_running_annual_mean-1">
@@ -1099,6 +1153,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/7c47c0f7810e851d7c83b3971555b457ead766f3/docs/figure/enso_indices.Rmd/sst_running_annual_mean-1.png" target="_blank">7c47c0f</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/c12634a39e2bd5c4f3aea248c50689fafeba486e/docs/figure/enso_indices.Rmd/sst_running_annual_mean-1.png" target="_blank">c12634a</a>
@@ -1155,6 +1220,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/7c47c0f7810e851d7c83b3971555b457ead766f3/docs/figure/enso_indices.Rmd/sst_correlation_coeffs-1.png" target="_blank">7c47c0f</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/c12634a39e2bd5c4f3aea248c50689fafeba486e/docs/figure/enso_indices.Rmd/sst_correlation_coeffs-1.png" target="_blank">c12634a</a>
@@ -1302,9 +1378,8 @@ monthly_mean_baseline %&gt;%
         &quot;depth26&quot; = &quot;Isopycnal 26 kg/m³ Depth (m)&quot;,
         &quot;salt26&quot; = &quot;Isopycnal 26 kg/m³ Salinity (psu)&quot;))) +
   custom_theme + 
-  scale_x_continuous(breaks = 1:12, labels = month.abb) +
-  theme(legend.position = c(0.43, 0.965))</code></pre>
-<p><img src="figure/enso_indices.Rmd/metric_clim_baseline-1.png" width="576" style="display: block; margin: auto;" /></p>
+  scale_x_continuous(breaks = 1:12, labels = month.abb)</code></pre>
+<p><img src="figure/enso_indices.Rmd/metric_clim_baseline-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-metric_clim_baseline-1">
 Past versions of metric_clim_baseline-1.png
@@ -1327,6 +1402,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/7c47c0f7810e851d7c83b3971555b457ead766f3/docs/figure/enso_indices.Rmd/metric_clim_baseline-1.png" target="_blank">7c47c0f</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/c12634a39e2bd5c4f3aea248c50689fafeba486e/docs/figure/enso_indices.Rmd/metric_clim_baseline-1.png" target="_blank">c12634a</a>
@@ -1364,8 +1450,7 @@ enso_metric_monthly %&gt;%
         &quot;t50&quot; = &quot;50m Temperature (°C)&quot;,
         &quot;depth26&quot; = &quot;Isopycnal 26 kg/m³ Depth (m)&quot;,
         &quot;salt26&quot; = &quot;Isopycnal 26 kg/m³ Salinity (psu)&quot;))) +
-  custom_theme + 
-  theme(legend.position = c(0.6, 0.965))</code></pre>
+  custom_theme </code></pre>
 <p><img src="figure/enso_indices.Rmd/metric_anomalies-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-metric_anomalies-1">
@@ -1389,6 +1474,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/7c47c0f7810e851d7c83b3971555b457ead766f3/docs/figure/enso_indices.Rmd/metric_anomalies-1.png" target="_blank">7c47c0f</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/c12634a39e2bd5c4f3aea248c50689fafeba486e/docs/figure/enso_indices.Rmd/metric_anomalies-1.png" target="_blank">c12634a</a>
@@ -1427,10 +1523,7 @@ running_annual_mean_metrics %&gt;%
         &quot;depth26&quot; = &quot;Isopycnal 26 kg/m³ Depth (m)&quot;,
         &quot;salt26&quot; = &quot;Isopycnal 26 kg/m³ Salinity (psu)&quot;),
       name = label_value)) +
-  custom_theme + 
-  theme(legend.position = &quot;top&quot;, legend.justification = &quot;right&quot;,
-        plot.title = element_text(hjust = 0.5, margin = margin(b = -20)), 
-        strip.text = element_text(size = 10))</code></pre>
+  custom_theme #+ </code></pre>
 <p><img src="figure/enso_indices.Rmd/metric_running_annual_mean-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-metric_running_annual_mean-1">
@@ -1456,6 +1549,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/7c47c0f7810e851d7c83b3971555b457ead766f3/docs/figure/enso_indices.Rmd/metric_running_annual_mean-1.png" target="_blank">7c47c0f</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/c12634a39e2bd5c4f3aea248c50689fafeba486e/docs/figure/enso_indices.Rmd/metric_running_annual_mean-1.png" target="_blank">c12634a</a>
 </td>
 <td>
@@ -1469,6 +1573,9 @@ vgfroh
 </table>
 </div>
 </div>
+<pre class="r"><code>  # theme(legend.position = &quot;top&quot;, legend.justification = &quot;right&quot;,
+        # plot.title = element_text(hjust = 0.5, margin = margin(b = -20)), 
+        # strip.text = element_text(size = 10))</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
