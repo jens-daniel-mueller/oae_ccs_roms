@@ -109,7 +109,7 @@ rm(annual_cycles, annual_monthly_sst_list)
 
 ```
 
-```{r sst_clim_baseline, message=FALSE}
+```{r sst_clim_baseline, message=FALSE, fig.dim=c(5,3)}
 
 # computing the climatological monthly mean for each location
 monthly_mean_baseline <- annual_monthly_sst %>%
@@ -123,15 +123,16 @@ monthly_mean_baseline %>%
   mutate(month = as.numeric(month)) %>% 
   ggplot(aes(month, sst_clim, col = region)) +
   geom_path() +
-  labs(x = "Month", y = "Climatological Monthly Mean SST (°C)") +
+  labs(title = "Climatological Sea Surface Temperature Baseline",
+       x = "Month", y = "Monthly Mean SST (°C)") +
   scale_color_manual(values = colors) +
   custom_theme + 
-  scale_x_continuous(breaks = seq(1,12,3)) + 
+  scale_x_continuous(breaks = 1:12, labels = month.abb) +
   theme(legend.position = c(0.7, 0.08))
 
 ```
 
-```{r sst_anomalies, message=FALSE}
+```{r sst_anomalies, message=FALSE, fig.dim=c(6,3)}
 
 # calculate the anomaly for each location/month  (time series - base month mean)
 annual_monthly_sst <- annual_monthly_sst %>%
@@ -145,14 +146,15 @@ annual_monthly_sst <- annual_monthly_sst %>%
 annual_monthly_sst %>% 
   ggplot(aes(x = yr_mon, y = sst_anom, color = region, linetype = region)) +
   geom_path() +
-  labs(y = "Monthly Mean SST anomaly (°C)") +
+  labs(title = "Monthly Sea Surface Temperature Anomalies", 
+       y = "SST anomaly (°C)") +
   scale_color_manual(values = colors) +
   scale_linetype_manual(values = lines) +
   custom_theme
 
 ```
 
-```{r sst_running_annual_mean, message=FALSE}
+```{r sst_running_annual_mean, message=FALSE, warning=FALSE}
 
 # Computing running annual mean (mean sst/anom for one year starting each month)
 running_annual_mean_sst <- annual_monthly_sst %>%
@@ -166,7 +168,8 @@ running_annual_mean_sst <- annual_monthly_sst %>%
 running_annual_mean_sst %>% 
   ggplot(aes(x = yr_mon, y = value, color = region, linetype = region)) +
   geom_path() +
-  labs(y = "Annual Running Mean (°C)") +
+  labs(title = "Sea Surface Temperature Running Annual Means",
+       y = "Running Annual Mean (°C)") +
   scale_color_manual(values = colors) +
   scale_linetype_manual(values = lines) +
   facet_grid(name ~ ., scales = "free_y") +
@@ -183,13 +186,20 @@ annual_monthly_sst %>%
   select(yr_mon, region, sst_anom) %>% 
   pivot_wider(names_from = region,
               values_from = sst_anom) %>% 
-  pivot_longer(-c(yr_mon, tropPacific)) %>% 
-  drop_na() %>% 
-  group_by(name) %>% 
-  summarise(cor = cor(tropPacific, value)) %>% 
-  ungroup() %>% 
+  pivot_longer(-c(yr_mon, tropPacific)) %>% #this recombines the indices col
+  drop_na() %>%
+  group_by(name) %>% # name is now where the regions are stored
+  summarise(cor = cor(tropPacific, value)) %>% #value is the indice
+  ungroup() %>%
   ggplot(aes(name, cor)) +
-  geom_col()
+  geom_col() + 
+  labs(title = 
+           "Correlation Coefficients of SST Anomalies with the Tropical Pacific",
+         y = "Correlation Coefficient",
+         x = "Region") + 
+  custom_theme + 
+  theme(panel.grid.major.y = element_line())
+
 
 ```
 
@@ -326,7 +336,8 @@ monthly_mean_baseline %>%
   mutate(month = as.numeric(month)) %>% 
   ggplot(aes(x = month, y = metric_clim, color = region)) +
   geom_path() +
-  labs(x = "Month", y = "Climatological Monthly Mean") +
+  labs(title = "Climatological Baseline", 
+       x = "Month", y = "Climatological Monthly Mean") +
   scale_color_manual(values = colors) +
   facet_wrap(
     ~ metric, scales = "free_y", ncol = 1, 
@@ -355,7 +366,8 @@ enso_metric_monthly <- enso_metric_monthly %>%
 enso_metric_monthly %>% 
   ggplot(aes(x = yr_mon, y = metric_anom, color = region)) +
   geom_path() +
-  labs(y = "Monthly Mean Anomaly") +
+  labs(title = "Mean Monthly Anomalies", 
+       y = "Anomaly") +
   scale_color_manual(values = colors) +
   facet_wrap(
     ~ metric, scales = "free_y", ncol = 1, 
@@ -369,7 +381,7 @@ enso_metric_monthly %>%
 
 ```
 
-```{r metric_running_annual_mean, message=FALSE}
+```{r metric_running_annual_mean, message=FALSE, warning=FALSE, fig.dim=c(7,3)}
 
 # Computing running annual mean (sst and anomaly for one year starting that month)
 running_annual_mean_metrics <- enso_metric_monthly %>%
@@ -381,38 +393,61 @@ running_annual_mean_metrics <- enso_metric_monthly %>%
 
 # plot (this is not correct currently and i want to add in tropP sst later)
 running_annual_mean_metrics %>% 
-  ggplot(aes(x = yr_mon, y = value, color = region)) +
+  ggplot(aes(x = yr_mon, y = value, color = region)) + 
   geom_path() +
-  labs(y = "Annual Running Mean") +
+  labs(title = "Metric Running Annual Means",
+       y = "Running Annual Mean") +
   scale_color_manual(values = colors) +
-  facet_wrap( ~ metric, scales = "free_y", ncol = 1, 
+  scale_y_continuous(expand = expansion(mult = 0.07)) +
+  facet_wrap(~ metric + name, scales = "free_y", ncol = 2, 
     labeller = labeller(
       metric = c(
         "t50" = "50m Temperature (°C)",
         "depth26" = "Isopycnal 26 kg/m³ Depth (m)",
-        "salt26" = "Isopycnal 26 kg/m³ Salinity (psu)"))) +
+        "salt26" = "Isopycnal 26 kg/m³ Salinity (psu)"),
+      name = label_value)) +
   custom_theme + 
-  theme(legend.position = c(0.6, 0.965))
+  theme(legend.position = "top", legend.justification = "right",
+        plot.title = element_text(hjust = 0.5, margin = margin(b = -20)), 
+        strip.text = element_text(size = 10))
 
 ```
 
 ```{r metrics_correlation_coeffs, eval=FALSE, message=FALSE, include=FALSE}
 
 #Calculating correlation coeffs for the anomalies vs tropical Pacific sst
-#but i do not currently know how to be able to do this for all of the metrics
-corr_tbl <- enso_metric_monthly %>% 
-  select(yr_mon, region, metric, metric_anom) %>% 
+
+#isolate the tropical Pacific sst anomaly data for a comparison metric
+tropP_sstanom <- annual_monthly_sst %>% 
+  select(yr_mon, region, sst_anom) %>% 
+  pivot_wider(names_from = region,
+              values_from = sst_anom) %>% 
+  select(yr_mon, tropPacific)
+
+enso_metric_monthly %>% 
+  select(yr_mon, region, metric, metric_anom) %>%
   pivot_wider(names_from = metric,
-              values_from = metric_anom) #%>%
-  # pivot_wider(names_from = region,
-              # values_from = t50)
-  # full_join()
-  # pivot_longer(-c(yr_mon, tropPacific)) %>% 
-  # drop_na() %>% 
-  # group_by(name) %>% 
-  # summarise(cor = cor(tropPacific, value)) %>% 
-  # ungroup() %>% 
-  # ggplot(aes(name, cor)) +
-  # geom_col()
+              values_from = metric_anom) %>%
+  full_join(tropP_sstanom, by = "yr_mon") %>%
+  pivot_longer(-c(yr_mon, region, tropPacific)) %>%
+  drop_na() %>%
+  group_by(name, region) %>%
+  summarise(cor = cor(tropPacific, value)) %>%
+  ungroup() %>%
+  ggplot(aes(x = region, y = cor)) +
+  geom_col() +
+  facet_wrap(~ name, 
+             labeller = labeller(
+               name = c(
+                 "t50" = "50m Temperature",
+                 "depth26" = "Isopycnal 26 kg/m³ Depth",
+                 "salt26" = "Isopycnal 26 kg/m³ Salinity"))) +
+  labs(title =
+         "Correlation Coefficients of Metric Anomalies and Tropical Pacific SST Anomaly",
+       y = "Correlation Coefficient",
+       x = "Region") +
+  custom_theme +
+  theme(panel.grid.major.y = element_line())
+
 ```
 
