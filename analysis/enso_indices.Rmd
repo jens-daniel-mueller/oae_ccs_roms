@@ -109,7 +109,7 @@ rm(annual_cycles, annual_monthly_sst_list)
 
 ```
 
-```{r sst_clim_baseline, message=FALSE, fig.dim=c(6,4)}
+```{r sst_clim_baseline, message=FALSE, fig.dim=c(7,4)}
 
 # computing the climatological monthly mean for each location
 monthly_mean_baseline <- annual_monthly_sst %>%
@@ -131,7 +131,7 @@ monthly_mean_baseline %>%
 
 ```
 
-```{r sst_anomalies, message=FALSE, fig.dim=c(7,5)}
+```{r sst_anomalies, message=FALSE, fig.dim=c(9,5)}
 
 # calculate the anomaly for each location/month  (time series - base month mean)
 annual_monthly_sst <- annual_monthly_sst %>%
@@ -153,7 +153,7 @@ annual_monthly_sst %>%
 
 ```
 
-```{r sst_running_annual_mean, message=FALSE, warning=FALSE}
+```{r sst_running_annual_mean, message=FALSE, warning=FALSE, fig.dim=c(9,5)}
 
 # Computing running annual mean (mean sst/anom for one year starting each month)
 running_annual_mean_sst <- annual_monthly_sst %>%
@@ -306,7 +306,7 @@ rm(annual_cycles, annual_monthly_iso26_list)
 
 ```
 
-```{r metric_clim_baseline, message=FALSE, fig.dim = c(7, 6)}
+```{r metric_clim_baseline, message=FALSE, fig.dim = c(9, 6)}
 
 # Joining together the 50m T and iso26 dataframes and reorganizing
 enso_metric_monthly <- full_join(annual_monthly_t50, annual_monthly_iso26)
@@ -349,7 +349,7 @@ monthly_mean_baseline %>%
 
 ```
 
-```{r metric_anomalies, message=FALSE, fig.dim = c(7, 6)}
+```{r metric_anomalies, message=FALSE, fig.dim = c(9, 6)}
 
 # Calculating anomaly index values
 enso_metric_monthly <- enso_metric_monthly %>%
@@ -377,7 +377,7 @@ enso_metric_monthly %>%
 
 ```
 
-```{r metric_running_annual_mean, message=FALSE, warning=FALSE, fig.dim=c(7,8)}
+```{r metric_running_annual_mean, message=FALSE, warning=FALSE, fig.dim=c(11,8)}
 
 # Computing running annual mean (sst and anomaly for one year starting that month)
 running_annual_mean_metrics <- enso_metric_monthly %>%
@@ -409,7 +409,7 @@ running_annual_mean_metrics %>%
 
 ```
 
-```{r metrics_correlation_coeffs, message=FALSE, include=FALSE}
+```{r metrics_correlation_coeffs, message=FALSE}
 
 #Calculating correlation coeffs for the anomalies vs tropical Pacific sst
 
