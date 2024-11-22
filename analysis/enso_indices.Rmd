@@ -40,10 +40,10 @@ custom_theme <- theme_bw() +
         plot.title = element_text(hjust = 0.5),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        legend.position = c(0.2, 0.945),
+        legend.position = "right",
         legend.title = element_blank(),
         legend.text = element_text(size = 10),
-        legend.direction = "horizontal",
+        legend.direction = "vertical",
         legend.background = element_rect(color = "grey", linewidth = 0.25),
         panel.border = element_rect(color = "black", linewidth = 0.5, fill = NA))
 
@@ -109,7 +109,7 @@ rm(annual_cycles, annual_monthly_sst_list)
 
 ```
 
-```{r sst_clim_baseline, message=FALSE, fig.dim=c(5,3)}
+```{r sst_clim_baseline, message=FALSE, fig.dim=c(6,4)}
 
 # computing the climatological monthly mean for each location
 monthly_mean_baseline <- annual_monthly_sst %>%
@@ -127,12 +127,11 @@ monthly_mean_baseline %>%
        x = "Month", y = "Monthly Mean SST (°C)") +
   scale_color_manual(values = colors) +
   custom_theme + 
-  scale_x_continuous(breaks = 1:12, labels = month.abb) +
-  theme(legend.position = c(0.7, 0.08))
+  scale_x_continuous(breaks = 1:12, labels = month.abb)
 
 ```
 
-```{r sst_anomalies, message=FALSE, fig.dim=c(6,3)}
+```{r sst_anomalies, message=FALSE, fig.dim=c(7,5)}
 
 # calculate the anomaly for each location/month  (time series - base month mean)
 annual_monthly_sst <- annual_monthly_sst %>%
@@ -174,8 +173,7 @@ running_annual_mean_sst %>%
   scale_linetype_manual(values = lines) +
   facet_grid(name ~ ., scales = "free_y") +
   scale_y_continuous(expand = expansion(mult = 0.07)) + # add more space
-  custom_theme + 
-  theme(legend.position = c(0.43, 0.965))
+  custom_theme 
 
 ```
 
@@ -308,7 +306,7 @@ rm(annual_cycles, annual_monthly_iso26_list)
 
 ```
 
-```{r metric_clim_baseline, message=FALSE, fig.dim = c(6, 4)}
+```{r metric_clim_baseline, message=FALSE, fig.dim = c(7, 6)}
 
 # Joining together the 50m T and iso26 dataframes and reorganizing
 enso_metric_monthly <- full_join(annual_monthly_t50, annual_monthly_iso26)
@@ -347,12 +345,11 @@ monthly_mean_baseline %>%
         "depth26" = "Isopycnal 26 kg/m³ Depth (m)",
         "salt26" = "Isopycnal 26 kg/m³ Salinity (psu)"))) +
   custom_theme + 
-  scale_x_continuous(breaks = 1:12, labels = month.abb) +
-  theme(legend.position = c(0.43, 0.965))
+  scale_x_continuous(breaks = 1:12, labels = month.abb)
 
 ```
 
-```{r metric_anomalies, message=FALSE}
+```{r metric_anomalies, message=FALSE, fig.dim = c(7, 6)}
 
 # Calculating anomaly index values
 enso_metric_monthly <- enso_metric_monthly %>%
@@ -376,12 +373,11 @@ enso_metric_monthly %>%
         "t50" = "50m Temperature (°C)",
         "depth26" = "Isopycnal 26 kg/m³ Depth (m)",
         "salt26" = "Isopycnal 26 kg/m³ Salinity (psu)"))) +
-  custom_theme + 
-  theme(legend.position = c(0.6, 0.965))
+  custom_theme 
 
 ```
 
-```{r metric_running_annual_mean, message=FALSE, warning=FALSE, fig.dim=c(7,3)}
+```{r metric_running_annual_mean, message=FALSE, warning=FALSE, fig.dim=c(7,8)}
 
 # Computing running annual mean (sst and anomaly for one year starting that month)
 running_annual_mean_metrics <- enso_metric_monthly %>%
@@ -406,14 +402,14 @@ running_annual_mean_metrics %>%
         "depth26" = "Isopycnal 26 kg/m³ Depth (m)",
         "salt26" = "Isopycnal 26 kg/m³ Salinity (psu)"),
       name = label_value)) +
-  custom_theme + 
-  theme(legend.position = "top", legend.justification = "right",
-        plot.title = element_text(hjust = 0.5, margin = margin(b = -20)), 
-        strip.text = element_text(size = 10))
+  custom_theme #+ 
+  # theme(legend.position = "top", legend.justification = "right",
+        # plot.title = element_text(hjust = 0.5, margin = margin(b = -20)), 
+        # strip.text = element_text(size = 10))
 
 ```
 
-```{r metrics_correlation_coeffs, eval=FALSE, message=FALSE, include=FALSE}
+```{r metrics_correlation_coeffs, message=FALSE, include=FALSE}
 
 #Calculating correlation coeffs for the anomalies vs tropical Pacific sst
 
