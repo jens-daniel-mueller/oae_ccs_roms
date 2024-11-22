@@ -43,7 +43,7 @@ wflow_publish(here::here(
     "enso_indices.Rmd"
   )
 ),
-message = "rebuild after code update and new enso file",
+message = "enso_indices plot edits part 3",
 republish = TRUE) #USE THIS ONE
 
 
