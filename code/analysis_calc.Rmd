@@ -1,0 +1,481 @@
+---
+title: "developing CDR analysis code"
+author: "Victoria Froh & Jens Daniel Müller"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Read this
+
+Setting up analysis
+
+```{r setup}
+
+#loading packages
+library(ncdf4)
+library(stars)
+library(tidyverse)
+library(lubridate)
+library(tidync)
+library(units)
+library(seacarb)
+library(metR)
+library(parallel)
+library(data.table)
+
+#Path to the files:
+# path_ROMSv2RG_results <- 
+#  "/net/sea/work/loher/ROMS/Alk_enh_formatted_2024_08/Huntington/"
+
+path_ROMSv2_results <- 
+ "/net/sea/work/loher/ROMS/Pactcs30_Alk_enhanced_2024_11/"
+
+path_ROMS_ENSO_results <-
+  "/net/sea/work/loher/ROMS/Pactcs30_Alk_enhanced_2024_11/"
+
+# opening specific nc file to get overview
+view_nc <- nc_open(
+  paste0(path_ROMSv2_results,
+         "control/avg/control_avg_1999-2000.nc"))
+
+print(view_nc)
+nc_close(view_nc)
+# 
+# same with tidync,  shows variables, grids, dimensions
+nc_file <- tidync(
+  paste0(path_ROMSv2_results,
+         "depths_2010.nc"))
+print(nc_file)
+```
+
+```{r regrid_calculations_tidy, message=FALSE, warning=FALSE}
+
+# Calculating CDRpot: need to load in DIC control (3d) plus DIC and ALK to calc
+# the theoretical 3d pCO2, to then use with experimental 3d TA to calc DICexp
+
+nc_control_rg <- tidync(paste0(path_ROMSv2RG_results,
+                     "Huntington_2010-2015_control.nc"))
+nc_10x_rg <- tidync(paste0(path_ROMSv2RG_results,
+                     "Huntington_2010-2015_10x.nc"))
+
+# load in data from tidync file
+control_data_rg <- nc_control_rg %>%
+     hyper_filter(time = index == 1) %>% 
+     hyper_tibble(
+       select_var = c("DIC", "Alk", "PO4", "SiO3", "salt", "temp", force = TRUE)) %>% 
+     mutate(lon = as.numeric(lon), lat = as.numeric(lat))
+
+exp_data_rg <- nc_10x_rg %>% 
+  hyper_filter(time = index == 1) %>% 
+  hyper_tibble(
+    select_var = c("Alk", "PO4", "SiO3", "salt", "temp", force = TRUE)) %>% 
+  mutate(lon = as.numeric(lon), lat = as.numeric(lat))
+
+# calculating expected full grid pCO2  w/ control DIC and TA 
+control_pco2_rg <- control_data_rg %>% 
+  # head(6) %>% #testing subsset
+  drop_na() %>% 
+  mutate(
+    pco2_calc = carb(
+      flag = 15,
+      var1 = Alk * 1e-6 / 1.02518, #converting mMol/m^3 to mol/kg
+      var2 = DIC * 1e-6 / 1.02518,
+      S = salt,
+      T = temp,
+      P = 0,
+      Pt = PO4 * 1e-6 / 1.02518,
+      Sit = SiO3 * 1e-6 / 1.02518,
+      kf="dg",
+      k1k2="m06",
+      ks="d"
+    )$pCO2 #to just save the pco2 output
+  )
+
+control_pco2_rg <- control_pco2_rg %>% 
+  select(lon, lat, depth, pco2_calc) %>% 
+  full_join(exp_data_rg)
+# this is assuming we will be using the nutrient/tempsalt data from exp run
+  
+# calculating expected DIC for added 10x TA w/ calc control pCO2 (DICexp)
+expected_dic_rg <- 
+  control_pco2_rg %>%
+  # head(6) %>% #testing subsset
+  drop_na() %>% #drops all rows with an NA
+  mutate(
+    DIC_exp = carb(
+      flag = 24,
+      var1 = pco2_calc, #in uatm, are we assuming direct conversion is fine?
+      var2 = Alk * 1e-6 / 1.02518, #converting mMol/m^3 to mol/kg
+      S = salt,
+      T= temp,
+      P = 0, #surface pressure
+      Pt = PO4 * 1e-6 / 1.02518,
+      Sit = SiO3 * 1e-6 / 1.02518,
+      kf="dg",
+      k1k2="m06",
+      ks="d"
+    )$DIC #to just save the DIC output
+    * 1.02518 * 1e6 #converting back to model units of mmol/m^3
+  )
+
+# Loading in DIC control and calculating CDR_potential (with units of mmol/m^3)
+cdr_potential_rg <- control_data_rg %>% 
+  select(lat, lon, depth, DIC) %>% 
+  full_join(expected_dic_rg) %>% 
+  mutate(dDIC = DIC_exp - DIC)
+
+
+# Plotting Surface CDRpotential to check
+surface <- cdr_potential_rg %>% 
+  filter(depth == 0)
+
+ggplot(data = surface) +
+  geom_tile(aes(lon, lat, fill = dDIC)) + 
+  labs(title = "Surface CDR potential of Huntington10x @ T1 (Jan 2 2010)", 
+       x = "Longitude", y = "Latitude", fill = "dDIC (mmol/m^3)") +
+  #scale_fill_divergent() + 
+  scale_fill_viridis_c() +
+  coord_quickmap() + 
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# Would then calculating cumulative w/ volume but not possible w/ regrid
+
+```
+
+```{r og_cdr_pot_tidy, message=FALSE, warning=FALSE}
+
+# Let's try the original grid
+
+# Calculating CDRpot: need to load in DIC control (3d) plus DIC and ALK to calc
+# the theoretical 3d pCO2, to then use with experimental 3d TA to calc DICexp
+
+nc_control <- tidync(
+  paste0(path_ROMSv2_results,
+         "Pactcs30_Alk_enhanced_control/avg/pactcs30_2010-2015_avg.00182.nc"))
+nc_10x <- tidync(
+  paste0(path_ROMSv2_results,
+         "Pactcs30_Alk_enhanced_Huntington_10x/avg/pactcs30_2010-2015_avg.00182.nc"))
+
+# load in control and OAE data from tidync file, full grid at first time slice
+control_data <- nc_control %>%
+  activate("D0,D2,D4,D6") %>%   # activate correct grid
+  hyper_filter(time = index == 1) %>%
+     hyper_tibble(
+       select_var = c("DIC", "Alk", "PO4", "SiO3", "salt", "temp", force = TRUE))
+
+exp_data <- nc_10x %>%
+  activate("D0,D2,D4,D6") %>%
+  hyper_filter(time = index == 1) %>%
+  hyper_tibble(
+    select_var = c("Alk", "PO4", "SiO3", "salt", "temp", force = TRUE))
+
+# calculating expected pCO2 for surface layer w/ control DIC and TA 
+# accessing depth information
+nc_depths <- tidync(
+  paste0(path_ROMSv2_results,
+         "depths_2010.nc"))
+
+depth_data <- nc_depths %>% 
+  activate("D3,D2,D1") %>% # activating correct grid for thickness/depth
+  hyper_tibble(select_var = c("dz0", "z_rho0"), force = TRUE)
+
+control_data <- control_data %>% 
+  full_join(depth_data) %>% 
+  select(-dz0) %>% 
+  as.data.table() %>% 
+  .[complete.cases(.)] # drops rows w/ NA
+
+control_pco2 <- mclapply(1:nrow(control_data), function(x){
+  row_dt <- control_data[x, ] # extract each row as a data table
+  row_dt[, pco2_calc := carb(
+    flag = 15,
+    var1 = Alk * 1e-6 / 1.02518, #converting mMol/m^3 to mol/kg
+    var2 = DIC * 1e-6 / 1.02518,
+    S = salt,
+    T = temp,
+    P = abs(z_rho0) * 0.1, #est hydst P (bar) from depth, need to +1?
+    Pt = PO4 * 1e-6 / 1.02518,
+    Sit = SiO3 * 1e-6 / 1.02518,
+    kf="dg",
+    k1k2="m06",
+    ks="d"
+  )$pCO2] #to just save the pco2 output
+  return(row_dt)
+}, mc.cores = 20) %>% 
+  rbindlist() # all rows as single bind back together into a dt
+
+
+control_pco2 <- control_pco2 %>% 
+  select(xi_rho, eta_rho, s_rho, pco2_calc) %>% 
+  full_join(exp_data)
+
+# clear out
+rm(exp_data)
+
+# calculating expected DIC using control pCO2 and added Alk
+expected_dic <- 
+  control_pco2 %>%
+  #head(6) %>% #testing subsset
+  drop_na() %>% #drops all rows with an NA
+  mutate(
+    DIC_calc = carb(
+      flag = 24,
+      var1 = pco2_calc, #in uatm
+      var2 = Alk * 1e-6 / 1.02518, #converting mMol/m^3 to mol/kg
+      S = salt,
+      T= temp,
+      P = abs(z_rho0) * 0.1, #calculated hydro P in bar from depth of layer
+      Pt = PO4 * 1e-6 / 1.02518,
+      Sit = SiO3 * 1e-6 / 1.02518,
+      kf="dg",
+      k1k2="m06",
+      ks="d"
+    )$DIC #to just save the DIC output
+    * 1.02518 * 1e6 #converting back to model units of mmol/m^3
+  )
+
+# Loading in DIC control and calculating CDR_potential (with units of mmol/m^3)
+cdr_potential <- control_data %>% 
+  select(xi_rho, eta_rho, s_rho, DIC) #%>% 
+  full_join(expected_dic) %>%
+  mutate(dDIC = DIC_calc - DIC)
+
+# clear out
+rm(control_pco2, control_data, expected_dic)
+    
+# Multiplying by volume to get CDR_potential in mmol DIC
+nc_volume <- tidync(
+  paste0(path_ROMSv2_results,
+         "depths_2010.nc"))
+
+dz_data <- nc_volume %>%
+     hyper_filter(time = index == 1) %>%
+     hyper_tibble(select_var = c("dz", force = TRUE))
+
+area_data <- nc_volume %>% 
+  activate("D3,D2") %>% # activating surface grid for area
+  hyper_filter(time = index == 1) %>% 
+  hyper_tibble(select_var = c("area"), force = TRUE)
+
+volume_data <- full_join(dz_data, area_data) %>% 
+  mutate(volume = dz * area)
+
+cdr_potential <- cdr_potential %>% 
+  full_join(volume_data) %>% 
+  mutate(cdr_pot = dDIC * volume)
+
+# clear out
+rm(dz_data, area_data, volume_data)
+
+# sum up cumulative CDR potential
+cum_cdr_pot <- cdr_potential %>% 
+  summarise(sum(cdr_pot, na.rm = TRUE))
+
+print(cum_cdr_pot)
+  
+# how do we do the full time series without it taking days
+
+```
+
+```{r og_cdr_pot_stars, eval=FALSE, include=FALSE}
+
+# i notice here when i look at the structure, now the variable order is changed
+# (time before s_rho) and the time is not being read in correct (wrong origin)
+
+# load in control data (subset of depth and time)
+control_data_st <- read_ncdf(
+  paste0(path_ROMS_ENSO_results,
+         "control/avg/control_avg_1998-1999.nc"),
+  var = c("Alk", "DIC", "PO4", "SiO3", "salt", "temp"),
+  ncsub = cbind(start = c(1, 1, 61, 1), count = c(604, 518, 4, 1)),
+  # depth is dim 3 and time is 4 for both now; why are s_rho's in 0.5?
+  # also: time seems to be accurate month/day but not year (counting since 2001)
+  # curvilinear = c("lon_rho", "lat_rho"),
+  make_time = FALSE, # keeps time as numeric/raw format in seconds
+  proxy = FALSE
+  ) %>%
+  drop_units() %>% # gets rid of degC
+  as_tibble()
+
+# fixing time
+time <- control_data$time
+time_converted <- as.POSIXct(time, origin = "1979-01-01", tz = "UTC")
+# formatted_time <- format(time_converted, "%Y-%m-%d") # optional later
+
+control_data <- control_data %>% 
+  mutate(time = time_converted)
+
+# glimpse(control_data)
+
+# load in oae 10x data
+exp_data <- read_ncdf(
+  paste0(path_ROMSv2_results,
+         "Pactcs30_Alk_enhanced_Huntington_10x/avg/pactcs30_2010-2015_avg.00182.nc"),
+  var = c("Alk", "PO4", "SiO3", "salt", "temp"),
+  ncsub = cbind(start = c(1, 1, 1, 55), count = c(604, 518, 10, 5)),
+  # 10 top depths, 5 time points but the order is flipped for start
+  # curvilinear = c("lon_rho", "lat_rho"),
+  make_time = FALSE,
+  proxy = FALSE
+  ) %>%
+  drop_units() %>%
+  as_tibble() %>% 
+  mutate(time = time_converted)
+
+# calculating expected 3d pCO2 for subset w/ control DIC and TA 
+
+depth_values <- read_ncdf(paste0(path_ROMSv2_results, "depths_2010.nc"),
+  var = c("dz", "z_rho"),
+  ncsub = cbind(start = c(1, 1, 60, 1), count = c(604, 518, 5, 1)),
+  # here depth and time are in the right spots
+  # curvilinear = c("lon_rho", "lat_rho"),
+  proxy = FALSE
+  )# %>%
+  # drop_units() %>%
+  # as_tibble()
+# depth indexing up from bottom but negative values from the surface
+# errors here: cannot load in dz0 or zrho0 with stars. idk why
+
+# Accessing depth information
+nc_depths <- tidync(
+  paste0(path_ROMSv2_results,
+         "depths_2010.nc"))
+
+depth_data <- nc_depths %>% 
+  activate("D3,D2,D1") %>% # activating surface grid for area
+  hyper_filter(s_rho = index > 54) %>% 
+  hyper_tibble(select_var = c("dz0", "z_rho0"), force = TRUE)
+# problem: read_ncdf automatically converts xi/eta to lat/lon and this doesnt
+
+control_data <- control_data %>% 
+  full_join(depth_data)
+
+control_pco2 <- control_data %>% 
+  # head(6) %>% #testing subsset
+  drop_na() %>% 
+  mutate(
+    pco2_calc = carb(
+      flag = 15,
+      var1 = Alk * 1e-6 / 1.02518, #converting mMol/m^3 to mol/kg
+      var2 = DIC * 1e-6 / 1.02518,
+      S = salt,
+      T = temp,
+      P = 0, # this needs to vary with depth (depth in meters * 0.1)
+      Pt = PO4 * 1e-6 / 1.02518,
+      Sit = SiO3 * 1e-6 / 1.02518,
+      kf="dg",
+      k1k2="m06",
+      ks="d"
+    )$pCO2 #to just save the pco2 output
+  )
+
+
+```
+
+```{r cum_total_dTA, message=FALSE, warning=FALSE}
+
+# practice calculation: cumulative dTA for just surface
+
+# read in files
+files_control <- list.files(
+  paste0(path_ROMSv2_results,"Pactcs30_Alk_enhanced_control/avg"),
+  pattern = "^pactcs30.*\\.nc$", 
+  full.names = TRUE
+)
+
+files_10x <- list.files(
+  paste0(path_ROMSv2_results,"Pactcs30_Alk_enhanced_Huntington_10x/avg"),
+  pattern = "^pactcs30", 
+  full.names = TRUE
+)
+
+# load in control and oae data, first time file with correct grid
+alk_control_1 <- tidync(files_control[1]) %>%
+  hyper_filter(s_rho = index < 5, time = index < 25) %>%
+  hyper_tibble(
+    select_var = c("Alk", force = TRUE),
+    na.rm = TRUE) 
+
+alk_10x_1 <- tidync(files_10x[1]) %>%
+  hyper_filter(s_rho = index < 5, time = index < 25) %>%
+  hyper_tibble(
+    select_var = c("Alk", force = TRUE),
+    na.rm = TRUE) %>% 
+  rename(Alk_10x = Alk)
+# experiment:
+test_data <- full_join(alk_control_1, alk_10x_1) %>% 
+  mutate(dTA = Alk_10x - Alk)
+
+
+
+####
+# load rest of control and oae data while activating grid, combine, calculate
+full_alk_control <- files_control[-1] %>% 
+  mclapply(function(nc_file)(
+    tidync(nc_file) %>% 
+      activate("D0,D2,D4,D6") %>%
+      hyper_filter(s_rho = index == 1) %>% 
+      hyper_tibble(
+        select_var = c("Alk", force = TRUE), na.rm = TRUE) 
+  ), mc.cores = 20) %>% 
+  bind_rows(alk_control_1)
+
+full_alk_enhanced <- files_10x[-1] %>% 
+  lapply(function(nc_file)(
+    tidync(nc_file) %>% # reads in nc file, then we load in data
+      activate("D0,D2,D4,D6") %>%
+      hyper_filter(s_rho = index == 1) %>% 
+      hyper_tibble(
+        select_var = c("Alk", force = TRUE), na.rm = TRUE) 
+  )) %>% 
+  bind_rows(alk_10x_1) %>% 
+  rename(Alk_10x = Alk) %>% 
+  full_join(full_alk_control) %>% 
+  mutate(dTA = Alk_10x - Alk)
+
+# clear out
+rm(alk_control_1, alk_10x_1, full_alk_control)
+gc()
+
+
+
+
+# #still having time variable issues:
+# time_origin_0001 <- as.Date("0001-01-01")
+# time_origin_1979 <- as.Date("1979-01-01")
+# offset <- as.numeric(difftime(time_origin_1979, time_origin_0001, units = "secs"))
+# 
+# time_corrected <- full_alk_control$time + offset
+test_data <- test_data %>%
+  mutate(time = as.POSIXct(time, format = "%Y-%m-%d %H:%M:%S", tz = "UTC"))
+
+time_diff <- as.numeric(difftime(as.Date("1979-01-01"), as.Date("0001-01-01"),
+                                 units = "secs"))
+adjusted_data <- test_data %>%
+  mutate(time = as.numeric(time))
+
+
+#####
+# Multiplying by volume to get CDR_potential in mmol DIC
+nc_volume <- tidync(
+  paste0(path_ROMSv2_results,
+         "depths_2010.nc"))
+
+dz_data <- nc_volume %>%
+     hyper_filter(s_rho = index == 1) %>%
+     hyper_tibble(select_var = c("dz", force = TRUE))
+#is in date format but correcg since 2010 dates  
+  
+
+
+# sum up cumulative dTA
+cum_dTA <- enhanced_alk %>% 
+  summarise(sum(dTA, na.rm = TRUE))
+
+print(cum_cdr_pot)
+
+
+```
