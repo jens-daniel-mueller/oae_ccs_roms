@@ -37,8 +37,8 @@ path_ROMS_ENSO_results <-
 
 # opening specific nc file to get overview
 view_nc <- nc_open(
-  paste0(path_ROMSv2_results,
-         "control/avg/control_avg_1999-2000.nc"))
+  paste0(path_ROMS_ENSO_results,
+         "lanina/avg/lanina_avg_1998-1999.nc"))
 
 print(view_nc)
 nc_close(view_nc)
