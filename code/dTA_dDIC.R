@@ -1,8 +1,8 @@
 # -------------------------------------------------
 # dTA and dDIC Calculations
 # Author: Victoria Froh
-# Date: 2/12/2024, update: 9/12/2024
-# Purpose: loading in and calculating dTA and dDIC in concentrations mmol/m^3
+# Date: 2/12/2024, update: 12/12/2024
+# Purpose: loading in and calculating dTA in concentrations mmol/m^3
 # -------------------------------------------------
 
 # -------------------------------
@@ -16,7 +16,7 @@ library(ncdf4)
 library(data.table)
 library(lubridate)
 library(parallel)
-library(stars)
+library(feather)
 
 # Path to files
 path_ROMS_results <-
@@ -28,22 +28,32 @@ path_outputs <- "/net/sea/work/vifroh/oae_ccs_roms_data/"
   # -------------------------------
   # 1.1 - Looking at Data Files
   # -------------------------------
-nc <- tidync(paste0(path_ROMS_results, "lanina/avg/lanina_avg_1998-1999.nc"))
+nc <- tidync(paste0(path_ROMS_results, "lanina/avg/lanina_avg_1999-2000.nc"))
 print(nc)
 
 # -------------------------------
 # 2. Gathering Data Files
 # -------------------------------
 
-# read in files; hopefully at end all control will be easily in one folde and
-# without others in the same so reading them all in can be done with a few lines
+# read in files
 files_control <- c(
   paste0(path_ROMS_results,"control/avg/control_avg_1998-1999.nc"),
   paste0(path_ROMS_results,"control/avg/control_avg_1999-2000.nc"),
   paste0(path_ROMS_results,"control/avg/control_avg_2000-2001.nc"),
   paste0(path_ROMS_results,"control/avg/control_avg_2001-2002.nc"),
   paste0(path_ROMS_results,"control/avg/control_avg_2002-2003.nc"),
-  paste0(path_ROMS_results,"control/avg/control_avg_2003-2004.nc")
+  paste0(path_ROMS_results,"control/avg/control_avg_2003-2004.nc"),
+  paste0(path_ROMS_results,"control/avg/control_avg_2004-2005.nc"),
+  paste0(path_ROMS_results,"control/avg/control_avg_2005-2006.nc"),
+  paste0(path_ROMS_results,"control/avg/control_avg_2006-2007.nc"),
+  paste0(path_ROMS_results,"control/avg/control_avg_2007-2008.nc"),
+  paste0(path_ROMS_results,"control/avg/control_avg_2008-2009.nc"),
+  paste0(path_ROMS_results,"control/avg/control_avg_2015-2016.nc"),
+  paste0(path_ROMS_results,"control/avg/control_avg_2016-2017.nc"),
+  paste0(path_ROMS_results,"control/avg/control_avg_2017-2018.nc"),
+  paste0(path_ROMS_results,"control/avg/control_avg_2018-2019.nc"),
+  paste0(path_ROMS_results,"control/avg/control_avg_2020.nc"),
+  paste0(path_ROMS_results,"control/avg/control_avg_2021.nc")
 )
 
 files_lanina <- c(
@@ -64,55 +74,47 @@ files_neutral <- c(
   paste0(path_ROMS_results,"neutral/avg/neutral_avg_2008-2009.nc")
 )
 
+files_elnino <- c(
+  paste0(path_ROMS_results,"elnino/avg/elnino_avg_2015-2016.nc"),
+  paste0(path_ROMS_results,"elnino/avg/elnino_avg_2016-2017.nc"),
+  paste0(path_ROMS_results,"elnino/avg/elnino_avg_2017-2018.nc"),
+  paste0(path_ROMS_results,"elnino/avg/elnino_avg_2018-2019.nc"),
+  paste0(path_ROMS_results,"elnino/avg/elnino_avg_2020.nc"),
+  paste0(path_ROMS_results,"elnino/avg/elnino_avg_2021.nc")
+)
+
 # -------------------------------
-# 3. Loading in Alkalinity and DIC Data
+# 3. Loading in Alkalinity and DIC Data, Calculating individiual dTA/dDIC
 # -------------------------------
-# cannot use stars currently, weirdness with dimensions/reading in full depth
-# # load in control data (subset of depth)
-# control_alk <- lapply(files_control, function(file) {
-#   nc_data <- read_ncdf(
-#     file,
-#     var = c("Alk"),
-#     ncsub = cbind(start = c(1, 1, 61, 1), count = c(604, 518, 4, 12)),
-#     curvilinear = c("lon_rho", "lat_rho"),
-#     make_time = FALSE,
-#     make_units = FALSE,
-#     proxy = FALSE
-#     )
-#   as.data.table(nc_data) # turns each stars object into a data table
-#   })
-#
-# # bind each data table in the list into one, drop grids with NA
-# control_alk <- rbindlist(control_data, fill = TRUE) %>%
-#   drop_na()
 
   # -------------------------------
   # 3.1 - Loading in Control Data
   # -------------------------------
 
-# using tidync, control grids are fine, loading Alk and dz for all files:
+# using tidync, control grids are fine, loading Alk and dz for all files
 control_data <- files_control %>%
   mclapply(function(file){
     nc_data <- tidync(file) %>% # reads in nc file, then we load in data
-      hyper_filter(s_rho = index > 60, time = index < 3) %>% # subset for now
+      hyper_filter(s_rho = index > 62, time = index < 3) %>% # subset for now
       hyper_tibble(
         select_var = c("Alk", "DIC", "dz"), force = TRUE) %>%
       as.data.table() %>%
       .[!is.na(Alk)]
 
-    # want time in a consistent date format with correct year
-    nc_data[, time := if (grepl("^-?\\d+$", time[1])) { #check's first value
-      # convert numeric-like strings (raw seconds)
-      as.numeric(time)
-    } else {
-      # convert date-time strings since initialization
-      as.numeric(as.POSIXct(time, format = "%Y-%m-%d %H:%M:%S", tz = "UTC")) -
-        as.numeric(as.POSIXct("0001-01-01 00:00:00", tz = "UTC"))
-    }]
-
-    # Covert all raw seconds to POSIXct with correct origin then just Y-M
-    nc_data[, time := as.POSIXct(time, origin = "1979-01-01", tz = "UTC")]
-    nc_data[, time := format(time, "%Y-%m")]
+    # # want time in consistent date format with correct year; now it is fine?
+    # nc_data[, time := if (grepl("^-?\\d+$", time[1])) { #check's first value
+    #   # convert numeric-like strings (raw seconds)
+    #   as.numeric(time)
+    # } else {
+    #   # convert date-time strings since initialization
+    #   as.numeric(as.POSIXct(time, format = "%Y-%m-%d %H:%M:%S", tz = "UTC")) -
+    #     as.numeric(as.POSIXct("0001-01-01 00:00:00", tz = "UTC"))
+    # }]
+    #
+    # # Covert all raw seconds to POSIXct with correct origin then just Y-M
+    # nc_data[, time := as.POSIXct(time, origin = "1979-01-01", tz = "UTC")]
+    # nc_data[, time := format(time, "%Y-%m")]
+    nc_data[, time := format(as.Date(time, format = "%Y-%m-%d"), "%Y-%m")]
 
     return(nc_data)
 
@@ -129,25 +131,13 @@ lanina_alk <- files_lanina %>%
   mclapply(function(file){
     nc_data <- tidync(file) %>% # reads in nc file, then we load in data
       activate("Alk") %>%
-      hyper_filter(s_rho = index > 60, time = index < 3) %>%
+      hyper_filter(s_rho = index > 62, time = index < 3) %>%
       hyper_tibble(
         select_var = c("Alk"), force = TRUE) %>%
       as.data.table() %>%
-      rename(Alk_LN = Alk)
-
-    # want time in a consistent date format with correct year
-    nc_data[, time := if (grepl("^-?\\d+$", time[1])) { #check's first value
-      # convert numeric-like strings (raw seconds)
-      as.numeric(time)
-    } else {
-      # convert date-time strings since initialization
-      as.numeric(as.POSIXct(time, format = "%Y-%m-%d %H:%M:%S", tz = "UTC")) -
-        as.numeric(as.POSIXct("0001-01-01 00:00:00", tz = "UTC"))
-    }]
-
-    # Covert all raw seconds to POSIXct with correct origin then just Y-M
-    nc_data[, time := as.POSIXct(time, origin = "1979-01-01", tz = "UTC")]
-    nc_data[, time := format(time, "%Y-%m")]
+      rename(Alk_OAE = Alk)
+    # reformat time to be Year and Month
+    nc_data[, time := format(as.Date(time, format = "%Y-%m-%d"), "%Y-%m")]
 
     return(nc_data)
   }, mc.cores = 20)
@@ -160,34 +150,32 @@ lanina_dic <- files_lanina %>%
   mclapply(function(file){
     nc_data <- tidync(file) %>% # reads in nc file, then we load in data
       activate("DIC") %>%
-      hyper_filter(s_rho = index > 60, time = index < 3) %>%
+      hyper_filter(s_rho = index > 62, time = index < 3) %>%
       hyper_tibble(
         select_var = c("DIC"), force = TRUE) %>%
       as.data.table() %>%
-      rename(DIC_LN = DIC)
-
-    # want time in a consistent date format with correct year
-    nc_data[, time := if (grepl("^-?\\d+$", time[1])) { #check's first value
-      # convert numeric-like strings (raw seconds)
-      as.numeric(time)
-    } else {
-      # convert date-time strings since initialization
-      as.numeric(as.POSIXct(time, format = "%Y-%m-%d %H:%M:%S", tz = "UTC")) -
-        as.numeric(as.POSIXct("0001-01-01 00:00:00", tz = "UTC"))
-    }]
-
-    # Covert all raw seconds to POSIXct with correct origin then just Y-M
-    nc_data[, time := as.POSIXct(time, origin = "1979-01-01", tz = "UTC")]
-    nc_data[, time := format(time, "%Y-%m")]
+      rename(DIC_OAE = DIC)
+    # reformat time to be Year and Month
+    nc_data[, time := format(as.Date(time, format = "%Y-%m-%d"), "%Y-%m")]
 
     return(nc_data)
   }, mc.cores = 20)
 
-# bind each data table in the list into one, drop grids with NA, combine
+# bind each data table in the list into one, drop grids with NA, combine two
 lanina_dic <- rbindlist(lanina_dic, fill = TRUE)
-lanina_data <- left_join(lanina_alk, lanina_dic)
+lanina_data <- merge(lanina_alk, lanina_dic, by =
+                       c("xi_rho", "eta_rho", "s_rho", "time"))
 
-rm(lanina_dic, lanina_alk)
+# merge with control and calculate dTA/dDIC
+lanina_dTA_data <- merge(lanina_data, control_data, by =
+                       c("xi_rho", "eta_rho", "s_rho", "time"),
+                     all.x = TRUE)
+lanina_dTA_data <- lanina_dTA_data[, dTA := Alk_OAE - Alk] %>%
+  .[, dDIC := DIC_OAE - DIC] %>%
+  select(-Alk, -Alk_OAE, -DIC, -DIC_OAE)
+
+
+rm(lanina_dic, lanina_alk, lanina_data)
 gc()
 
   # -------------------------------
@@ -198,25 +186,13 @@ neutral_data <- files_neutral %>%
   mclapply(function(file){
     nc_data <- tidync(file) %>% # reads in nc file, then we load in data
       activate("D3,D2,D1,D0") %>%
-      hyper_filter(s_rho = index > 60, time = index < 3) %>%
+      hyper_filter(s_rho = index > 62, time = index < 3) %>%
       hyper_tibble(
         select_var = c("Alk", "DIC"), force = TRUE) %>%
       as.data.table() %>%
-      rename(Alk_NU = Alk, DIC_NU = DIC)
-
-    # want time in a consistent date format with correct year
-    nc_data[, time := if (grepl("^-?\\d+$", time[1])) { #check's first value
-      # convert numeric-like strings (raw seconds)
-      as.numeric(time)
-    } else {
-      # convert date-time strings since initialization
-      as.numeric(as.POSIXct(time, format = "%Y-%m-%d %H:%M:%S", tz = "UTC")) -
-        as.numeric(as.POSIXct("0001-01-01 00:00:00", tz = "UTC"))
-    }]
-
-    # Covert all raw seconds to POSIXct with correct origin then just Y-M
-    nc_data[, time := as.POSIXct(time, origin = "1979-01-01", tz = "UTC")]
-    nc_data[, time := format(time, "%Y-%m")]
+      rename(Alk_OAE = Alk, DIC_OAE = DIC)
+    # reformat time to be Year and Month
+    nc_data[, time := format(as.Date(time, format = "%Y-%m-%d"), "%Y-%m")]
 
     return(nc_data)
   }, mc.cores = 20)
@@ -224,29 +200,82 @@ neutral_data <- files_neutral %>%
 # bind each data table in the list into one, drop grids with NA
 neutral_data <- rbindlist(neutral_data, fill = TRUE)
 
+# merge with control and calculate dTA and dDIC
+neutral_dTA_data <- merge(neutral_data, control_data, by =
+                       c("xi_rho", "eta_rho", "s_rho", "time"),
+                     all.x = TRUE)
+neutral_dTA_data <- neutral_dTA_data[, dTA := Alk_OAE - Alk] %>%
+  .[, dDIC := DIC_OAE - DIC] %>%
+  select(-Alk, -Alk_OAE, -DIC, -DIC_OAE)
+
+rm(neutral_data)
+gc()
+
   # -------------------------------
   # 3.4 - Load in El Nino Data
   # -------------------------------
 
+elnino_data <- files_elnino[-6] %>% #make sure for last file only index 1-5
+  mclapply(function(file){
+    nc_data <- tidync(file) %>% # reads in nc file, then we load in data
+      activate("D3,D2,D1,D0") %>%
+      hyper_filter(s_rho = index > 62, time = index < 3) %>%
+      hyper_tibble(
+        select_var = c("Alk", "DIC"), force = TRUE) %>%
+      as.data.table() %>%
+      rename(Alk_OAE = Alk, DIC_OAE = DIC)
+    # reformat time to be Year and Month
+    nc_data[, time := format(as.Date(time, format = "%Y-%m-%d"), "%Y-%m")]
 
+    return(nc_data)
+  }, mc.cores = 20)
+
+# bind each data table in the list into one, drop grids with NA
+elnino_data <- rbindlist(elnino_data, fill = TRUE)
+
+# only months 1-5 from last file
+elnino_data_last <- tidync(files_elnino[6]) %>%
+      activate("D3,D2,D1,D0") %>%
+      hyper_filter(s_rho = index > 62, time = index < 6) %>%
+      hyper_tibble(
+        select_var = c("Alk", "DIC"), force = TRUE) %>%
+      as.data.table() %>%
+      rename(Alk_OAE = Alk, DIC_OAE = DIC) %>%
+  .[, time := format(as.Date(time, format = "%Y-%m-%d"), "%Y-%m")]
+
+# bind with the rest
+elnino_data <- bind_rows(elnino_data, elnino_data_last)
+
+# merge with control and calculate dTA and dDIC
+elnino_dTA_data <- merge(elnino_data, control_data, by =
+                            c("xi_rho", "eta_rho", "s_rho", "time"),
+                          all.x = TRUE)
+elnino_dTA_data <- elnino_dTA_data[, dTA := Alk_OAE - Alk] %>%
+  .[, dDIC := DIC_OAE - DIC] %>%
+  select(-Alk, -Alk_OAE, -DIC, -DIC_OAE)
+
+rm(elnino_data, elnino_data_last)
+gc()
 
 # -------------------------------
-# 4. Calculating dTA and dDIC
+# 4. Saving Tables
 # -------------------------------
-
-# combine control and enhancement data, calculate dTA in concentration unit
-full_dTA_dDIC_data <- left_join(control_data, lanina_data,
-                                by = c("xi_rho", "eta_rho", "s_rho", "time"))
-
-full_dTA_dDIC_data <- full_dTA_dDIC_data %>%
-  .[complete.cases(.)] %>% #should not be any NA left but check
-  .[, dTA := Alk_LN - Alk] %>%
-  .[, dDIC := DIC_LN - DIC] %>%
-  select(-Alk, -Alk_LN, -DIC, -DIC_LN)
 
 # save a version pre-volume for maps and such later (unit mmol/m^3)
-save(full_dTA_dDIC_data, file = paste0(path_outputs,
-                                       "full_dTA_dDIC_mmol_m3_LNS.Rdata"))
+save(lanina_dTA_data, file = paste0(path_outputs,
+                                       "lanina_dTA_data_sub.Rdata"))
+save(neutral_dTA_data, file = paste0(path_outputs,
+                                    "neutral_dTA_data_sub.Rdata"))
+save(elnino_dTA_data, file = paste0(path_outputs,
+                                    "elnino_dTA_data_sub.Rdata"))
+
+# also trying as feather objects
+write_feather(lanina_dTA_data, paste0(path_outputs,
+                                      "lanina_dTA_data_sub.feather"))
+write_feather(neutral_dTA_data, paste0(path_outputs,
+                                      "neutral_dTA_data_sub.feather"))
+write_feather(elnino_dTA_data, paste0(path_outputs,
+                                      "elnino_dTA_data_sub.feather"))
 
 # clear out
 rm(list = ls())
