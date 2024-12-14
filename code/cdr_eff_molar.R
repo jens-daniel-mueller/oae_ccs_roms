@@ -44,6 +44,7 @@ area_data <- area_nc %>%
 # adding area to each data table and calculating volume in m^3
 phase_data <- list(lanina_dTA_data, neutral_dTA_data, elnino_dTA_data)
 
+# table <- lanina_dTA_data
 phase_data <- phase_data %>%
   mclapply(function(table) {
   new_table <- merge(table, area_data,

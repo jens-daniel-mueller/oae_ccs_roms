@@ -35,6 +35,14 @@ print(nc)
 # 2. Gathering Data Files
 # -------------------------------
 
+files_control <- list.files(
+  "/net/sea/work/loher/ROMS/Pactcs30_Alk_enhanced_2024_11/control/avg/",
+  pattern = "control_avg_",
+  full.names = TRUE
+)
+
+files_control <- files_control[8:30]
+
 # read in files
 files_control <- c(
   paste0(path_ROMS_results,"control/avg/control_avg_1998-1999.nc"),
@@ -92,10 +100,14 @@ files_elnino <- c(
   # -------------------------------
 
 # using tidync, control grids are fine, loading Alk and dz for all files
+# file <- files_control[1]
 control_data <- files_control %>%
   mclapply(function(file){
     nc_data <- tidync(file) %>% # reads in nc file, then we load in data
-      hyper_filter(s_rho = index > 62, time = index < 3) %>% # subset for now
+      hyper_filter(s_rho = index > 62,
+                   # eta_rho = index == 100,
+                   # xi_rho = index == 100,
+                   time = index < 3) %>% # subset for now
       hyper_tibble(
         select_var = c("Alk", "DIC", "dz"), force = TRUE) %>%
       as.data.table() %>%
@@ -115,6 +127,7 @@ control_data <- files_control %>%
     # nc_data[, time := as.POSIXct(time, origin = "1979-01-01", tz = "UTC")]
     # nc_data[, time := format(time, "%Y-%m")]
     nc_data[, time := format(as.Date(time, format = "%Y-%m-%d"), "%Y-%m")]
+    # format(as.Date(613976700, format = "%Y-%m-%d"), "%Y-%m")
 
     return(nc_data)
 
