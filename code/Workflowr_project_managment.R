@@ -40,10 +40,11 @@ wflow_publish(here::here(
   c(
     "index.Rmd",
     "read_data.Rmd",
-    "enso_indices.Rmd"
+    "enso_indices.Rmd",
+    "cdreff_plots.Rmd"
   )
 ),
-message = "enso_indices plot edits part 3",
+message = "Plotted time series of integrated dTA and CDREff data",
 republish = TRUE) #USE THIS ONE
 
 

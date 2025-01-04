@@ -2,7 +2,8 @@
 # Molar CDR Efficiency Calculations
 # Author: Victoria Froh
 # Date: 9/12/24 Updated:12/12/24
-# Purpose: Calculating dDIC/dTA to look at CDR efficiency
+# Purpose: Calculating dDIC/dTA to look at CDR efficiency using data from the
+# dTA_dDIC.R file
 # -------------------------------------------------
 
 # -------------------------------
