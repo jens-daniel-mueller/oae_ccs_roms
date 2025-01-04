@@ -14,7 +14,7 @@
 
 <title>Data practice</title>
 
-<script src="site_libs/header-attrs-2.18/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
@@ -30,15 +30,15 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
 <!-- Add a small amount of space between sections. -->
@@ -347,6 +347,9 @@ div.tocify {
 <li>
   <a href="enso_indices.html">CCS ENSO Indices</a>
 </li>
+<li>
+  <a href="cdreff_plots.html">CDR Efficiency and dTA Plots</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -382,7 +385,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Data practice</h1>
 <h4 class="author">Victoria Froh &amp; Jens Daniel Müller</h4>
-<h4 class="date">22 November, 2024</h4>
+<h4 class="date">05 January, 2025</h4>
 
 </div>
 
@@ -411,7 +414,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-11-22
+<strong>Last updated:</strong> 2025-01-05
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -429,7 +432,7 @@ title="This is the local directory in which the code in this file was executed."
 This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
 analysis was created with <a
   href="https://github.com/workflowr/workflowr">workflowr</a> (version
-1.7.0). The <em>Checks</em> tab describes the reproducibility checks
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
 that were applied when the results were created. The <em>Past
 versions</em> tab lists the development history.
 </p>
@@ -542,15 +545,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree085eee2d69d7accc5439d5d023080883a9792595targetblank085eee2a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree009b7353de114c0734f743d53ea453356f6418c2targetblank009b735a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/085eee2d69d7accc5439d5d023080883a9792595" target="_blank">085eee2</a>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/009b7353de114c0734f743d53ea453356f6418c2" target="_blank">009b735</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree085eee2d69d7accc5439d5d023080883a9792595targetblank085eee2a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree009b7353de114c0734f743d53ea453356f6418c2targetblank009b735a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -560,7 +563,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/085eee2d69d7accc5439d5d023080883a9792595" target="_blank">085eee2</a>.
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/009b7353de114c0734f743d53ea453356f6418c2" target="_blank">009b735</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -579,7 +582,9 @@ Ignored files:
     Ignored:    .Rproj.user/
 
 Unstaged changes:
+    Modified:   analysis/_site.yml
     Modified:   code/Workflowr_project_managment.R
+    Modified:   code/cdr_eff_molar.R
 
 </code></pre>
 <p>
@@ -594,7 +599,6 @@ have uncommitted changes.
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
-
 <p>
 These are the previous versions of the repository in which changes were
 made to the R Markdown (<code>analysis/read_data.Rmd</code>) and HTML
@@ -625,6 +629,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/d537ffee595f746ef9834ecec8d40f202a3f1cdb/docs/read_data.html" target="_blank">d537ffe</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2024-11-22
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1878,13 +1899,12 @@ Session information
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 4.2.2 (2022-10-31)
-Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: openSUSE Leap 15.5
+<pre><code>R version 4.4.2 (2024-10-31)
+Platform: x86_64-pc-linux-gnu
+Running under: openSUSE Leap 15.6
 
 Matrix products: default
-BLAS:   /usr/local/R-4.2.2/lib64/R/lib/libRblas.so
-LAPACK: /usr/local/R-4.2.2/lib64/R/lib/libRlapack.so
+BLAS/LAPACK: /usr/local/OpenBLAS-0.3.28/lib/libopenblas_haswellp-r0.3.28.so;  LAPACK version 3.12.0
 
 locale:
  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
@@ -1894,47 +1914,44 @@ locale:
  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
 [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 
+time zone: Europe/Zurich
+tzcode source: system (glibc)
+
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] metR_0.13.0      seacarb_3.3.3    SolveSAPHE_2.1.0 oce_1.7-10      
- [5] gsw_1.1-1        forcats_0.5.2    stringr_1.5.0    dplyr_1.1.3     
- [9] purrr_1.0.2      readr_2.1.3      tidyr_1.3.0      tibble_3.2.1    
-[13] ggplot2_3.4.4    tidyverse_1.3.2  stars_0.6-0      sf_1.0-9        
-[17] abind_1.4-5      tidync_0.4.0     ncdf4_1.19       workflowr_1.7.0 
+ [1] metR_0.16.0      seacarb_3.3.3    SolveSAPHE_2.1.0 oce_1.8-3       
+ [5] gsw_1.2-0        lubridate_1.9.3  forcats_1.0.0    stringr_1.5.1   
+ [9] dplyr_1.1.4      purrr_1.0.2      readr_2.1.5      tidyr_1.3.1     
+[13] tibble_3.2.1     ggplot2_3.5.1    tidyverse_2.0.0  stars_0.6-7     
+[17] sf_1.0-19        abind_1.4-8      tidync_0.4.0     ncdf4_1.23      
+[21] workflowr_1.7.1 
 
 loaded via a namespace (and not attached):
- [1] fs_1.5.2            lubridate_1.9.0     httr_1.4.4         
- [4] rprojroot_2.0.3     tools_4.2.2         backports_1.4.1    
- [7] bslib_0.4.1         utf8_1.2.2          R6_2.5.1           
-[10] KernSmooth_2.23-20  DBI_1.1.3           colorspace_2.0-3   
-[13] withr_2.5.0         tidyselect_1.2.0    processx_3.8.0     
-[16] compiler_4.2.2      git2r_0.30.1        cli_3.6.1          
-[19] rvest_1.0.3         RNetCDF_2.6-1       xml2_1.3.3         
-[22] labeling_0.4.2      sass_0.4.4          checkmate_2.1.0    
-[25] scales_1.2.1        classInt_0.4-8      callr_3.7.3        
-[28] proxy_0.4-27        digest_0.6.30       rmarkdown_2.18     
-[31] pkgconfig_2.0.3     htmltools_0.5.3     highr_0.9          
-[34] dbplyr_2.2.1        fastmap_1.1.0       rlang_1.1.1        
-[37] readxl_1.4.1        rstudioapi_0.15.0   PCICt_0.5-4.3      
-[40] farver_2.1.1        jquerylib_0.1.4     generics_0.1.3     
-[43] jsonlite_1.8.3      googlesheets4_1.0.1 magrittr_2.0.3     
-[46] ncmeta_0.3.5        Rcpp_1.0.10         munsell_0.5.0      
-[49] fansi_1.0.3         lifecycle_1.0.3     stringi_1.7.8      
-[52] whisker_0.4         yaml_2.3.6          grid_4.2.2         
-[55] parallel_4.2.2      promises_1.2.0.1    crayon_1.5.2       
-[58] CFtime_1.4.0        haven_2.5.1         hms_1.1.2          
-[61] knitr_1.41          ps_1.7.2            pillar_1.9.0       
-[64] reprex_2.0.2        glue_1.6.2          evaluate_0.18      
-[67] getPass_0.2-2       data.table_1.14.6   modelr_0.1.10      
-[70] vctrs_0.6.4         tzdb_0.3.0          httpuv_1.6.6       
-[73] cellranger_1.1.0    gtable_0.3.1        assertthat_0.2.1   
-[76] cachem_1.0.6        xfun_0.35           lwgeom_0.2-10      
-[79] broom_1.0.5         e1071_1.7-12        later_1.3.0        
-[82] viridisLite_0.4.1   class_7.3-20        googledrive_2.0.0  
-[85] gargle_1.2.1        memoise_2.0.1       units_0.8-0        
-[88] timechange_0.1.1    ellipsis_0.3.2     </code></pre>
+ [1] tidyselect_1.2.1   viridisLite_0.4.2  farver_2.1.2       fastmap_1.2.0     
+ [5] promises_1.3.2     digest_0.6.37      timechange_0.3.0   lifecycle_1.0.4   
+ [9] processx_3.8.4     magrittr_2.0.3     compiler_4.4.2     rlang_1.1.4       
+[13] sass_0.4.9         tools_4.4.2        utf8_1.2.4         yaml_2.3.10       
+[17] data.table_1.16.2  knitr_1.49         labeling_0.4.3     classInt_0.4-10   
+[21] KernSmooth_2.23-24 withr_3.0.2        grid_4.4.2         fansi_1.0.6       
+[25] git2r_0.35.0       e1071_1.7-16       colorspace_2.1-1   scales_1.3.0      
+[29] cli_3.6.3          rmarkdown_2.29     generics_0.1.3     rstudioapi_0.17.1 
+[33] httr_1.4.7         tzdb_0.4.0         DBI_1.2.3          cachem_1.1.0      
+[37] proxy_0.4-27       parallel_4.4.2     vctrs_0.6.5        jsonlite_1.8.9    
+[41] callr_3.7.6        hms_1.1.3          jquerylib_0.1.4    units_0.8-5       
+[45] glue_1.8.0         RNetCDF_2.9-2      ps_1.8.1           stringi_1.8.4     
+[49] ncmeta_0.4.0       gtable_0.3.6       later_1.4.1        munsell_0.5.1     
+[53] pillar_1.9.0       htmltools_0.5.8.1  PCICt_0.5-4.4      R6_2.5.1          
+[57] rprojroot_2.0.4    evaluate_1.0.1     backports_1.5.0    memoise_2.0.1     
+[61] httpuv_1.6.15      bslib_0.8.0        class_7.3-22       Rcpp_1.0.13-1     
+[65] CFtime_1.4.0       checkmate_2.3.2    whisker_0.4.1      xfun_0.49         
+[69] fs_1.6.5           getPass_0.2-4      pkgconfig_2.0.3   </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 

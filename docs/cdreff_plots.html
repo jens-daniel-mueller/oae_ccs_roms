@@ -9,9 +9,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
+<meta name="author" content="Victoria Froh &amp; Jens Daniel Müller" />
 
 
-<title>Home</title>
+<title>Integrated CDR Efficiency Plots</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -29,6 +30,9 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
@@ -235,6 +239,75 @@ $(document).ready(function () {
 
 
 
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
 
 </head>
 
@@ -242,6 +315,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -300,7 +383,9 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Home</h1>
+<h1 class="title toc-ignore">Integrated CDR Efficiency Plots</h1>
+<h4 class="author">Victoria Froh &amp; Jens Daniel Müller</h4>
+<h4 class="date">05 January, 2025</h4>
 
 </div>
 
@@ -333,7 +418,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span> 0
 </p>
@@ -370,6 +455,90 @@ class="panel-collapse collapse">
 <p>Great! Since the R Markdown file has been committed to the Git
 repository, you know the exact version of the code that produced these
 results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20240919code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20240919)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20240919code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20240919)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
 </div>
 </div>
 </div>
@@ -432,10 +601,11 @@ have uncommitted changes.
 <div id="versions" class="tab-pane fade">
 <p>
 These are the previous versions of the repository in which changes were
-made to the R Markdown (<code>analysis/index.Rmd</code>) and HTML
-(<code>docs/index.html</code>) files. If you’ve configured a remote Git
-repository (see <code>?wflow_git_remote</code>), click on the hyperlinks
-in the table below to view the files as they were in that past version.
+made to the R Markdown (<code>analysis/cdreff_plots.Rmd</code>) and HTML
+(<code>docs/cdreff_plots.html</code>) files. If you’ve configured a
+remote Git repository (see <code>?wflow_git_remote</code>), click on the
+hyperlinks in the table below to view the files as they were in that
+past version.
 </p>
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
@@ -461,427 +631,19 @@ Message
 <tbody>
 <tr>
 <td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/d537ffee595f746ef9834ecec8d40f202a3f1cdb/docs/index.html" target="_blank">d537ffe</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-11-22
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/351641448434cf9cb06c225db997eabb94564081/docs/index.html" target="_blank">3516414</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-11-22
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/7c47c0f7810e851d7c83b3971555b457ead766f3/docs/index.html" target="_blank">7c47c0f</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-11-22
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/c12634a39e2bd5c4f3aea248c50689fafeba486e/docs/index.html" target="_blank">c12634a</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-11-21
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/3aadd3726ae6897294e09a77d0466276d715e108/docs/index.html" target="_blank">3aadd37</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-11-18
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/02a42aad659d78445f93ea7358e40c7d80928357/docs/index.html" target="_blank">02a42aa</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-11-18
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/3facddd62b75e22faf0c0a5b63940fccc0cb8d4f/docs/index.html" target="_blank">3facddd</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-11-18
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/2509718fa5dcab2965b83eb1577612e177968200/docs/index.html" target="_blank">2509718</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-11-18
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/9508443f5c6a8173022877e0676f5aca17cd2ff4/docs/index.html" target="_blank">9508443</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-11-15
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/2c9eb7e073c6d3615c1495ae936bd5e9769a8d9c/docs/index.html" target="_blank">2c9eb7e</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-11-15
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/fa48b3934fb82ba5a53e2cb94334e15f7d9c200e/docs/index.html" target="_blank">fa48b39</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-11-15
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/36f52b01eec48f05e3570f599be8e1cd4d01b7df/docs/index.html" target="_blank">36f52b0</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-11-05
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/77644c30260db601c75898b2467e47b9c72e4e64/docs/index.html" target="_blank">77644c3</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-10-02
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/95e822c5af59767ad7f8520e90d751f4bbb1f96a/docs/index.html" target="_blank">95e822c</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-10-01
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/1271b4b8bedaa0b5a3ea6df1392b3d9975c6fb26/docs/index.html" target="_blank">1271b4b</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-09-30
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/a2f17f6da2e022b2b672b6c5a47ab5fb1b6c9dd2/docs/index.html" target="_blank">a2f17f6</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-09-25
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/f421914cc9d6a2081594c3051a0325a3c7eac087/docs/index.html" target="_blank">f421914</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-09-19
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/5eca06c9c894ffd5d3a58c89c34d021a205909c9/docs/index.html" target="_blank">5eca06c</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-09-19
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/16549e7b7d6fded15da0ac482bee8a8432d40620/docs/index.html" target="_blank">16549e7</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2024-09-19
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/2e8d326d26e9d0641b0adec4da622e3222a527cc/docs/index.html" target="_blank">2e8d326</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-09-19
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/759197735874eb7d77f906c49fafa65e71cec4a8/docs/index.html" target="_blank">7591977</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-09-19
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/7f2515da30c7ecf2ec49aae90f5007fa88363183/docs/index.html" target="_blank">7f2515d</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-09-19
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/790d689a0bdec962388cf162e369e2134591b120/docs/index.html" target="_blank">790d689</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-09-19
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/671d8197a4048281a1a3fb607f153e13de433682/docs/index.html" target="_blank">671d819</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-09-19
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
 Rmd
 </td>
 <td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/d97e70413e96693b3d57dd3ac7ff75fccc5fb4d8/analysis/index.Rmd" target="_blank">d97e704</a>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/009b7353de114c0734f743d53ea453356f6418c2/analysis/cdreff_plots.Rmd" target="_blank">009b735</a>
 </td>
 <td>
-jens-daniel-mueller
+vgfroh
 </td>
 <td>
-2024-09-19
+2025-01-05
 </td>
 <td>
-Start workflowr project.
+Plotted time series of integrated dTA and CDREff data
 </td>
 </tr>
 </tbody>
@@ -891,7 +653,106 @@ Start workflowr project.
 </div>
 </div>
 </div>
-<p>Welcome to my research website.</p>
+<div id="read-this" class="section level2">
+<h2>Read this</h2>
+<p>Plotting the results of the full-grid integrated time series of dTA
+and CDR efficiency for each 3 phases</p>
+<pre class="r"><code>#loading packages
+library(tidyverse)
+library(data.table)
+library(arrow)
+
+# Path to intermediate computation outputs
+path_outputs &lt;- &quot;/net/sea/work/vifroh/oae_ccs_roms_data/&quot;
+
+# Path to save practice plots when working on them
+path_plots &lt;- &quot;/net/sea/work/vifroh/test_plots/&quot;
+
+# loading in previous saved integrated CDR data
+lanina_cdreff_sum &lt;- read_feather(
+  paste0(path_outputs, &quot;lanina_CDReff_integrated.feather&quot;))
+neutral_cdreff_sum &lt;- read_feather(
+  paste0(path_outputs, &quot;neutral_CDReff_integrated.feather&quot;))
+elnino_cdreff_sum &lt;- read_feather(
+  paste0(path_outputs, &quot;elnino_CDReff_integrated.feather&quot;))</code></pre>
+<pre class="r"><code># create combined table with &quot;phase&quot; column to identify each of the 3
+full_cdreff &lt;- rbindlist(
+  list(lanina = lanina_cdreff_sum, neutral = neutral_cdreff_sum,
+       elnino = elnino_cdreff_sum),
+  idcol = &quot;phase&quot;)
+
+# add column for months since oae addition begins for x-axis
+full_cdreff &lt;- full_cdreff[, month := seq_len(.N), by = phase]</code></pre>
+<pre class="r"><code># plotting dTA
+ggplot(full_cdreff, aes(x = month, y = dTA_sum/1e10, color = phase)) +
+  geom_line() +
+  labs(x = &quot;Months Since OAE Begins&quot;,
+       y = &quot;Integrated moles of Alk (in 10^10)&quot;,
+       title = &quot;Total Added Alkalinity&quot;) +
+  theme_bw()</code></pre>
+<p><img src="figure/cdreff_plots.Rmd/dTA_cdreff_plots-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># plotting CDReff
+ggplot(full_cdreff, aes(x = month, y = CDR_eff, color = phase)) +
+  geom_line() +
+  labs(x = &quot;Months Since OAE Begins&quot;,
+       y = &quot;CDR Efficinecy % (dDIC/dTA)&quot;,
+       title = &quot;Integrated CDR Efficiency &quot;) +
+  theme_bw()</code></pre>
+<p><img src="figure/cdreff_plots.Rmd/dTA_cdreff_plots-2.png" width="672" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.4.2 (2024-10-31)
+Platform: x86_64-pc-linux-gnu
+Running under: openSUSE Leap 15.6
+
+Matrix products: default
+BLAS/LAPACK: /usr/local/OpenBLAS-0.3.28/lib/libopenblas_haswellp-r0.3.28.so;  LAPACK version 3.12.0
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+time zone: Europe/Zurich
+tzcode source: system (glibc)
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] arrow_18.1.0      data.table_1.16.2 lubridate_1.9.3   forcats_1.0.0    
+ [5] stringr_1.5.1     dplyr_1.1.4       purrr_1.0.2       readr_2.1.5      
+ [9] tidyr_1.3.1       tibble_3.2.1      ggplot2_3.5.1     tidyverse_2.0.0  
+[13] workflowr_1.7.1  
+
+loaded via a namespace (and not attached):
+ [1] sass_0.4.9        utf8_1.2.4        generics_0.1.3    stringi_1.8.4    
+ [5] hms_1.1.3         digest_0.6.37     magrittr_2.0.3    timechange_0.3.0 
+ [9] evaluate_1.0.1    grid_4.4.2        fastmap_1.2.0     rprojroot_2.0.4  
+[13] jsonlite_1.8.9    processx_3.8.4    whisker_0.4.1     ps_1.8.1         
+[17] promises_1.3.2    httr_1.4.7        fansi_1.0.6       scales_1.3.0     
+[21] jquerylib_0.1.4   cli_3.6.3         rlang_1.1.4       bit64_4.5.2      
+[25] munsell_0.5.1     withr_3.0.2       cachem_1.1.0      yaml_2.3.10      
+[29] tools_4.4.2       tzdb_0.4.0        colorspace_2.1-1  httpuv_1.6.15    
+[33] assertthat_0.2.1  vctrs_0.6.5       R6_2.5.1          lifecycle_1.0.4  
+[37] git2r_0.35.0      bit_4.5.0         fs_1.6.5          pkgconfig_2.0.3  
+[41] callr_3.7.6       pillar_1.9.0      bslib_0.8.0       later_1.4.1      
+[45] gtable_0.3.6      glue_1.8.0        Rcpp_1.0.13-1     xfun_0.49        
+[49] tidyselect_1.2.1  rstudioapi_0.17.1 knitr_1.49        farver_2.1.2     
+[53] htmltools_0.5.8.1 labeling_0.4.3    rmarkdown_2.29    compiler_4.4.2   
+[57] getPass_0.2-4    </code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -914,6 +775,8 @@ footer is added to webpages before the MathJax javascript. -->
 
 
 
+</div>
+</div>
 
 </div>
 
@@ -951,6 +814,35 @@ $(document).ready(function () {
 });
 </script>
 
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
