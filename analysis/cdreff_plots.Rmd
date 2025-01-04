@@ -1,0 +1,68 @@
+---
+title: "Integrated CDR Efficiency Plots"
+author: "Victoria Froh & Jens Daniel Müller"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Read this
+
+Plotting the results of the full-grid integrated time series of dTA and CDR efficiency for each 3 phases
+
+```{r setup, message=FALSE}
+
+#loading packages
+library(tidyverse)
+library(data.table)
+library(arrow)
+
+# Path to intermediate computation outputs
+path_outputs <- "/net/sea/work/vifroh/oae_ccs_roms_data/"
+
+# Path to save practice plots when working on them
+path_plots <- "/net/sea/work/vifroh/test_plots/"
+
+# loading in previous saved integrated CDR data
+lanina_cdreff_sum <- read_feather(
+  paste0(path_outputs, "lanina_CDReff_integrated.feather"))
+neutral_cdreff_sum <- read_feather(
+  paste0(path_outputs, "neutral_CDReff_integrated.feather"))
+elnino_cdreff_sum <- read_feather(
+  paste0(path_outputs, "elnino_CDReff_integrated.feather"))
+
+```
+
+```{r preparing_data, message=FALSE}
+
+# create combined table with "phase" column to identify each of the 3
+full_cdreff <- rbindlist(
+  list(lanina = lanina_cdreff_sum, neutral = neutral_cdreff_sum,
+       elnino = elnino_cdreff_sum),
+  idcol = "phase")
+
+# add column for months since oae addition begins for x-axis
+full_cdreff <- full_cdreff[, month := seq_len(.N), by = phase]
+
+```
+
+```{r  dTA_cdreff_plots, message=FALSE}
+
+# plotting dTA
+ggplot(full_cdreff, aes(x = month, y = dTA_sum/1e10, color = phase)) +
+  geom_line() +
+  labs(x = "Months Since OAE Begins",
+       y = "Integrated moles of Alk (in 10^10)",
+       title = "Total Added Alkalinity") +
+  theme_bw()
+
+# plotting CDReff
+ggplot(full_cdreff, aes(x = month, y = CDR_eff, color = phase)) +
+  geom_line() +
+  labs(x = "Months Since OAE Begins",
+       y = "CDR Efficinecy % (dDIC/dTA)",
+       title = "Integrated CDR Efficiency ") +
+  theme_bw()
+
+```
