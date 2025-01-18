@@ -22,7 +22,7 @@ path_ROMS_results <-
   "/net/sea/work/loher/ROMS/Pactcs30_Alk_enhanced_2024_11/"
 
 # Path to intermediate computation outputs
-path_outputs <- "/net/sea/work/vifroh/oae_ccs_roms_data/"
+path_outputs <- "/net/sea/work/vifroh/oae_ccs_roms_data/original_grid/"
 
 # loading in previous saved data; problems reading with feather
 load(paste0(path_outputs,"lanina_dTA_concdata.Rdata"))

@@ -2,7 +2,7 @@
 # dTA and dDIC Calculations
 # Author: Victoria Froh
 # Date: 2/12/2024, update: 12/12/2024
-# Purpose: loading in and calculating dTA in concentrations mmol/m^3
+# Purpose: loading in and calculating dTA and dDIC in concentrations mmol/m^3
 # -------------------------------------------------
 
 # -------------------------------
@@ -23,7 +23,7 @@ path_ROMS_results <-
   "/net/sea/work/loher/ROMS/Pactcs30_Alk_enhanced_2024_11/"
 
 # Path to intermediate computation outputs
-path_outputs <- "/net/sea/work/vifroh/oae_ccs_roms_data/"
+path_outputs <- "/net/sea/work/vifroh/oae_ccs_roms_data/original_grid/"
 
   # -------------------------------
   # 1.1 - Looking at Data Files
@@ -157,7 +157,7 @@ control_data_EN <- files_control[12:17] %>%
 control_data_EN <- rbindlist(control_data_EN, fill = TRUE)
 
   # -------------------------------
-  # 3.2 - Loading in La Nina Data
+  # 3.2 - Loading in La Nina Data and Calculating
   # -------------------------------
 
 lanina_alk <- files_lanina %>%
@@ -212,7 +212,7 @@ rm(lanina_dic, lanina_alk, lanina_data)
 gc()
 
   # -------------------------------
-  # 3.3 - Loading in Neutral Data
+  # 3.3 - Loading in Neutral Data and Calculating
   # -------------------------------
 
 neutral_data <- files_neutral %>%
@@ -245,7 +245,7 @@ rm(neutral_data)
 gc()
 
   # -------------------------------
-  # 3.4 - Load in El Nino Data
+  # 3.4 - Load in El Nino Data and Calculating
   # -------------------------------
 
 elnino_data <- files_elnino[-6] %>% # last file will be separate
