@@ -1,0 +1,179 @@
+---
+title: "Regrid Checks and Column Integrated Plots"
+author: "Victoria Froh"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+1.  Checking regrid subregion
+2.  Verifying scope of dTA in regrid
+3.  Column-integrated dTA maps
+
+```{r setup, message=FALSE}
+
+#loading packages
+library(tidyverse)
+library(data.table)
+library(arrow)
+library(scales)
+
+# Path to intermediate computation outputs
+path_outputs <- "/net/sea/work/vifroh/oae_ccs_roms_data/regrid_2/"
+
+# Path to save practice plots when working on them
+path_plots <- "/net/sea/work/vifroh/test_plots/"
+
+# loading in dTA conc data to make a surface plot/columnint
+lanina_dTA_conc <- read_feather(
+  paste0(path_outputs,"lanina_dTA_concdataRG2.feather"))
+
+# loading in dTA full integration data for competency check
+lanina_dTA_int<- read_feather(
+  paste0(path_outputs,"lanina_CDReff_intRG2.feather"))
+
+# loading in dTA sum original grid data for competency check
+lanina_intdata_ogs <- read_feather(
+  "/net/sea/work/vifroh/oae_ccs_roms_data/regrid/lanina_dTAint_comparegrids.feather")
+
+```
+
+Looking at the boundaries of the regridded subregion
+
+```{r subset_plot, message=FALSE}
+
+# filtering dTA conc data to make a surface plot
+surface_data <- lanina_dTA_conc[depth == 0 & time == "1998-09"]
+
+# Convert lat and lon to numeric 
+surface_data$lat <- as.numeric(surface_data$lat)
+surface_data$lon <- as.numeric(surface_data$lon)
+
+# # Convert longitude to -180 to 180 range 
+# surface_data$lon <- surface_data$lon - 360
+
+# Define the bounding box for the plot
+lat_range <- range(surface_data$lat, na.rm = TRUE)
+lon_range <- range(surface_data$lon, na.rm = TRUE)
+
+# plotting surface map
+ggplot() + 
+  geom_polygon(data = map_data("world"), aes(x = long, y = lat, group = group),
+               fill = "lightgray", color = "white") +
+  geom_raster(data = surface_data, aes(x = lon, y = lat, fill = dTA)) +
+  scale_fill_viridis_c() +  # Change the color scale to suit your data
+  theme_minimal() +
+  coord_fixed(xlim = c(lon_range[1] - 2, lon_range[2] + 2),
+              ylim = c(lat_range[1] - 2, lat_range[2] + 2)) + 
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 8),
+    axis.text.y = element_text(size = 8),
+    axis.ticks = element_line(size = 0.5),
+    panel.grid = element_blank()
+  ) +
+  labs(title = "Subset Domain (La Niña, September 1998)",
+       x = "Longitude",
+       y = "Latitude",
+       fill = "dTA (mmol/m^3)")
+
+# save plot
+ggsave(paste0(path_plots, "regrid_domainRG2.png"), plot = last_plot(), 
+       width = 8, height = 6, dpi = 300)
+
+rm(surface_data)
+gc()
+
+```
+
+Checking the alkalinity containment within the regridded subregion over the time series
+
+```{r scope_check, message=FALSE}
+
+# using full integrated data from cdr_eff_molar file
+setDT(lanina_dTA_int)
+
+# combine with original dTA sum data to compare; subtracting regrid from original
+lanina_dTAint_compare <- merge(lanina_intdata_ogs, lanina_dTA_int[, .(time, dTA_sum_rg2 = dTA_sum)],
+                          by = "time", all.x = FALSE) %>% 
+  .[, dTA_dif_rg2 := dTA_sum_og - dTA_sum_rg2] %>% 
+  .[, frac_miss_rg2 := dTA_dif_rg2 / dTA_sum_og]
+
+# # save data file
+# write_feather(lanina_dTAint_compare, paste0(path_outputs,
+#                                       "lanina_dTAint_comparegridsRG2.feather"))
+
+rm(lanina_dTAint_compare, lanina_intdata_og)
+gc()
+
+```
+
+Column integrated plots of added alkalinity to check lateral movement during the time series
+
+```{r column_integrated_plots, message=FALSE}
+
+# using conc data then multiplied by depth bin size so have mmol/m^2
+setDT(lanina_dTA_conc)
+lanina_dTA_conc$depth <- as.numeric(lanina_dTA_conc$depth)
+lanina_dTA_conc <-
+  lanina_dTA_conc[, thickness :=
+                    ifelse(depth == 0, 2.5,
+                           ifelse(depth < 80, 5,
+                                  ifelse(depth == 80, 7.5,
+                                         ifelse(depth < 100, 10,
+                                                ifelse(depth == 100, 15,
+                                                       ifelse(depth < 300, 20,
+                                                              10
+                                                       ))))))]
+lanina_dTA_conc <- lanina_dTA_conc[, dTA_m2 := dTA * thickness] %>%  # units now moles/m2
+      .[, dDIC_m2 := dDIC * thickness]
+
+# grouping by lat/lon and integrating vertically
+lanina_dTA_columnint<- lanina_dTA_conc[, .(dTA_column = sum(dTA_m2, na.rm = TRUE)), 
+                                      by = c("lat", "lon", "time")]
+
+
+# Convert lat, lon, Alk to numeric 
+lanina_dTA_columnint$lat <- as.numeric(lanina_dTA_columnint$lat)
+lanina_dTA_columnint$lon <- as.numeric(lanina_dTA_columnint$lon)
+lanina_dTA_columnint$dTA_column <- as.numeric(lanina_dTA_columnint$dTA_column)
+
+# filter by time to create a timestop plot
+surface_data <- lanina_dTA_columnint[time == "1999-06"]
+
+# # Convert longitude to -180 to 180 range 
+# surface_data$lon <- surface_data$lon - 360
+
+# plotting surface map
+ggplot() + 
+  # geom_polygon(data = map_data("world"), aes(x = long, y = lat, group = group),
+  #              fill = "lightgray", color = "white") +
+  geom_raster(data = surface_data, aes(x = lon, y = lat, fill = dTA_column)) +
+  scale_fill_viridis_c() +  # Change the color scale to suit your data
+  theme_minimal() +
+  coord_fixed() + 
+  scale_x_continuous(breaks = seq(-170, -85, by = 10)) +
+  scale_y_continuous(breaks = seq(10, 60, by = 10)) +
+  labs(title = "Vertically Integrated dTA (La Niña, June 1999)",
+       x = "Longitude",
+       y = "Latitude",
+       fill = "dTA (mmol/m^2)")
+
+# save plot
+ggsave(paste0(path_plots, "lanina_columnint_Jun1999.png"), plot = last_plot(), 
+       width = 8, height = 6, dpi = 300)
+
+# # save column integrated data
+# write_feather(lanina_dTA_columnint, paste0(path_outputs,
+#                                       "lanina_columnintRG2.feather"))
+# write_feather(neutral_dTA_columnint, paste0(path_outputs,
+#                                        "neutral_columnintRG2.feather"))
+# write_feather(elnino_dTA_columnint, paste0(path_outputs,
+#                                       "elnino_columnintRG2.feather"))
+
+rm(lanina_dTA_columnint, surface_data, lanina_dTA_conc)
+gc()
+
+```

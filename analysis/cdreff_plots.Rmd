@@ -19,7 +19,7 @@ library(data.table)
 library(arrow)
 
 # Path to intermediate computation outputs
-path_outputs <- "/net/sea/work/vifroh/oae_ccs_roms_data/"
+path_outputs <- "/net/sea/work/vifroh/oae_ccs_roms_data/original_grid/"
 
 # Path to save practice plots when working on them
 path_plots <- "/net/sea/work/vifroh/test_plots/"

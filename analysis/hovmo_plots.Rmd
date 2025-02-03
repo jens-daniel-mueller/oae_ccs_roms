@@ -1,0 +1,413 @@
+---
+title: "Hovmoeller dTA, dDIC, and CDR Efficiency Plots"
+author: "Victoria Froh"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Plotting dTA, dDIC, and CDR efficiency across depth and time of the OAE addition site. 
+Also plotting their differences from a mean of all 3 phases to compare.
+
+```{r setup, message=FALSE}
+
+#loading packages
+library(tidyverse)
+library(data.table)
+library(arrow)
+library(scales)
+
+# Path to intermediate computation outputs
+path_outputs <- "/net/sea/work/vifroh/oae_ccs_roms_data/regrid_2/"
+
+# Path to save practice plots when working on them
+path_plots <- "/net/sea/work/vifroh/test_plots/"
+
+# loading in previous saved depth integrated data for hovmo plots
+lanina_depthint <- read_feather(
+  paste0(path_outputs, "lanina_depthintRG2.feather"))
+neutral_depthint <- read_feather(
+  paste0(path_outputs, "neutral_depthintRG2.feather"))
+elnino_depthint <- read_feather(
+  paste0(path_outputs, "elnino_depthintRG2.feather"))
+
+```
+
+## Regular Hovmoeller Plots
+
+Change in total (added) alkalinity
+
+```{r  dTA_hovmo_plots, message=FALSE}
+
+# formatting tables
+phase_data <- list(lanina_depthint, neutral_depthint, elnino_depthint)
+
+phase_data <- phase_data %>%
+  lapply(function(table) {
+    setDT(table)
+    table[, depth := as.numeric(depth)]
+    table[, dTA_sum := as.numeric(as.character(dTA_sum))]
+    table[, CDR_eff := as.numeric(as.character(CDR_eff))]
+    table[, time := as.Date(paste0(time, "-01"))]
+    return(table)
+  })
+
+# return tables to each item 
+lanina_depthint <- phase_data[[1]]
+neutral_depthint <- phase_data[[2]]
+elnino_depthint <- phase_data[[3]]
+
+# subset first two years
+lanina_depthint_sub <- lanina_depthint[time <= as.Date("2000-05-01")]
+neutral_depthint_sub <- neutral_depthint[time <= as.Date("2005-05-01")]
+elnino_depthint_sub <- elnino_depthint[time <= as.Date("2017-05-01")]
+
+# # removing negative data points and transform
+# lanina_depthint_sub <- lanina_depthint_sub[dTA_sum > 0]
+# lanina_depthint_sub[, dTA_log := log10(dTA_sum)]
+
+# setting boundaries of bins
+depth_ranges <- unique(lanina_depthint_sub[, .(depth)])
+setorder(depth_ranges, depth)
+
+depth_ranges[, ":=" (
+    depth_upper = (shift(depth, type = "lag", fill = 0) + depth) / 2, # set shallower boundary
+    depth_lower = (shift(depth, type = "lead", fill = max(depth)) + depth) / 2 
+  )] # deeper bound
+
+# merge depth ranges back to tables and divide into surface and subsurface
+phase_data <- list(lanina_depthint_sub, neutral_depthint_sub, elnino_depthint_sub)
+
+phase_data <- phase_data %>%
+  lapply(function(table) {
+    table <- merge(table, depth_ranges, by = "depth", all.x = TRUE)
+    table[, category := fifelse(depth < 100, "Surface", "Subsurface")]
+    table$category <- factor(table$category, levels = c("Surface", "Subsurface"))
+    return(table)
+  })
+
+# return tables to each item
+lanina_depthint_sub <- phase_data[[1]]
+neutral_depthint_sub <- phase_data[[2]]
+elnino_depthint_sub <- phase_data[[3]]
+
+# plotting delta dTA from mean
+phase_titles <- c("La Niña", "Neutral", "El Niño")
+phases <- c("lanina", "neutral", "elnino")
+
+create_hovmo_dTA <- function(data, title_text, phase) {
+  plot <- ggplot(data, aes(x = time, y = depth, fill = dTA_sum)) +
+    geom_rect(aes(ymin = depth_upper, ymax = depth_lower, 
+                  xmin = time - 16, xmax = time + 16)) +
+    scale_y_reverse(expand = c(0, 0)) +
+    scale_x_date(
+      date_breaks = "4 months",  # Tick every 4 months
+      date_labels = "%Y-%m",  # Show only the year and month
+      expand = c(0, 0)
+      ) +
+    scale_fill_viridis_c(guide = guide_colorbar(
+      barwidth = unit(0.7, "cm"), barheight = unit(6, "cm")),
+      limits = c(-926000, 3443000000)) +
+      # limits = c(0, 3443000000)) +
+    facet_wrap(~category, scales = "free_y", ncol = 1) + # splits into two panels
+    labs(x = "Time",
+         y = "Depth (m)",
+         fill = "Added Alkalinity (mol/m)",
+         title = paste0(title_text, " Phase (10N to 60N and -170E to -85E)")) + 
+    theme_bw() + 
+    theme(strip.text = element_blank(),
+          axis.ticks.length = unit(0.15, "inches"),
+          panel.border = element_blank(),  # Remove box around facets
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.5, "lines"),
+          strip.background = element_blank())
+  
+  print(plot)
+  
+  # save plot
+  ggsave(paste0(path_plots, phase, "_hovmo_dTA.png"), plot = plot,
+         width = 8, height = 6, dpi = 300)
+}
+
+lapply(seq_along(phase_data), function(i) {
+  create_hovmo_dTA(phase_data[[i]], phase_titles[i], phases[i])
+})
+
+rm(create_hovmo_dTA)
+gc()
+
+```
+
+Change in DIC
+
+```{r  dDIC_hovmo_plots, message=FALSE}
+
+# building off of data ran in chunk above
+
+# plotting dDIC
+create_hovmo_dDIC <- function(data, title_text, phase) {
+  plot <- ggplot(data, aes(x = time, y = depth, fill = dDIC_sum)) +
+    geom_rect(aes(ymin = depth_upper, ymax = depth_lower, 
+                  xmin = time - 16, xmax = time + 16)) +
+    scale_y_reverse(expand = c(0, 0)) +
+    scale_x_date(
+      date_breaks = "4 months",  # Tick every 4 months
+      date_labels = "%Y-%m",  # Show only the year and month
+      expand = c(0, 0)
+      ) +
+    scale_fill_viridis_c(guide = guide_colorbar(
+      barwidth = unit(0.7, "cm"), barheight = unit(6, "cm")),
+      limits = c(-480, 2008000000)) +
+      # limits = c(0, 2008000000)) +
+    facet_wrap(~category, scales = "free_y", ncol = 1) + # splits into two panels
+    labs(x = "Time",
+         y = "Depth (m)",
+         fill = "Change in DIC (mol/m)",
+         title = paste0(title_text, " Phase (10N to 60N and -170E to -85E)")) + 
+    theme_bw() + 
+    theme(strip.text = element_blank(),
+          axis.ticks.length = unit(0.15, "inches"),
+          panel.border = element_blank(),  # Remove box around facets
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.5, "lines"),
+          strip.background = element_blank())
+  
+  print(plot)
+  
+  # save plot
+  ggsave(paste0(path_plots, phase, "_hovmo_dDIC.png"), plot = plot,
+         width = 8, height = 6, dpi = 300)
+}
+
+lapply(seq_along(phase_data), function(i) {
+  create_hovmo_dDIC(phase_data[[i]], phase_titles[i], phases[i])
+})
+
+rm(create_hovmo_dDIC)
+gc()
+
+```
+
+CDR Efficiency (dDIC/dTA)
+
+```{r  CDReff_hovmo_plots, message=FALSE}
+
+# building off of data ran in chunk above
+
+# plotting CDReff
+create_hovmo_CDReff <- function(data, title_text, phase) {
+  plot <- ggplot(data, aes(x = time, y = depth, fill = CDR_eff)) +
+    geom_rect(aes(ymin = depth_upper, ymax = depth_lower, 
+                  xmin = time - 16, xmax = time + 16)) +
+    scale_y_reverse(expand = c(0, 0)) +
+    scale_x_date(
+      date_breaks = "4 months",  # Tick every 4 months
+      date_labels = "%Y-%m",  # Show only the year and month
+      expand = c(0, 0)
+      ) +
+    scale_fill_viridis_c(guide = guide_colorbar(
+      barwidth = unit(0.7, "cm"), barheight = unit(6, "cm")),
+      limits = c(0, 1)) + # cutting off weird negative or >1 CDR effs
+    facet_wrap(~category, scales = "free_y", ncol = 1) + # splits into two panels
+    labs(x = "Time",
+         y = "Depth (m)",
+         fill = "CDR Efficiency (Fraction))",
+         title = paste0(title_text, " Phase (10N to 60N and -170E to -85E)")) + 
+    theme_bw() + 
+    theme(strip.text = element_blank(),
+          axis.ticks.length = unit(0.15, "inches"),
+          panel.border = element_blank(),  # Remove box around facets
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.5, "lines"),
+          strip.background = element_blank())
+  
+  print(plot)
+  
+  # save plot
+  ggsave(paste0(path_plots, phase, "_hovmo_CDReff.png"), plot = plot,
+         width = 8, height = 6, dpi = 300)
+}
+
+lapply(seq_along(phase_data), function(i) {
+  create_hovmo_CDReff(phase_data[[i]], phase_titles[i], phases[i])
+})
+
+rm(create_hovmo_CDReff)
+gc()
+
+```
+
+## Hovmoeller plots of the differences from the means of all 3 phases
+
+Difference in added alkalinity from the phases' mean
+
+```{r  delta_hovmo_dTA, message=FALSE}
+
+# building off of data ran in chunk above
+
+# convert time column to months since addition begins
+phase_data <- phase_data %>%
+  lapply(function(table) {
+    setorder(table, time)
+    table[, month := .GRP, by = time] # gives index in order to each unique time
+    return(table)
+  })
+
+# return tables to each item
+lanina_depthint_sub <- phase_data[[1]]
+neutral_depthint_sub <- phase_data[[2]]
+elnino_depthint_sub <- phase_data[[3]]
+
+# combining all three tables in to one
+phase_list <- Map(function(table, phase) {
+    table[, phase := phase]
+    table[, .(month, depth, depth_upper, depth_lower, category, dTA_sum, dDIC_sum, 
+              CDR_eff, phase)]
+  }, phase_data, phases)
+
+phase_fulldata <- rbindlist(phase_list)
+
+# calculating mean dTA, dDIC, and CDR-eff across all 3 phases
+phase_fulldata[, ":=" (
+  dTA_mean = mean(dTA_sum, na.rm = TRUE),
+  dDIC_mean = mean(dDIC_sum, na.rm = TRUE),
+  CDR_effmean = mean(CDR_eff[CDR_eff >= 0 & CDR_eff <= 1] , na.rm = TRUE)
+), by = .(month, depth)]
+
+create_hovmo_ddTA <- function(phase_name, title_text) {
+  phase_dt <- phase_fulldata[phase_fulldata$phase == phase_name,]
+  plot <- ggplot(phase_dt, aes(x = month, y = depth, fill = dTA_sum - dTA_mean)) +
+    geom_rect(aes(xmin = month - 1, xmax = month,
+                  ymin = depth_upper, ymax = depth_lower)) +
+    scale_y_reverse(expand = c(0, 0)) +
+    scale_fill_gradient2(low = "blue", mid = "white", high = "red", midpoint = 0,
+                         guide = guide_colorbar(
+      barwidth = unit(0.7, "cm"), barheight = unit(6, "cm")),
+      limits = c(-410000000, 430000000)) +
+    facet_wrap(~category, scales = "free_y", ncol = 1) + # splits into two panels
+    labs(x = "Months Since Addition Began",
+         y = "Depth (m)",
+         fill = "Added Alkalinity Difference (mol/m)",
+         title = paste0(title_text, " Phase, Added Alkalinity Difference from Mean")) +
+    theme_bw() +
+    theme(strip.text = element_blank(),
+          axis.ticks.length = unit(0.15, "inches"),
+          panel.border = element_blank(),  # Remove box around facets
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.5, "lines"),
+          strip.background = element_blank())
+  print(plot)
+  
+  # save plot
+  ggsave(paste0(path_plots, phase_name, "_hovmo_ddTA.png"), plot = plot,
+         width = 8, height = 6, dpi = 300)
+}
+
+lapply(seq_along(phases), function(i) {
+  create_hovmo_ddTA(phases[i], phase_titles[i])
+})
+
+rm(phase_list, create_hovmo_ddTA)
+gc()
+
+```
+
+Difference in dDIC from the phases' mean
+
+```{r  delta_hovmo_dDIC, message=FALSE}
+
+# building off of data ran in chunk above
+
+# plotting delta dDIC from mean
+create_hovmo_ddDIC <- function(phase_name, title_text) {
+  phase_dt <- phase_fulldata[phase_fulldata$phase == phase_name,]
+  plot <- ggplot(phase_dt, aes(x = month, y = depth, fill = dDIC_sum - dDIC_mean)) +
+    geom_rect(aes(xmin = month - 1, xmax = month,
+                  ymin = depth_upper, ymax = depth_lower)) +
+    scale_y_reverse(expand = c(0, 0)) +
+    scale_fill_gradient2(low = "blue", mid = "white", high = "red", midpoint = 0,
+                         guide = guide_colorbar(
+      barwidth = unit(0.7, "cm"), barheight = unit(6, "cm")),
+      limits = c(-200000000, 200000000)) +
+    facet_wrap(~category, scales = "free_y", ncol = 1) + # splits into two panels
+    labs(x = "Months Since Addition Began",
+         y = "Depth (m)",
+         fill = "dDIC Difference (mol/m)",
+         title = paste0(title_text, " Phase, dDIC Difference from Mean")) +
+    theme_bw() +
+    theme(strip.text = element_blank(),
+          axis.ticks.length = unit(0.15, "inches"),
+          panel.border = element_blank(),  # Remove box around facets
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.5, "lines"),
+          strip.background = element_blank())
+  print(plot)
+  
+  # save plot
+  ggsave(paste0(path_plots, phase_name, "_hovmo_ddDIC.png"), plot = plot,
+         width = 8, height = 6, dpi = 300)
+}
+
+lapply(seq_along(phases), function(i) {
+  create_hovmo_ddDIC(phases[i], phase_titles[i])
+})
+
+rm(create_hovmo_ddDIC)
+gc()
+
+```
+
+Difference in CDR efficiency from the phases' mean; wonky efficiencies outside the range from 0 to 1 were filtered out (these occurred primarily below 150m)
+
+```{r  delta_hovmo_CDReff, message=FALSE}
+
+# building off of data ran in chunk above; CDR efficiencies outside 0-1 were
+# excluded from the mean calculation since they are casued by errors
+
+# plotting delta dDIC from mean
+create_hovmo_dCDReff <- function(phase_name, title_text) {
+  phase_dt <- phase_fulldata[phase_fulldata$phase == phase_name,]
+  # filter out negative dTA/dDIC/wrong CDReff as these will make weird/incorrect efficiency
+  phase_dt <- phase_dt[dTA_sum < 0, dTA_sum := NA] 
+  phase_dt <- phase_dt[dDIC_sum < 0, dDIC_sum := NA]
+  phase_dt <- phase_dt[CDR_eff < 0 | CDR_eff > 1, CDR_eff := NA]
+  
+  plot <- ggplot(phase_dt, aes(x = month, y = depth, fill = CDR_eff - CDR_effmean)) +
+    geom_rect(aes(xmin = month - 1, xmax = month,
+                  ymin = depth_upper, ymax = depth_lower)) +
+    scale_y_reverse(expand = c(0, 0)) +
+    scale_fill_gradient2(na.value = "lightgray", low = "blue", mid = "white", 
+                         high = "red", midpoint = 0,
+                         guide = guide_colorbar(
+      barwidth = unit(0.7, "cm"), barheight = unit(6, "cm")),
+      limits = c(-0.152, 0.152)) +
+    facet_wrap(~category, scales = "free_y", ncol = 1) + # splits into two panels
+    labs(x = "Months Since Addition Began",
+         y = "Depth (m)",
+         fill = "CDR Efficiency Difference",
+         title = paste0(title_text, " Phase, CDR Efficiency Difference from Mean")) +
+    theme_bw() +
+    theme(strip.text = element_blank(),
+          axis.ticks.length = unit(0.15, "inches"),
+          panel.border = element_blank(),  # Remove box around facets
+          panel.grid = element_blank(),
+          panel.spacing = unit(0.5, "lines"),
+          strip.background = element_blank())
+  print(plot)
+  
+  # save plot
+  ggsave(paste0(path_plots, phase_name, "_hovmo_dCDReff.png"), plot = plot,
+         width = 8, height = 6, dpi = 300)
+}
+
+lapply(seq_along(phases), function(i) {
+  create_hovmo_dCDReff(phases[i], phase_titles[i])
+})
+
+rm(create_hovmo_dCDReff)
+gc()
+
+```
