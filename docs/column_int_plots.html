@@ -9,10 +9,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Victoria Froh &amp; Jens Daniel Müller" />
+<meta name="author" content="Victoria Froh" />
 
 
-<title>Integrated CDR Efficiency Plots</title>
+<title>Regrid Checks and Column Integrated Plots</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -386,8 +386,9 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Integrated CDR Efficiency Plots</h1>
-<h4 class="author">Victoria Froh &amp; Jens Daniel Müller</h4>
+<h1 class="title toc-ignore">Regrid Checks and Column Integrated
+Plots</h1>
+<h4 class="author">Victoria Froh</h4>
 <h4 class="date">03 February, 2025</h4>
 
 </div>
@@ -610,11 +611,11 @@ have uncommitted changes.
 <div id="versions" class="tab-pane fade">
 <p>
 These are the previous versions of the repository in which changes were
-made to the R Markdown (<code>analysis/cdreff_plots.Rmd</code>) and HTML
-(<code>docs/cdreff_plots.html</code>) files. If you’ve configured a
-remote Git repository (see <code>?wflow_git_remote</code>), click on the
-hyperlinks in the table below to view the files as they were in that
-past version.
+made to the R Markdown (<code>analysis/column_int_plots.Rmd</code>) and
+HTML (<code>docs/column_int_plots.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
 </p>
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
@@ -643,7 +644,7 @@ Message
 Rmd
 </td>
 <td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/639b38d3912a5bcacb51b37cd7eeb25d9f77b1ad/analysis/cdreff_plots.Rmd" target="_blank">639b38d</a>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/639b38d3912a5bcacb51b37cd7eeb25d9f77b1ad/analysis/column_int_plots.Rmd" target="_blank">639b38d</a>
 </td>
 <td>
 vgfroh
@@ -655,40 +656,6 @@ vgfroh
 Column integrated plots and hovmoeller plots completed
 </td>
 </tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/ce1905769d987ad6c2264d384fd57c8a00a310ff/docs/cdreff_plots.html" target="_blank">ce19057</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2025-01-05
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/009b7353de114c0734f743d53ea453356f6418c2/analysis/cdreff_plots.Rmd" target="_blank">009b735</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2025-01-05
-</td>
-<td>
-Plotted time series of integrated dTA and CDREff data
-</td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -696,126 +663,173 @@ Plotted time series of integrated dTA and CDREff data
 </div>
 </div>
 </div>
-<div id="read-this" class="section level2">
-<h2>Read this</h2>
-<p>Plotting the results of the full-grid integrated time series of dTA
-and CDR efficiency for each 3 phases</p>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<ol style="list-style-type: decimal">
+<li>Checking regrid subregion</li>
+<li>Verifying scope of dTA in regrid</li>
+<li>Column-integrated dTA maps</li>
+</ol>
 <pre class="r"><code>#loading packages
 library(tidyverse)
 library(data.table)
 library(arrow)
+library(scales)
 
 # Path to intermediate computation outputs
-path_outputs &lt;- &quot;/net/sea/work/vifroh/oae_ccs_roms_data/original_grid/&quot;
+path_outputs &lt;- &quot;/net/sea/work/vifroh/oae_ccs_roms_data/regrid_2/&quot;
 
 # Path to save practice plots when working on them
 path_plots &lt;- &quot;/net/sea/work/vifroh/test_plots/&quot;
 
-# loading in previous saved integrated CDR data
-lanina_cdreff_sum &lt;- read_feather(
-  paste0(path_outputs, &quot;lanina_CDReff_integrated.feather&quot;))
-neutral_cdreff_sum &lt;- read_feather(
-  paste0(path_outputs, &quot;neutral_CDReff_integrated.feather&quot;))
-elnino_cdreff_sum &lt;- read_feather(
-  paste0(path_outputs, &quot;elnino_CDReff_integrated.feather&quot;))</code></pre>
-<pre class="r"><code># create combined table with &quot;phase&quot; column to identify each of the 3
-full_cdreff &lt;- rbindlist(
-  list(lanina = lanina_cdreff_sum, neutral = neutral_cdreff_sum,
-       elnino = elnino_cdreff_sum),
-  idcol = &quot;phase&quot;)
+# loading in dTA conc data to make a surface plot/columnint
+lanina_dTA_conc &lt;- read_feather(
+  paste0(path_outputs,&quot;lanina_dTA_concdataRG2.feather&quot;))
 
-# add column for months since oae addition begins for x-axis
-full_cdreff &lt;- full_cdreff[, month := seq_len(.N), by = phase]</code></pre>
-<pre class="r"><code># plotting dTA
-ggplot(full_cdreff, aes(x = month, y = dTA_sum/1e10, color = phase)) +
-  geom_line() +
-  labs(x = &quot;Months Since OAE Begins&quot;,
-       y = &quot;Integrated moles of Alk (in 10^10)&quot;,
-       title = &quot;Total Added Alkalinity&quot;) +
-  theme_bw()</code></pre>
-<p><img src="figure/cdreff_plots.Rmd/dTA_cdreff_plots-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-dTA_cdreff_plots-1">
-Past versions of dTA_cdreff_plots-1.png
-</button>
-</p>
-<div id="fig-dTA_cdreff_plots-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/ce1905769d987ad6c2264d384fd57c8a00a310ff/docs/figure/cdreff_plots.Rmd/dTA_cdreff_plots-1.png" target="_blank">ce19057</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2025-01-05
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code># plotting CDReff
-ggplot(full_cdreff, aes(x = month, y = CDR_eff, color = phase)) +
-  geom_line() +
-  labs(x = &quot;Months Since OAE Begins&quot;,
-       y = &quot;CDR Efficinecy % (dDIC/dTA)&quot;,
-       title = &quot;Integrated CDR Efficiency &quot;) +
-  theme_bw()</code></pre>
-<p><img src="figure/cdreff_plots.Rmd/dTA_cdreff_plots-2.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-dTA_cdreff_plots-2">
-Past versions of dTA_cdreff_plots-2.png
-</button>
-</p>
-<div id="fig-dTA_cdreff_plots-2" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/ce1905769d987ad6c2264d384fd57c8a00a310ff/docs/figure/cdreff_plots.Rmd/dTA_cdreff_plots-2.png" target="_blank">ce19057</a>
-</td>
-<td>
-vgfroh
-</td>
-<td>
-2025-01-05
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+# loading in dTA full integration data for competency check
+lanina_dTA_int&lt;- read_feather(
+  paste0(path_outputs,&quot;lanina_CDReff_intRG2.feather&quot;))
+
+# loading in dTA sum original grid data for competency check
+lanina_intdata_ogs &lt;- read_feather(
+  &quot;/net/sea/work/vifroh/oae_ccs_roms_data/regrid/lanina_dTAint_comparegrids.feather&quot;)</code></pre>
+<p>Looking at the boundaries of the regridded subregion</p>
+<pre class="r"><code># filtering dTA conc data to make a surface plot
+surface_data &lt;- lanina_dTA_conc[depth == 0 &amp; time == &quot;1998-09&quot;]
+
+# Convert lat and lon to numeric 
+surface_data$lat &lt;- as.numeric(surface_data$lat)
+surface_data$lon &lt;- as.numeric(surface_data$lon)
+
+# # Convert longitude to -180 to 180 range 
+# surface_data$lon &lt;- surface_data$lon - 360
+
+# Define the bounding box for the plot
+lat_range &lt;- range(surface_data$lat, na.rm = TRUE)
+lon_range &lt;- range(surface_data$lon, na.rm = TRUE)
+
+# plotting surface map
+ggplot() + 
+  geom_polygon(data = map_data(&quot;world&quot;), aes(x = long, y = lat, group = group),
+               fill = &quot;lightgray&quot;, color = &quot;white&quot;) +
+  geom_raster(data = surface_data, aes(x = lon, y = lat, fill = dTA)) +
+  scale_fill_viridis_c() +  # Change the color scale to suit your data
+  theme_minimal() +
+  coord_fixed(xlim = c(lon_range[1] - 2, lon_range[2] + 2),
+              ylim = c(lat_range[1] - 2, lat_range[2] + 2)) + 
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 8),
+    axis.text.y = element_text(size = 8),
+    axis.ticks = element_line(size = 0.5),
+    panel.grid = element_blank()
+  ) +
+  labs(title = &quot;Subset Domain (La Niña, September 1998)&quot;,
+       x = &quot;Longitude&quot;,
+       y = &quot;Latitude&quot;,
+       fill = &quot;dTA (mmol/m^3)&quot;)</code></pre>
+<pre><code>Warning: The `size` argument of `element_line()` is deprecated as of ggplot2 3.4.0.
+ℹ Please use the `linewidth` argument instead.
+This warning is displayed once every 8 hours.
+Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+generated.</code></pre>
+<p><img src="figure/column_int_plots.Rmd/subset_plot-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># save plot
+ggsave(paste0(path_plots, &quot;regrid_domainRG2.png&quot;), plot = last_plot(), 
+       width = 8, height = 6, dpi = 300)
+
+rm(surface_data)
+gc()</code></pre>
+<pre><code>             used    (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells    1657574    88.6    3217118   171.9    2798428   149.5
+Vcells 3148545860 24021.5 4533694348 34589.4 3215779056 24534.5</code></pre>
+<p>Checking the alkalinity containment within the regridded subregion
+over the time series</p>
+<pre class="r"><code># using full integrated data from cdr_eff_molar file
+setDT(lanina_dTA_int)
+
+# combine with original dTA sum data to compare; subtracting regrid from original
+lanina_dTAint_compare &lt;- merge(lanina_intdata_ogs, lanina_dTA_int[, .(time, dTA_sum_rg2 = dTA_sum)],
+                          by = &quot;time&quot;, all.x = FALSE) %&gt;% 
+  .[, dTA_dif_rg2 := dTA_sum_og - dTA_sum_rg2] %&gt;% 
+  .[, frac_miss_rg2 := dTA_dif_rg2 / dTA_sum_og]
+
+# # save data file
+# write_feather(lanina_dTAint_compare, paste0(path_outputs,
+#                                       &quot;lanina_dTAint_comparegridsRG2.feather&quot;))
+
+rm(lanina_dTAint_compare, lanina_intdata_og)</code></pre>
+<pre><code>Warning in rm(lanina_dTAint_compare, lanina_intdata_og): object
+&#39;lanina_intdata_og&#39; not found</code></pre>
+<pre class="r"><code>gc()</code></pre>
+<pre><code>             used    (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells    1666362    89.0    3217118   171.9    2798428   149.5
+Vcells 3147534806 24013.8 4533694348 34589.4 3215779056 24534.5</code></pre>
+<p>Column integrated plots of added alkalinity to check lateral movement
+during the time series</p>
+<pre class="r"><code># using conc data then multiplied by depth bin size so have mmol/m^2
+setDT(lanina_dTA_conc)
+lanina_dTA_conc$depth &lt;- as.numeric(lanina_dTA_conc$depth)
+lanina_dTA_conc &lt;-
+  lanina_dTA_conc[, thickness :=
+                    ifelse(depth == 0, 2.5,
+                           ifelse(depth &lt; 80, 5,
+                                  ifelse(depth == 80, 7.5,
+                                         ifelse(depth &lt; 100, 10,
+                                                ifelse(depth == 100, 15,
+                                                       ifelse(depth &lt; 300, 20,
+                                                              10
+                                                       ))))))]
+lanina_dTA_conc &lt;- lanina_dTA_conc[, dTA_m2 := dTA * thickness] %&gt;%  # units now moles/m2
+      .[, dDIC_m2 := dDIC * thickness]
+
+# grouping by lat/lon and integrating vertically
+lanina_dTA_columnint&lt;- lanina_dTA_conc[, .(dTA_column = sum(dTA_m2, na.rm = TRUE)), 
+                                      by = c(&quot;lat&quot;, &quot;lon&quot;, &quot;time&quot;)]
+
+
+# Convert lat, lon, Alk to numeric 
+lanina_dTA_columnint$lat &lt;- as.numeric(lanina_dTA_columnint$lat)
+lanina_dTA_columnint$lon &lt;- as.numeric(lanina_dTA_columnint$lon)
+lanina_dTA_columnint$dTA_column &lt;- as.numeric(lanina_dTA_columnint$dTA_column)
+
+# filter by time to create a timestop plot
+surface_data &lt;- lanina_dTA_columnint[time == &quot;1999-06&quot;]
+
+# # Convert longitude to -180 to 180 range 
+# surface_data$lon &lt;- surface_data$lon - 360
+
+# plotting surface map
+ggplot() + 
+  # geom_polygon(data = map_data(&quot;world&quot;), aes(x = long, y = lat, group = group),
+  #              fill = &quot;lightgray&quot;, color = &quot;white&quot;) +
+  geom_raster(data = surface_data, aes(x = lon, y = lat, fill = dTA_column)) +
+  scale_fill_viridis_c() +  # Change the color scale to suit your data
+  theme_minimal() +
+  coord_fixed() + 
+  scale_x_continuous(breaks = seq(-170, -85, by = 10)) +
+  scale_y_continuous(breaks = seq(10, 60, by = 10)) +
+  labs(title = &quot;Vertically Integrated dTA (La Niña, June 1999)&quot;,
+       x = &quot;Longitude&quot;,
+       y = &quot;Latitude&quot;,
+       fill = &quot;dTA (mmol/m^2)&quot;)</code></pre>
+<p><img src="figure/column_int_plots.Rmd/column_integrated_plots-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># save plot
+ggsave(paste0(path_plots, &quot;lanina_columnint_Jun1999.png&quot;), plot = last_plot(), 
+       width = 8, height = 6, dpi = 300)
+
+# # save column integrated data
+# write_feather(lanina_dTA_columnint, paste0(path_outputs,
+#                                       &quot;lanina_columnintRG2.feather&quot;))
+# write_feather(neutral_dTA_columnint, paste0(path_outputs,
+#                                        &quot;neutral_columnintRG2.feather&quot;))
+# write_feather(elnino_dTA_columnint, paste0(path_outputs,
+#                                       &quot;elnino_columnintRG2.feather&quot;))
+
+rm(lanina_dTA_columnint, surface_data, lanina_dTA_conc)
+gc()</code></pre>
+<pre><code>          used (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells 1676490 89.6    3217118   171.9    3217118   171.9
+Vcells 4179417 31.9 8052609881 61436.6 9725788468 74201.9</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -847,27 +861,28 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] arrow_18.1.0.1    data.table_1.16.2 lubridate_1.9.3   forcats_1.0.0    
- [5] stringr_1.5.1     dplyr_1.1.4       purrr_1.0.2       readr_2.1.5      
- [9] tidyr_1.3.1       tibble_3.2.1      ggplot2_3.5.1     tidyverse_2.0.0  
-[13] workflowr_1.7.1  
+ [1] scales_1.3.0      arrow_18.1.0.1    data.table_1.16.2 lubridate_1.9.3  
+ [5] forcats_1.0.0     stringr_1.5.1     dplyr_1.1.4       purrr_1.0.2      
+ [9] readr_2.1.5       tidyr_1.3.1       tibble_3.2.1      ggplot2_3.5.1    
+[13] tidyverse_2.0.0   workflowr_1.7.1  
 
 loaded via a namespace (and not attached):
- [1] sass_0.4.9        utf8_1.2.4        generics_0.1.3    stringi_1.8.4    
- [5] hms_1.1.3         digest_0.6.37     magrittr_2.0.3    timechange_0.3.0 
- [9] evaluate_1.0.1    grid_4.4.2        fastmap_1.2.0     rprojroot_2.0.4  
-[13] jsonlite_1.8.9    processx_3.8.4    whisker_0.4.1     ps_1.8.1         
-[17] promises_1.3.2    httr_1.4.7        fansi_1.0.6       scales_1.3.0     
-[21] jquerylib_0.1.4   cli_3.6.3         rlang_1.1.4       bit64_4.5.2      
-[25] munsell_0.5.1     withr_3.0.2       cachem_1.1.0      yaml_2.3.10      
-[29] tools_4.4.2       tzdb_0.4.0        colorspace_2.1-1  httpuv_1.6.15    
-[33] assertthat_0.2.1  vctrs_0.6.5       R6_2.5.1          lifecycle_1.0.4  
-[37] git2r_0.35.0      bit_4.5.0         fs_1.6.5          pkgconfig_2.0.3  
-[41] callr_3.7.6       pillar_1.9.0      bslib_0.8.0       later_1.4.1      
-[45] gtable_0.3.6      glue_1.8.0        Rcpp_1.0.13-1     xfun_0.49        
-[49] tidyselect_1.2.1  rstudioapi_0.17.1 knitr_1.49        farver_2.1.2     
-[53] htmltools_0.5.8.1 labeling_0.4.3    rmarkdown_2.29    compiler_4.4.2   
-[57] getPass_0.2-4    </code></pre>
+ [1] gtable_0.3.6      xfun_0.49         bslib_0.8.0       processx_3.8.4   
+ [5] callr_3.7.6       tzdb_0.4.0        vctrs_0.6.5       tools_4.4.2      
+ [9] ps_1.8.1          generics_0.1.3    fansi_1.0.6       pkgconfig_2.0.3  
+[13] assertthat_0.2.1  lifecycle_1.0.4   compiler_4.4.2    farver_2.1.2     
+[17] git2r_0.35.0      textshaping_0.4.0 munsell_0.5.1     getPass_0.2-4    
+[21] httpuv_1.6.15     htmltools_0.5.8.1 maps_3.4.2.1      sass_0.4.9       
+[25] yaml_2.3.10       crayon_1.5.3      later_1.4.1       pillar_1.9.0     
+[29] jquerylib_0.1.4   whisker_0.4.1     cachem_1.1.0      tidyselect_1.2.1 
+[33] digest_0.6.37     stringi_1.8.4     labeling_0.4.3    rprojroot_2.0.4  
+[37] fastmap_1.2.0     grid_4.4.2        colorspace_2.1-1  cli_3.6.3        
+[41] magrittr_2.0.3    utf8_1.2.4        withr_3.0.2       promises_1.3.2   
+[45] bit64_4.5.2       timechange_0.3.0  rmarkdown_2.29    httr_1.4.7       
+[49] bit_4.5.0         ragg_1.3.3        hms_1.1.3         evaluate_1.0.1   
+[53] knitr_1.49        viridisLite_0.4.2 rlang_1.1.4       Rcpp_1.0.13-1    
+[57] glue_1.8.0        rstudioapi_0.17.1 jsonlite_1.8.9    R6_2.5.1         
+[61] systemfonts_1.1.0 fs_1.6.5         </code></pre>
 </div>
 </div>
 </div>

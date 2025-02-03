@@ -342,13 +342,16 @@ div.tocify {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="read_data.html">Read data</a>
-</li>
-<li>
   <a href="enso_indices.html">CCS ENSO Indices</a>
 </li>
 <li>
   <a href="cdreff_plots.html">CDR Efficiency and dTA Plots</a>
+</li>
+<li>
+  <a href="column_int_plots.html">Regridded Sub Region Plots</a>
+</li>
+<li>
+  <a href="hovmo_plots.html">Hovmoeller Plots</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -385,7 +388,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">CCS ENSO evaluation metrics</h1>
 <h4 class="author">Victoria Froh &amp; Jens Daniel Müller</h4>
-<h4 class="date">05 January, 2025</h4>
+<h4 class="date">03 February, 2025</h4>
 
 </div>
 
@@ -414,7 +417,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-01-05
+<strong>Last updated:</strong> 2025-02-03
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -545,15 +548,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree009b7353de114c0734f743d53ea453356f6418c2targetblank009b735a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree639b38d3912a5bcacb51b37cd7eeb25d9f77b1adtargetblank639b38da">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/009b7353de114c0734f743d53ea453356f6418c2" target="_blank">009b735</a>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/639b38d3912a5bcacb51b37cd7eeb25d9f77b1ad" target="_blank">639b38d</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree009b7353de114c0734f743d53ea453356f6418c2targetblank009b735a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree639b38d3912a5bcacb51b37cd7eeb25d9f77b1adtargetblank639b38da"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -563,7 +566,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/009b7353de114c0734f743d53ea453356f6418c2" target="_blank">009b735</a>.
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/639b38d3912a5bcacb51b37cd7eeb25d9f77b1ad" target="_blank">639b38d</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -581,10 +584,16 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
 
+Untracked files:
+    Untracked:  code/read_data.Rmd
+    Untracked:  oae_ccs_roms.Rproj.RData
+
 Unstaged changes:
     Modified:   analysis/_site.yml
+    Deleted:    analysis/read_data.Rmd
     Modified:   code/Workflowr_project_managment.R
-    Modified:   code/cdr_eff_molar.R
+    Modified:   code/regrid_cdr_eff_molar.R
+    Modified:   code/regrid_dTA_dDIC.R
 
 </code></pre>
 <p>
@@ -629,6 +638,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/ce1905769d987ad6c2264d384fd57c8a00a310ff/docs/enso_indices.html" target="_blank">ce19057</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-01-05
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1076,6 +1102,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/ce1905769d987ad6c2264d384fd57c8a00a310ff/docs/figure/enso_indices.Rmd/sst_clim_baseline-1.png" target="_blank">ce19057</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-01-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/d537ffee595f746ef9834ecec8d40f202a3f1cdb/docs/figure/enso_indices.Rmd/sst_clim_baseline-1.png" target="_blank">d537ffe</a>
 </td>
 <td>
@@ -1162,6 +1199,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/ce1905769d987ad6c2264d384fd57c8a00a310ff/docs/figure/enso_indices.Rmd/sst_anomalies-1.png" target="_blank">ce19057</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-01-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/d537ffee595f746ef9834ecec8d40f202a3f1cdb/docs/figure/enso_indices.Rmd/sst_anomalies-1.png" target="_blank">d537ffe</a>
@@ -1254,6 +1302,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/ce1905769d987ad6c2264d384fd57c8a00a310ff/docs/figure/enso_indices.Rmd/sst_running_annual_mean-1.png" target="_blank">ce19057</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-01-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/d537ffee595f746ef9834ecec8d40f202a3f1cdb/docs/figure/enso_indices.Rmd/sst_running_annual_mean-1.png" target="_blank">d537ffe</a>
 </td>
 <td>
@@ -1341,6 +1400,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/ce1905769d987ad6c2264d384fd57c8a00a310ff/docs/figure/enso_indices.Rmd/sst_correlation_coeffs-1.png" target="_blank">ce19057</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-01-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/7c47c0f7810e851d7c83b3971555b457ead766f3/docs/figure/enso_indices.Rmd/sst_correlation_coeffs-1.png" target="_blank">7c47c0f</a>
@@ -1525,6 +1595,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/ce1905769d987ad6c2264d384fd57c8a00a310ff/docs/figure/enso_indices.Rmd/metric_clim_baseline-1.png" target="_blank">ce19057</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-01-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/d537ffee595f746ef9834ecec8d40f202a3f1cdb/docs/figure/enso_indices.Rmd/metric_clim_baseline-1.png" target="_blank">d537ffe</a>
 </td>
 <td>
@@ -1617,6 +1698,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/ce1905769d987ad6c2264d384fd57c8a00a310ff/docs/figure/enso_indices.Rmd/metric_anomalies-1.png" target="_blank">ce19057</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-01-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/d537ffee595f746ef9834ecec8d40f202a3f1cdb/docs/figure/enso_indices.Rmd/metric_anomalies-1.png" target="_blank">d537ffe</a>
@@ -1712,6 +1804,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/ce1905769d987ad6c2264d384fd57c8a00a310ff/docs/figure/enso_indices.Rmd/metric_running_annual_mean-1.png" target="_blank">ce19057</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-01-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/d537ffee595f746ef9834ecec8d40f202a3f1cdb/docs/figure/enso_indices.Rmd/metric_running_annual_mean-1.png" target="_blank">d537ffe</a>
@@ -1821,6 +1924,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/ce1905769d987ad6c2264d384fd57c8a00a310ff/docs/figure/enso_indices.Rmd/metrics_correlation_coeffs-1.png" target="_blank">ce19057</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-01-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/351641448434cf9cb06c225db997eabb94564081/docs/figure/enso_indices.Rmd/metrics_correlation_coeffs-1.png" target="_blank">3516414</a>
 </td>
 <td>
@@ -1878,7 +1992,7 @@ loaded via a namespace (and not attached):
 [13] proxy_0.4-27       fansi_1.0.6        pkgconfig_2.0.3    KernSmooth_2.23-24
 [17] lifecycle_1.0.4    farver_2.1.2       compiler_4.4.2     git2r_0.35.0      
 [21] munsell_0.5.1      getPass_0.2-4      httpuv_1.6.15      htmltools_0.5.8.1 
-[25] class_7.3-22       sass_0.4.9         yaml_2.3.10        CFtime_1.4.0      
+[25] class_7.3-22       sass_0.4.9         yaml_2.3.10        CFtime_1.4.1      
 [29] later_1.4.1        pillar_1.9.0       jquerylib_0.1.4    whisker_0.4.1     
 [33] classInt_0.4-10    cachem_1.1.0       RNetCDF_2.9-2      ncmeta_0.4.0      
 [37] tidyselect_1.2.1   digest_0.6.37      stringi_1.8.4      labeling_0.4.3    
