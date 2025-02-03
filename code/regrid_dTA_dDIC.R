@@ -1,8 +1,9 @@
 # -------------------------------------------------
 # dTA and dDIC Regrid Calculations
 # Author: Victoria Froh
-# Date: 17/01/25
-# Purpose: Repeating dTA and dDIC calculations on the subset of regridded data
+# Date: 17/01/25 Updated: 29/01/25
+# Purpose: Repeating dTA and dDIC calculations on the subset of regridded data;
+# now doing on bigger regrid
 # -------------------------------------------------
 
 # -------------------------------
@@ -22,13 +23,13 @@ path_ROMS_regrid <-
   "/net/sea/work/loher/ROMS/Alk_enh_formatted_2025_01/"
 
 # Path to intermediate computation outputs
-path_outputs <- "/net/sea/work/vifroh/oae_ccs_roms_data/regrid/"
+path_outputs <- "/net/sea/work/vifroh/oae_ccs_roms_data/regrid_2/"
 
   # -------------------------------
   # 1.1 - Checking Files
   # -------------------------------
 
-# nc <- tidync(paste0(path_ROMS_regrid, "lanina/lanina_avg_1999-2000.nc"))
+# nc <- tidync(paste0(path_ROMS_regrid, "control/control_avg_1999-2000.nc"))
 # print(nc)
 #
 # view_nc <- nc_open(paste0(
@@ -100,14 +101,14 @@ control_data <- files_control %>%
     nc_data <- tidync(file) %>% # reads in nc file, then we load in data
       hyper_filter() %>% # can add subset here for testing
       hyper_tibble(
-        select_var = c("Alk", "DIC", "rho", "salt", "temp"), force = TRUE) %>%
+        select_var = c("Alk", "DIC"), force = TRUE) %>%
       as.data.table()
     # want time in consistent date format with correct year
     nc_data[, time := format(as.Date(time, format = "%Y-%m-%d"), "%Y-%m")]
 
     return(nc_data)
 
-  }, mc.cores = 20)
+  }, mc.cores = 25)
 
 # bind each data table in the list into one
 control_data <- rbindlist(control_data, fill = TRUE)
@@ -123,8 +124,7 @@ lanina_data <- files_lanina %>%
       hyper_tibble(
         select_var = c("Alk", "DIC", "rho", "salt", "temp"), force = TRUE) %>%
       as.data.table() %>%
-      rename(Alk_OAE = Alk, DIC_OAE = DIC, rho_OAE = rho, salt_OAE = salt,
-             temp_OAE = temp)
+      rename(Alk_OAE = Alk, DIC_OAE = DIC)
     # reformat time to be Year and Month
     nc_data[, time := format(as.Date(time, format = "%Y-%m-%d"), "%Y-%m")]
 
@@ -157,8 +157,7 @@ neutral_data <- files_neutral %>%
       hyper_tibble(
         select_var = c("Alk", "DIC", "rho", "salt", "temp"), force = TRUE) %>%
       as.data.table() %>%
-      rename(Alk_OAE = Alk, DIC_OAE = DIC, rho_OAE = rho, salt_OAE = salt,
-             temp_OAE = temp)
+      rename(Alk_OAE = Alk, DIC_OAE = DIC)
     # reformat time to be Year and Month
     nc_data[, time := format(as.Date(time, format = "%Y-%m-%d"), "%Y-%m")]
 
@@ -190,8 +189,7 @@ elnino_data <- files_elnino[-6] %>% # last file will be separate
       hyper_tibble(
         select_var = c("Alk", "DIC", "rho", "salt", "temp"), force = TRUE) %>%
       as.data.table() %>%
-      rename(Alk_OAE = Alk, DIC_OAE = DIC, rho_OAE = rho, salt_OAE = salt,
-             temp_OAE = temp)
+      rename(Alk_OAE = Alk, DIC_OAE = DIC)
     # reformat time to be Year and Month
     nc_data[, time := format(as.Date(time, format = "%Y-%m-%d"), "%Y-%m")]
 
@@ -207,8 +205,7 @@ elnino_data_last <- tidync(files_elnino[6]) %>% # only want time index 1-5
   hyper_tibble(
     select_var = c("Alk", "DIC", "rho", "salt", "temp"), force = TRUE) %>%
   as.data.table() %>%
-  rename(Alk_OAE = Alk, DIC_OAE = DIC, rho_OAE = rho, salt_OAE = salt,
-         temp_OAE = temp) %>%
+  rename(Alk_OAE = Alk, DIC_OAE = DIC) %>%
   .[, time := format(as.Date(time, format = "%Y-%m-%d"), "%Y-%m")]
 
 # bind with the rest
@@ -229,21 +226,21 @@ gc()
 # 4. Saving Tables
 # -------------------------------
 
-# save a version pre-volume for maps and such later (unit mmol/m^3)
-save(lanina_dTA_data, file = paste0(path_outputs,
-                                    "lanina_dTA_concdataRG.Rdata"))
-save(neutral_dTA_data, file = paste0(path_outputs,
-                                     "neutral_dTA_concdataRG.Rdata"))
-save(elnino_dTA_data, file = paste0(path_outputs,
-                                    "elnino_dTA_concdataRG.Rdata"))
+# # save a version pre-volume for maps and such later (unit mmol/m^3)
+# save(lanina_dTA_data, file = paste0(path_outputs,
+#                                     "lanina_dTA_concdataRG2.Rdata"))
+# save(neutral_dTA_data, file = paste0(path_outputs,
+#                                      "neutral_dTA_concdataRG2.Rdata"))
+# save(elnino_dTA_data, file = paste0(path_outputs,
+#                                     "elnino_dTA_concdataRG2.Rdata"))
 
 # also trying as feather objects
 write_feather(lanina_dTA_data, paste0(path_outputs,
-                                      "lanina_dTA_concdataRG.feather"))
+                                      "lanina_dTA_concdataRG2.feather"))
 write_feather(neutral_dTA_data, paste0(path_outputs,
-                                       "neutral_dTA_concdataRG.feather"))
+                                       "neutral_dTA_concdataRG2.feather"))
 write_feather(elnino_dTA_data, paste0(path_outputs,
-                                      "elnino_dTA_concdataRG.feather"))
+                                      "elnino_dTA_concdataRG2.feather"))
 
 # clear out
 rm(list = ls())

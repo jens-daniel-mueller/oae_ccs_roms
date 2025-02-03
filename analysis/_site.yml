@@ -3,12 +3,14 @@ output_dir: ../docs
 navbar:
   title: oae_ccs_roms
   left:
-  - text: Read data
-    href: read_data.html
   - text: CCS ENSO Indices
     href: enso_indices.html
   - text: CDR Efficiency and dTA Plots
     href: cdreff_plots.html
+  - text: Regridded Sub Region Plots
+    href: column_int_plots.html
+  - text: Hovmoeller Plots
+    href: hovmo_plots.html
   right:
   - icon: fa-home
     text: Jens' homepage

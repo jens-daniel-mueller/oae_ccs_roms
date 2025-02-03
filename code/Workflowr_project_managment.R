@@ -39,12 +39,13 @@ wflow_publish(here::here(
   "analysis",
   c(
     "index.Rmd",
-    "read_data.Rmd",
     "enso_indices.Rmd",
-    "cdreff_plots.Rmd"
+    "cdreff_plots.Rmd",
+    "column_int_plots.Rmd",
+    "hovmo_plots.Rmd"
   )
 ),
-message = "Plotted time series of integrated dTA and CDREff data",
+message = "Column integrated plots and hovmoeller plots completed",
 republish = TRUE) #USE THIS ONE
 
 
