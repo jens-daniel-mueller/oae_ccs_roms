@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Victoria Froh" />
+
+
+<title>Drivers - Air-Sea CO2 Flux</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">oae_ccs_roms</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="enso_indices.html">CCS ENSO Indices</a>
+</li>
+<li>
+  <a href="cdreff_plots.html">CDR Efficiency and dTA Plots</a>
+</li>
+<li>
+  <a href="column_int_plots.html">Regridded Sub Region Plots</a>
+</li>
+<li>
+  <a href="hovmo_plots.html">Hovmoeller Plots</a>
+</li>
+<li>
+  <a href="drivers_hbls.html">Mixing Depth</a>
+</li>
+<li>
+  <a href="drivers_fgCO2.html">Air-Sea CO2 Flux</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://jens-daniel-mueller.github.io/">
+    <span class="fa fa-home"></span>
+     
+    Jens' homepage
+  </a>
+</li>
+<li>
+  <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Drivers - Air-Sea CO2 Flux</h1>
+<h4 class="author">Victoria Froh</h4>
+<h4 class="date">19 February, 2025</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2025-02-19
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>oae_ccs_roms/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20240919code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20240919)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20240919code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20240919)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreea36bcfe9b50883ec8b4723ee0173a7117e6b0506targetblanka36bcfea">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/a36bcfe9b50883ec8b4723ee0173a7117e6b0506" target="_blank">a36bcfe</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreea36bcfe9b50883ec8b4723ee0173a7117e6b0506targetblanka36bcfea"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/a36bcfe9b50883ec8b4723ee0173a7117e6b0506" target="_blank">a36bcfe</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  code/oggrid_surface_data.R
+    Untracked:  code/regrid_surface_data.R
+
+Unstaged changes:
+    Modified:   analysis/_site.yml
+    Modified:   code/Workflowr_project_managment.R
+    Modified:   code/dTA_dDIC.R
+    Modified:   code/regrid_cdr_eff_molar.R
+    Modified:   code/regrid_dTA_dDIC.R
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/drivers_fgCO2.Rmd</code>) and
+HTML (<code>docs/drivers_fgCO2.html</code>) files. If you’ve configured
+a remote Git repository (see <code>?wflow_git_remote</code>), click on
+the hyperlinks in the table below to view the files as they were in that
+past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/a36bcfe9b50883ec8b4723ee0173a7117e6b0506/analysis/drivers_fgCO2.Rmd" target="_blank">a36bcfe</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-19
+</td>
+<td>
+Mixing depth and air-sea co2 flux anlaysis
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<ol style="list-style-type: decimal">
+<li>Map air-sea CO2 flux of each surface cell (all 3 phases, monthly
+maps)</li>
+<li>Map dFlux of each cell (OAE - control), monthly maps, also on zoomed
+in region</li>
+<li>Map dFlux difference from mean of each phase on zoomed region</li>
+<li>Calculate moles of CO2 uptake per month dist and time series</li>
+</ol>
+<pre class="r"><code>#loading packages
+library(tidyverse)
+library(tidync)
+library(data.table)
+library(arrow)
+library(scales)
+
+# Path to intermediate computation outputs
+path_outputs &lt;- &quot;/net/sea/work/vifroh/oae_ccs_roms_data/regrid_2/&quot;
+
+# Path to original grid intermediate computation outputs
+path_outputs_og &lt;- &quot;/net/sea/work/vifroh/oae_ccs_roms_data/original_grid/&quot;
+
+# Path to save practice plots when working on them
+path_plots &lt;- &quot;/net/sea/work/vifroh/test_plots/&quot;
+
+# loading in previous saved surface variable data
+lanina_surf_data &lt;- read_feather(
+  paste0(path_outputs, &quot;lanina_surf_dataRG2.feather&quot;))
+neutral_surf_data &lt;- read_feather(
+  paste0(path_outputs, &quot;neutral_surf_dataRG2.feather&quot;))
+elnino_surf_data &lt;- read_feather(
+  paste0(path_outputs, &quot;elnino_surf_dataRG2.feather&quot;))
+
+# loading in previous saved data with area
+lanina_dTA_mol &lt;- read_feather(
+  paste0(path_outputs,&quot;lanina_dTA_mol_mdataRG2.feather&quot;))
+
+# loading in original grid integrated CDR data
+lanina_cdreff_sum &lt;- read_feather(
+  paste0(path_outputs_og, &quot;lanina_CDReff_integrated.feather&quot;))
+neutral_cdreff_sum &lt;- read_feather(
+  paste0(path_outputs_og, &quot;neutral_CDReff_integrated.feather&quot;))
+elnino_cdreff_sum &lt;- read_feather(
+  paste0(path_outputs_og, &quot;elnino_CDReff_integrated.feather&quot;))</code></pre>
+<pre class="r"><code>phase_data &lt;- list(lanina_surf_data, neutral_surf_data, elnino_surf_data)
+
+# Convert lat/lon to numeric and subset first two years
+phase_data &lt;- phase_data %&gt;%
+  lapply(function(table) {
+    setDT(table)
+    setorder(table, time)
+    table[, lat := as.numeric(lat)]
+    table[, lon := as.numeric(lon)]
+    table[, month := .GRP, by = time] # gives index in order to each unique time
+    table &lt;- table[month &lt;= 24] # subsets to first two years
+    
+    return(table)
+  })
+
+# return tables to each item 
+lanina_surf_data &lt;- phase_data[[1]]
+neutral_surf_data &lt;- phase_data[[2]]
+elnino_surf_data &lt;- phase_data[[3]]
+
+# plotting names for later
+phase_titles &lt;- c(&quot;La Niña&quot;, &quot;Neutral&quot;, &quot;El Niño&quot;)
+phases &lt;- c(&quot;lanina&quot;, &quot;neutral&quot;, &quot;elnino&quot;)
+
+# adding phase and combining all 3 into one table for plotting
+phase_list &lt;- Map(function(table, phase) {
+    table[, phase := phase]
+  }, phase_data, phases)
+
+surface_data &lt;- rbindlist(phase_list)
+
+# subset down to just area data; figure out how to subset just the unique?
+setDT(lanina_dTA_mol)
+lanina_dTA_mol &lt;- unique(lanina_dTA_mol[, .(lat, lon, area)])
+
+# create combined table of original grid data with &quot;phase&quot; column
+full_cdreff_og &lt;- rbindlist(
+  list(lanina = lanina_cdreff_sum, neutral = neutral_cdreff_sum,
+       elnino = elnino_cdreff_sum),
+  idcol = &quot;phase&quot;)
+
+# add column for months since oae addition begins for x-axis
+full_cdreff_og &lt;- full_cdreff_og[, month := seq_len(.N), by = phase]
+
+rm(elnino_cdreff_sum, lanina_cdreff_sum, neutral_cdreff_sum)
+gc()</code></pre>
+<pre><code>            used   (Mb) gc trigger    (Mb)   max used  (Mb)
+Ncells   1476560   78.9    2653632   141.8    2152044   115
+Vcells 211057487 1610.3 7913308978 60373.8 9637973949 73532</code></pre>
+</div>
+<div id="exploring-air-sea-flux" class="section level2">
+<h2>Exploring Air-Sea FLux</h2>
+<p>Regional distribution of flux in OAE runs</p>
+<pre class="r"><code># can rerun code for months of choice
+create_fgOAE_distmap &lt;- function(phase_name, title_text) {
+  phase_dt &lt;- surface_data[surface_data$phase == phase_name &amp; surface_data$month == 14]
+  plot &lt;- ggplot(phase_dt, aes(x = lon, y = lat, fill = FG_CO2_OAE)) +
+    geom_polygon(data = map_data(&quot;world&quot;), aes(x = long, y = lat, group = group), 
+                 fill = &quot;lightgray&quot;, color = &quot;white&quot;) +
+    geom_raster() +
+    scale_fill_distiller(limit = c(-0.0055, 0.0055), palette = &quot;PRGn&quot;) +  # set the color range
+    theme_light() +
+    coord_fixed(xlim = c(-170, -85),
+              ylim = c(10, 60)) +
+    scale_x_continuous(breaks = seq(-170, -85, by = 10)) +
+    scale_y_continuous(breaks = seq(10, 60, by = 10)) +
+    labs(x = &quot;Longitude&quot;,
+         y = &quot;Latitude&quot;,
+         fill = &quot;Air-Sea CO2 Flux (mmol/m^2/s)&quot;,
+         title = paste0(title_text, &quot; Phase, Air-Sea CO2 Flux (Month 14)&quot;)) +
+    theme(panel.border = element_blank())
+  
+  print(plot)
+
+  # # save plot
+  # ggsave(paste0(path_plots, phase_name, &quot;_fgOAEmap_month14.png&quot;), plot = plot,
+  #        width = 8, height = 6, dpi = 300)
+}
+
+lapply(seq_along(phases), function(i) {
+  create_fgOAE_distmap(phases[i], phase_titles[i])
+})</code></pre>
+<p><img src="figure/drivers_fgCO2.Rmd/fgCO2_dist-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/drivers_fgCO2.Rmd/fgCO2_dist-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/drivers_fgCO2.Rmd/fgCO2_dist-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/drivers_fgCO2.Rmd/fgCO2_dist-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/drivers_fgCO2.Rmd/fgCO2_dist-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[3]]</code></pre>
+<p><img src="figure/drivers_fgCO2.Rmd/fgCO2_dist-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>rm(create_fgOAE_distmap, phase_data, phase_list)
+gc()</code></pre>
+<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells   1720913   92.0    2653632   141.8    2653632   141.8
+Vcells 220447425 1681.9 6330647183 48299.1 9637973949 73532.0</code></pre>
+<p>Regional distribution of dflux in OAE runs (OAE flux - control
+flux)</p>
+<pre class="r"><code># can rerun code for months of choice,
+create_dfg_distmap &lt;- function(phase_name, title_text) {
+  phase_dt &lt;- surface_data[surface_data$phase == phase_name &amp; surface_data$month == 22]
+  plot &lt;- ggplot(phase_dt, aes(x = lon, y = lat, fill = dFG)) +
+    geom_polygon(data = map_data(&quot;world&quot;), aes(x = long, y = lat, group = group), 
+                 fill = &quot;lightgray&quot;, color = &quot;white&quot;) +
+    geom_raster() +
+    # scale_fill_viridis_c(limit = c(0, 0.00022)) +
+    scale_fill_gradient2(low = &quot;green&quot;, mid = &quot;white&quot;, high = &quot;purple&quot;, midpoint = 0,
+                         limit = c(0, 0.00022)) +
+    theme_light() +
+    coord_fixed(xlim = c(-170, -85),
+              ylim = c(10, 60)) +
+    scale_x_continuous(breaks = seq(-170, -90, by = 10)) +
+    scale_y_continuous(breaks = seq(10, 60, by = 10)) +
+    labs(x = &quot;Longitude&quot;,
+         y = &quot;Latitude&quot;,
+         fill = &quot;dCO2 Flux 
+         (mmol/m^2/s)&quot;,
+         title = paste0(title_text, &quot; Phase, Change in Air-Sea CO2 Flux (Month 22)&quot;)) +
+    theme(panel.border = element_blank())
+  
+  print(plot)
+
+  # # save plot
+  # ggsave(paste0(path_plots, phase_name, &quot;_dfgmap_month22.png&quot;), plot = plot,
+  #        width = 8, height = 6, dpi = 300)
+}
+
+lapply(seq_along(phases), function(i) {
+  create_dfg_distmap(phases[i], phase_titles[i])
+})</code></pre>
+<p><img src="figure/drivers_fgCO2.Rmd/dfgCO2_dist-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/drivers_fgCO2.Rmd/dfgCO2_dist-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/drivers_fgCO2.Rmd/dfgCO2_dist-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/drivers_fgCO2.Rmd/dfgCO2_dist-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/drivers_fgCO2.Rmd/dfgCO2_dist-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[3]]</code></pre>
+<p><img src="figure/drivers_fgCO2.Rmd/dfgCO2_dist-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>rm(create_dfg_distmap)
+gc()</code></pre>
+<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells   1726801   92.3    2653632   141.8    2653632   141.8
+Vcells 220463668 1682.1 5064517747 38639.3 9637973949 73532.0</code></pre>
+<p>Zoomed in maps of dflux in OAE runs (OAE flux - control flux) near
+add site</p>
+<pre class="r"><code># can rerun code for months of choice
+create_dfg_distmap &lt;- function(phase_name, title_text) {
+  phase_dt &lt;- surface_data[surface_data$phase == phase_name &amp; surface_data$month == 15]
+  plot &lt;- ggplot(phase_dt, aes(x = lon, y = lat, fill = dFG)) +
+    geom_polygon(data = map_data(&quot;world&quot;), aes(x = long, y = lat, group = group), 
+                 fill = &quot;lightgray&quot;, color = &quot;white&quot;) +
+    geom_raster() +
+    # scale_fill_viridis_c(limit = c(0, 0.00022)) +
+    scale_fill_gradient2(low = &quot;green&quot;, mid = &quot;white&quot;, high = &quot;purple&quot;, midpoint = 0,
+                         limit = c(0, 0.0000575)) +
+    theme_light() +
+    coord_fixed(xlim = c(-135, -100),
+              ylim = c(10, 45)) +
+    scale_x_continuous(breaks = seq(-135, -100, by = 10)) +
+    scale_y_continuous(breaks = seq(10, 45, by = 10)) +
+    labs(x = &quot;Longitude&quot;,
+         y = &quot;Latitude&quot;,
+         fill = &quot;dCO2 Flux 
+         (mmol/m^2/s)&quot;,
+         title = paste0(title_text, &quot; Phase, Change in Air-Sea CO2 Flux (Month 15)&quot;)) +
+    theme(panel.border = element_blank())
+  
+  print(plot)
+
+  # # save plot
+  # ggsave(paste0(path_plots, phase_name, &quot;_dfgmapzoom_month15.png&quot;), plot = plot,
+  #        width = 8, height = 6, dpi = 300)
+}
+
+lapply(seq_along(phases), function(i) {
+  create_dfg_distmap(phases[i], phase_titles[i])
+})</code></pre>
+<p><img src="figure/drivers_fgCO2.Rmd/dfgCO2_dist_zoom-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/drivers_fgCO2.Rmd/dfgCO2_dist_zoom-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/drivers_fgCO2.Rmd/dfgCO2_dist_zoom-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/drivers_fgCO2.Rmd/dfgCO2_dist_zoom-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/drivers_fgCO2.Rmd/dfgCO2_dist_zoom-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[3]]</code></pre>
+<p><img src="figure/drivers_fgCO2.Rmd/dfgCO2_dist_zoom-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>rm(create_fgd_distmap)</code></pre>
+<pre><code>Warning in rm(create_fgd_distmap): object &#39;create_fgd_distmap&#39; not found</code></pre>
+<pre class="r"><code>gc()</code></pre>
+<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells   1724859   92.2    2653632   141.8    2653632   141.8
+Vcells 220457508 1682.0 4051614198 30911.4 9637973949 73532.0</code></pre>
+<pre class="r"><code># calculating mean max mixing depth across all 3 phases for each grid cell
+surface_data[, &quot;:=&quot; (
+  dFG_mean = mean(dFG, na.rm = TRUE)
+), by = .(lat, lon, month)]
+
+# can rerun code for months of choice, subset coordinates in place
+create_dfg_meanmap &lt;- function(phase_name, title_text) {
+  phase_dt &lt;- surface_data[surface_data$phase == phase_name &amp; surface_data$month == 1]
+  plot &lt;- ggplot(phase_dt, aes(x = lon, y = lat, fill = dFG - dFG_mean)) +
+    geom_polygon(data = map_data(&quot;world&quot;), aes(x = long, y = lat, group = group), 
+                 fill = &quot;lightgray&quot;, color = &quot;white&quot;) +
+    geom_raster() +
+    scale_fill_gradient2(low = &quot;blue&quot;, mid = &quot;white&quot;, high = &quot;red&quot;, midpoint = 0,
+                        limits = c(-0.00005, 0.00005)) + 
+                        # breaks = c(-0.000005, -0.0000025, 0, 0.0000025, 0.000005)) +
+    theme_light() +
+    coord_fixed(xlim = c(-135, -100),
+              ylim = c(10, 45)) +
+    scale_x_continuous(breaks = seq(-135, -100, by = 10)) +
+    scale_y_continuous(breaks = seq(10, 45, by = 10)) +
+    labs(x = &quot;Longitude&quot;,
+         y = &quot;Latitude&quot;,
+         fill = &quot;Difference from Mean dCO2 Flux 
+         (mmol/m^2/s)&quot;,
+         title = paste0(title_text, &quot; Phase, Difference from Mean delta Air-Sea CO2 Flux (Month 1)&quot;)) +
+    theme(panel.border = element_blank())
+  
+  print(plot)
+
+  # # save plot
+  # ggsave(paste0(path_plots, phase_name, &quot;_dfgmapdfm_month1.png&quot;), plot = plot,
+  #        width = 8, height = 6, dpi = 300)
+}
+
+lapply(seq_along(phases), function(i) {
+  create_dfg_meanmap(phases[i], phase_titles[i])
+})</code></pre>
+<p><img src="figure/drivers_fgCO2.Rmd/dfgco2_dfm-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/drivers_fgCO2.Rmd/dfgco2_dfm-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/drivers_fgCO2.Rmd/dfgco2_dfm-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/drivers_fgCO2.Rmd/dfgco2_dfm-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/drivers_fgCO2.Rmd/dfgco2_dfm-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[3]]</code></pre>
+<p><img src="figure/drivers_fgCO2.Rmd/dfgco2_dfm-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>rm(create_dfg_meanmap)
+gc()</code></pre>
+<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells   1726113   92.2    2653632   141.8    2653632   141.8
+Vcells 232865432 1776.7 3241291359 24729.1 9637973949 73532.0</code></pre>
+<pre class="r"><code># merging area data to dFG and calculating moles per month from the dFG rate
+uptake_data &lt;- surface_data[, .SD, .SDcols = c(&quot;lat&quot;, &quot;lon&quot;, &quot;time&quot;, &quot;dFG&quot;, 
+                                               &quot;month&quot;, &quot;phase&quot;)] %&gt;% 
+  merge(lanina_dTA_mol, by = c(&quot;lon&quot;, &quot;lat&quot;), all.x = TRUE) 
+
+uptake_data[, secs := as.numeric(days_in_month(ymd(paste0(time, &quot;-01&quot;))))
+            * 60 * 60 * 24] # pulls days in the month and converts to seconds
+uptake_data[, CO2_uptake := dFG * area * secs / 1000] # mmol/m2/s -&gt; moles
+
+# can rerun code for months of choice, using zoomed region
+create_uptake_distmap &lt;- function(phase_name, title_text) {
+  phase_dt &lt;- uptake_data[uptake_data$phase == phase_name &amp; uptake_data$month == 24]
+  plot &lt;- ggplot(phase_dt, aes(x = lon, y = lat, fill = CO2_uptake)) +
+    geom_polygon(data = map_data(&quot;world&quot;), aes(x = long, y = lat, group = group), 
+                 fill = &quot;lightgray&quot;, color = &quot;white&quot;) +
+    geom_raster() +
+    # scale_fill_viridis_c(limit = c(0, 91000000)) +
+    scale_fill_gradient2(low = &quot;green&quot;, mid = &quot;white&quot;, high = &quot;purple&quot;, midpoint = 0,
+                         limit = c(0, 1500000)) +
+    theme_light() +
+    coord_fixed(xlim = c(-135, -100),
+              ylim = c(10, 45)) +
+    scale_x_continuous(breaks = seq(-135, -100, by = 10)) +
+    scale_y_continuous(breaks = seq(10, 45, by = 10)) +
+    labs(x = &quot;Longitude&quot;,
+         y = &quot;Latitude&quot;,
+         fill = &quot;CO2 Uptake (moles)&quot;,
+         title = paste0(title_text, &quot; Phase, CO2 Uptake (Month 24)&quot;)) +
+    theme(panel.border = element_blank())
+  
+  print(plot)
+
+  # # save plot
+  # ggsave(paste0(path_plots, phase_name, &quot;_co2uptakemap_month24.png&quot;), plot = plot,
+  #        width = 8, height = 6, dpi = 300)
+}
+
+lapply(seq_along(phases), function(i) {
+  create_uptake_distmap(phases[i], phase_titles[i])
+})</code></pre>
+<p><img src="figure/drivers_fgCO2.Rmd/co2_uptake-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/drivers_fgCO2.Rmd/co2_uptake-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/drivers_fgCO2.Rmd/co2_uptake-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/drivers_fgCO2.Rmd/co2_uptake-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/drivers_fgCO2.Rmd/co2_uptake-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[3]]</code></pre>
+<p><img src="figure/drivers_fgCO2.Rmd/co2_uptake-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># integrate by time and compare it to the native grid dDIC to check scope
+# # need to add these up sequentially
+uptake_data_int &lt;- uptake_data[, .(CO2_sum_ind = sum(CO2_uptake, na.rm = TRUE)),
+                                   by = .(phase, month)] %&gt;% 
+  .[, CO2_sum_cum := cumsum(CO2_sum_ind), by = phase]
+
+uptake_data_int &lt;- merge(uptake_data_int, full_cdreff_og[, .(phase, month, dDIC_sum)], 
+                         by = c(&quot;phase&quot;, &quot;month&quot;), all.x = TRUE) %&gt;% 
+  .[, fraction := CO2_sum_cum / dDIC_sum]
+
+# saving uptake individual and sum value tables
+write_feather(uptake_data, paste0(path_outputs,
+                                      &quot;fguptake_data.feather&quot;))
+write_feather(uptake_data_int, paste0(path_outputs,
+                                      &quot;fguptake_data_intsum.feather&quot;))
+
+# plot time series of accumulating uptaken CO2
+ggplot(uptake_data_int, aes(x = month, y = CO2_sum_cum/1e10, color = phase)) +
+  scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(0, 18), expand = c(0,0)) +
+  geom_vline(xintercept = seq(0, 24, by = 12), color = &quot;grey75&quot;, linewidth = 0.4) +
+  geom_hline(yintercept = 16.7, linetype = &quot;dashed&quot;, color = &quot;black&quot;, linewidth = 0.6) +
+  geom_line(linewidth = 1) +
+  labs(title = &quot;Cumulative Uptaken CO2 from Surface Flux Values&quot;, 
+       x = &quot;Months Since OAE Began&quot;, 
+       y = &quot;Moles of CO2 (10^10)&quot;) +
+  theme_bw()</code></pre>
+<p><img src="figure/drivers_fgCO2.Rmd/co2_uptake-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(paste0(path_plots, &quot;total_fg_co2uptake.png&quot;), plot = last_plot(),
+#               width = 10, height = 6, dpi = 300)
+
+
+
+rm(list = ls())
+gc()</code></pre>
+<pre><code>           used (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells  1800256 96.2    3224358   172.2    2653632   141.8
+Vcells 10077938 76.9 2593033088 19783.3 9637973949 73532.0</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.4.2 (2024-10-31)
+Platform: x86_64-pc-linux-gnu
+Running under: openSUSE Leap 15.6
+
+Matrix products: default
+BLAS/LAPACK: /usr/local/OpenBLAS-0.3.28/lib/libopenblas_haswellp-r0.3.28.so;  LAPACK version 3.12.0
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+time zone: Europe/Zurich
+tzcode source: system (glibc)
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] scales_1.3.0      arrow_18.1.0.1    data.table_1.16.2 tidync_0.4.0     
+ [5] lubridate_1.9.3   forcats_1.0.0     stringr_1.5.1     dplyr_1.1.4      
+ [9] purrr_1.0.2       readr_2.1.5       tidyr_1.3.1       tibble_3.2.1     
+[13] ggplot2_3.5.1     tidyverse_2.0.0   workflowr_1.7.1  
+
+loaded via a namespace (and not attached):
+ [1] gtable_0.3.6       xfun_0.49          bslib_0.8.0        processx_3.8.4    
+ [5] callr_3.7.6        tzdb_0.4.0         vctrs_0.6.5        tools_4.4.2       
+ [9] ps_1.8.1           generics_0.1.3     fansi_1.0.6        pkgconfig_2.0.3   
+[13] RColorBrewer_1.1-3 assertthat_0.2.1   lifecycle_1.0.4    farver_2.1.2      
+[17] compiler_4.4.2     git2r_0.35.0       munsell_0.5.1      getPass_0.2-4     
+[21] ncdf4_1.23         httpuv_1.6.15      htmltools_0.5.8.1  maps_3.4.2.1      
+[25] sass_0.4.9         yaml_2.3.10        later_1.4.1        pillar_1.9.0      
+[29] jquerylib_0.1.4    whisker_0.4.1      cachem_1.1.0       RNetCDF_2.9-2     
+[33] ncmeta_0.4.0       tidyselect_1.2.1   digest_0.6.37      stringi_1.8.4     
+[37] labeling_0.4.3     rprojroot_2.0.4    fastmap_1.2.0      grid_4.4.2        
+[41] colorspace_2.1-1   cli_3.6.3          magrittr_2.0.3     utf8_1.2.4        
+[45] withr_3.0.2        promises_1.3.2     bit64_4.5.2        timechange_0.3.0  
+[49] rmarkdown_2.29     httr_1.4.7         bit_4.5.0          hms_1.1.3         
+[53] evaluate_1.0.1     knitr_1.49         rlang_1.1.4        Rcpp_1.0.13-1     
+[57] glue_1.8.0         rstudioapi_0.17.1  jsonlite_1.8.9     R6_2.5.1          
+[61] fs_1.6.5          </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

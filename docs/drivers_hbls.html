@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Victoria Froh" />
+
+
+<title>Drivers - Mixing Depth</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">oae_ccs_roms</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="enso_indices.html">CCS ENSO Indices</a>
+</li>
+<li>
+  <a href="cdreff_plots.html">CDR Efficiency and dTA Plots</a>
+</li>
+<li>
+  <a href="column_int_plots.html">Regridded Sub Region Plots</a>
+</li>
+<li>
+  <a href="hovmo_plots.html">Hovmoeller Plots</a>
+</li>
+<li>
+  <a href="drivers_hbls.html">Mixing Depth</a>
+</li>
+<li>
+  <a href="drivers_fgCO2.html">Air-Sea CO2 Flux</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://jens-daniel-mueller.github.io/">
+    <span class="fa fa-home"></span>
+     
+    Jens' homepage
+  </a>
+</li>
+<li>
+  <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Drivers - Mixing Depth</h1>
+<h4 class="author">Victoria Froh</h4>
+<h4 class="date">19 February, 2025</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2025-02-19
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>oae_ccs_roms/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20240919code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20240919)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20240919code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20240919)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreea36bcfe9b50883ec8b4723ee0173a7117e6b0506targetblanka36bcfea">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/a36bcfe9b50883ec8b4723ee0173a7117e6b0506" target="_blank">a36bcfe</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreea36bcfe9b50883ec8b4723ee0173a7117e6b0506targetblanka36bcfea"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/a36bcfe9b50883ec8b4723ee0173a7117e6b0506" target="_blank">a36bcfe</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  code/oggrid_surface_data.R
+    Untracked:  code/regrid_surface_data.R
+
+Unstaged changes:
+    Modified:   analysis/_site.yml
+    Modified:   code/Workflowr_project_managment.R
+    Modified:   code/dTA_dDIC.R
+    Modified:   code/regrid_cdr_eff_molar.R
+    Modified:   code/regrid_dTA_dDIC.R
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/drivers_hbls.Rmd</code>) and HTML
+(<code>docs/drivers_hbls.html</code>) files. If you’ve configured a
+remote Git repository (see <code>?wflow_git_remote</code>), click on the
+hyperlinks in the table below to view the files as they were in that
+past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/a36bcfe9b50883ec8b4723ee0173a7117e6b0506/analysis/drivers_hbls.Rmd" target="_blank">a36bcfe</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-19
+</td>
+<td>
+Mixing depth and air-sea co2 flux anlaysis
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<ol style="list-style-type: decimal">
+<li>Calculate and map maximum mixing depth of each grid cell over first
+2 years (all 3 phases)</li>
+<li>Map the difference from the 3-phase mean MMD for each grid cell</li>
+<li>Map the regional distribution of mixing depth in select months (all
+3 phases)</li>
+<li>Map the difference from the 3-phase mean MD per grid cell for select
+months</li>
+<li>Load in dTA data and calculate what fraction was beneath the MMD for
+time series</li>
+<li>Repeat subducted time series for dDIC data</li>
+</ol>
+<pre class="r"><code>#loading packages
+library(tidyverse)
+library(tidync)
+library(data.table)
+library(arrow)
+library(scales)
+
+# Path to intermediate computation outputs
+path_outputs &lt;- &quot;/net/sea/work/vifroh/oae_ccs_roms_data/regrid_2/&quot;
+
+# Path to save practice plots when working on them
+path_plots &lt;- &quot;/net/sea/work/vifroh/test_plots/&quot;
+
+# loading in previous saved surface variable data
+lanina_surf_data &lt;- read_feather(
+  paste0(path_outputs, &quot;lanina_surf_dataRG2.feather&quot;))
+neutral_surf_data &lt;- read_feather(
+  paste0(path_outputs, &quot;neutral_surf_dataRG2.feather&quot;))
+elnino_surf_data &lt;- read_feather(
+  paste0(path_outputs, &quot;elnino_surf_dataRG2.feather&quot;))
+
+# loading in dTA molar data
+lanina_dTA_mol &lt;- read_feather(
+  paste0(path_outputs,&quot;lanina_dTA_moldataRG2.feather&quot;))
+neutral_dTA_mol &lt;- read_feather(
+  paste0(path_outputs,&quot;neutral_dTA_moldataRG2.feather&quot;))
+elnino_dTA_mol &lt;- read_feather(
+  paste0(path_outputs,&quot;elnino_dTA_moldataRG2.feather&quot;))</code></pre>
+<pre class="r"><code>phase_data &lt;- list(lanina_surf_data, neutral_surf_data, elnino_surf_data)
+
+# Convert lat/lon to numeric and subset first two years
+phase_data &lt;- phase_data %&gt;%
+  lapply(function(table) {
+    setDT(table)
+    setorder(table, time)
+    table[, lat := as.numeric(lat)]
+    table[, lon := as.numeric(lon)]
+    table[, month := .GRP, by = time] # gives index in order to each unique time
+    table &lt;- table[month &lt;= 24] # subsets to first two years
+    
+    return(table)
+  })
+
+# return tables to each item 
+lanina_surf_data &lt;- phase_data[[1]]
+neutral_surf_data &lt;- phase_data[[2]]
+elnino_surf_data &lt;- phase_data[[3]]
+
+# for alkalinity subduction: using full grid dTA moles data, subset first 2 years
+mol_data &lt;- list(lanina_dTA_mol, neutral_dTA_mol, elnino_dTA_mol)
+
+mol_data &lt;- mol_data %&gt;%
+  lapply(function(table) {
+    setDT(table)
+    setorder(table, time)
+    table[, month := .GRP, by = time] # gives index in order to each unique time
+    table &lt;- table[month &lt;= 24] # subsets to first two years
+    
+    return(table)
+  })
+
+# return tables to each item 
+lanina_dTA_mol &lt;- mol_data[[1]]
+neutral_dTA_mol &lt;- mol_data[[2]]
+elnino_dTA_mol &lt;- mol_data[[3]]
+
+# plotting names for later
+phase_titles &lt;- c(&quot;La Niña&quot;, &quot;Neutral&quot;, &quot;El Niño&quot;)
+phases &lt;- c(&quot;lanina&quot;, &quot;neutral&quot;, &quot;elnino&quot;)</code></pre>
+</div>
+<div id="exploring-mixing-depth" class="section level2">
+<h2>Exploring Mixing Depth</h2>
+<p>Regional distribution of maximum depths</p>
+<pre class="r"><code># finding max mixing depth at each grid cell
+phase_data &lt;- phase_data %&gt;%
+  lapply(function(table) {
+    table[, c(&quot;FG_CO2_OAE&quot;, &quot;FG_CO2&quot;, &quot;dFG&quot;) := NULL]
+    # removes fugacity columns
+    max_table &lt;- table[, .SD[which.max(hbls)], by = .(lat, lon)] 
+    # subsets by each lat/lon combo, calculates max hbls, keeps that row
+    
+    return(max_table)
+  })
+
+# return tables to new item
+lanina_hblsmax &lt;- phase_data[[1]]
+neutral_hblsmax &lt;- phase_data[[2]]
+elnino_hblsmax &lt;- phase_data[[3]]
+
+# adding phase and combining all 3 into one table
+phase_list &lt;- Map(function(table, phase) {
+    table[, phase := phase]
+  }, phase_data, phases)
+
+hblsmax_data &lt;- rbindlist(phase_list)
+
+# plotting map of deepest hbls for each point
+create_hblsmax_map &lt;- function(phase_name, title_text) {
+  phase_dt &lt;- hblsmax_data[hblsmax_data$phase == phase_name,]
+  plot &lt;- ggplot(phase_dt, aes(x = lon, y = lat, fill = hbls)) +
+    geom_polygon(data = map_data(&quot;world&quot;), aes(x = long, y = lat, group = group), 
+                 fill = &quot;lightgray&quot;, color = &quot;white&quot;) +
+    geom_raster() +
+    scale_fill_viridis_c(limit = c(0, 180)) +  # set the color range
+    theme_light() +
+    coord_fixed(xlim = c(-170, -85),
+              ylim = c(10, 60)) +
+    scale_x_continuous(breaks = seq(-170, -85, by = 10)) +
+    scale_y_continuous(breaks = seq(10, 60, by = 10)) +
+    labs(x = &quot;Longitude&quot;,
+         y = &quot;Latitude&quot;,
+         fill = &quot;Maximum Mixing\nDepth (m)&quot;,
+         title = paste0(title_text, &quot; Phase, Maximum Mixing Depth in First Two Years&quot;)) +
+    theme(panel.border = element_blank())
+  
+  print(plot)
+  
+  # # save plot
+  # ggsave(paste0(path_plots, phase_name, &quot;_hblsmax_map.png&quot;), plot = plot,
+  #        width = 8, height = 6, dpi = 300)
+}
+
+lapply(seq_along(phases), function(i) {
+  create_hblsmax_map(phases[i], phase_titles[i])
+})</code></pre>
+<p><img src="figure/drivers_hbls.Rmd/hbls_max-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/drivers_hbls.Rmd/hbls_max-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/drivers_hbls.Rmd/hbls_max-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/drivers_hbls.Rmd/hbls_max-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/drivers_hbls.Rmd/hbls_max-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[3]]</code></pre>
+<p><img src="figure/drivers_hbls.Rmd/hbls_max-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>rm(create_hblsmax_map)
+gc()</code></pre>
+<pre><code>             used    (Mb)  gc trigger     (Mb)    max used     (Mb)
+Ncells    1706587    91.2     2646211    141.4     2646211    141.4
+Vcells 5484132796 41840.7 16148457573 123203.0 26697301168 203684.3</code></pre>
+<p>Maximum depth difference from mean</p>
+<pre class="r"><code># calculating mean max mixing depth across all 3 phases for each grid cell
+hblsmax_data[, &quot;:=&quot; (
+  hbls_mean = mean(hbls, na.rm = TRUE)
+), by = .(lat, lon)]
+
+# plotting map of deepest hbls for each point
+create_hblsmax_meanmap &lt;- function(phase_name, title_text) {
+  phase_dt &lt;- hblsmax_data[hblsmax_data$phase == phase_name,]
+  plot &lt;- ggplot(phase_dt, aes(x = lon, y = lat, fill = hbls - hbls_mean)) +
+    geom_polygon(data = map_data(&quot;world&quot;), aes(x = long, y = lat, group = group), 
+                 fill = &quot;lightgray&quot;, color = &quot;white&quot;) +
+    geom_raster() +
+    scale_fill_gradient2(low = &quot;blue&quot;, mid = &quot;white&quot;, high = &quot;red&quot;, midpoint = 0,
+                         limits = c(-50, 52)) +
+    theme_light() +
+    coord_fixed(xlim = c(-170, -85),
+              ylim = c(10, 60)) +
+    scale_x_continuous(breaks = seq(-170, -85, by = 10)) +
+    scale_y_continuous(breaks = seq(10, 60, by = 10)) +
+    labs(x = &quot;Longitude&quot;,
+         y = &quot;Latitude&quot;,
+         fill = &quot;Maximum Mixing\nDepth Difference (m)&quot;,
+         title = paste0(title_text, &quot; Phase, Maximum Mixing Depth in First Two Years Difference from the Mean&quot;)) +
+    theme(panel.border = element_blank())
+  
+  print(plot)
+  
+  # # save plot
+  # ggsave(paste0(path_plots, phase_name, &quot;_hblsmax_meanmap.png&quot;), plot = plot,
+  #        width = 8, height = 6, dpi = 300)
+}
+
+lapply(seq_along(phases), function(i) {
+  create_hblsmax_meanmap(phases[i], phase_titles[i])
+})</code></pre>
+<p><img src="figure/drivers_hbls.Rmd/hbls_max_means-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/drivers_hbls.Rmd/hbls_max_means-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/drivers_hbls.Rmd/hbls_max_means-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/drivers_hbls.Rmd/hbls_max_means-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/drivers_hbls.Rmd/hbls_max_means-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[3]]</code></pre>
+<p><img src="figure/drivers_hbls.Rmd/hbls_max_means-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>rm(create_hblsmax_meanmap)
+gc()</code></pre>
+<pre><code>             used    (Mb)  gc trigger     (Mb)    max used     (Mb)
+Ncells    1714170    91.6     2646211    141.4     2646211    141.4
+Vcells 5484828802 41846.0 16148457573 123203.0 26697301168 203684.3</code></pre>
+<p>Mixing depth maps during months of interest</p>
+<pre class="r"><code>phase_data &lt;- list(lanina_surf_data, neutral_surf_data, elnino_surf_data)
+
+# adding phase and combining all 3 into one table
+phase_list &lt;- Map(function(table, phase) {
+    table[, phase := phase]
+  }, phase_data, phases)
+
+hblsfull_data &lt;- rbindlist(phase_list) # now has all hbls data for all phases
+
+# can rerun code for months of choice; 12-16
+create_hbls_distmap &lt;- function(phase_name, title_text) {
+  phase_dt &lt;- hblsfull_data[hblsfull_data$phase == phase_name &amp; hblsfull_data$month == 22]
+  plot &lt;- ggplot(phase_dt, aes(x = lon, y = lat, fill = hbls)) +
+    geom_polygon(data = map_data(&quot;world&quot;), aes(x = long, y = lat, group = group), 
+                 fill = &quot;lightgray&quot;, color = &quot;white&quot;) +
+    geom_raster() +
+    scale_fill_viridis_c(limit = c(0, 180)) +  # set the color range
+    theme_light() +
+    coord_fixed(xlim = c(-170, -85),
+              ylim = c(10, 60)) +
+    scale_x_continuous(breaks = seq(-170, -85, by = 10)) +
+    scale_y_continuous(breaks = seq(10, 60, by = 10)) +
+    labs(x = &quot;Longitude&quot;,
+         y = &quot;Latitude&quot;,
+         fill = &quot;Mixing Depth (m)&quot;,
+         title = paste0(title_text, &quot; Phase, Mixing Depth (Month 22)&quot;)) +
+    theme(panel.border = element_blank())
+  
+  print(plot)
+
+  # # save plot
+  # ggsave(paste0(path_plots, phase_name, &quot;_hblsmap_month22.png&quot;), plot = plot,
+  #        width = 8, height = 6, dpi = 300)
+}
+
+lapply(seq_along(phases), function(i) {
+  create_hbls_distmap(phases[i], phase_titles[i])
+})</code></pre>
+<p><img src="figure/drivers_hbls.Rmd/hbls_dist-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/drivers_hbls.Rmd/hbls_dist-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/drivers_hbls.Rmd/hbls_dist-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/drivers_hbls.Rmd/hbls_dist-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/drivers_hbls.Rmd/hbls_dist-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[3]]</code></pre>
+<p><img src="figure/drivers_hbls.Rmd/hbls_dist-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># write_feather(hblsfull_data, paste0(path_outputs,
+#                                       &quot;hblsfull_data.feather&quot;))
+
+rm(create_hbls_distmap)
+gc()</code></pre>
+<pre><code>             used    (Mb)  gc trigger     (Mb)    max used     (Mb)
+Ncells    1713573    91.6     2646211    141.4     2646211    141.4
+Vcells 5564184240 42451.4 16148457573 123203.0 26697301168 203684.3</code></pre>
+<p>Mixing depth difference from mean maps during months of interest</p>
+<pre class="r"><code># calculating mean mixing depth across all 3 phases for each grid cell, 1st 2 years
+setDT(hblsfull_data)
+hblsfull_data[, &quot;:=&quot; (
+  hbls_mean = mean(hbls, na.rm = TRUE)
+), by = .(lat, lon, month)]
+
+# can rerun code for months of choice; 12-16
+create_hbls_meanmap &lt;- function(phase_name, title_text) {
+  phase_dt &lt;- hblsfull_data[hblsfull_data$phase == phase_name &amp; hblsfull_data$month == 10]
+                             # &amp; lat &gt; 20 &amp; lat &lt; 40 &amp; lon &gt; -130 &amp; lon &lt; -110]
+  plot &lt;- ggplot(phase_dt, aes(x = lon, y = lat, fill = hbls - hbls_mean)) +
+    geom_polygon(data = map_data(&quot;world&quot;), aes(x = long, y = lat, group = group), 
+                 fill = &quot;lightgray&quot;, color = &quot;white&quot;) +
+    geom_raster() +
+    scale_fill_gradient2(low = &quot;blue&quot;, mid = &quot;white&quot;, high = &quot;red&quot;, midpoint = 0,
+                         limits = c(-75, 75), breaks = c(-50, -25, 0, 25, 50)) +
+    theme_light() +
+    coord_fixed(xlim = c(-170, -85),
+              ylim = c(10, 60)) +
+    scale_x_continuous(breaks = seq(-170, -85, by = 10)) +
+    scale_y_continuous(breaks = seq(10, 60, by = 10)) +
+    labs(x = &quot;Longitude&quot;,
+         y = &quot;Latitude&quot;,
+         fill = &quot;Difference from Mean Mixing Depth (m)&quot;,
+         title = paste0(title_text, &quot; Phase, Mixing Depth Difference from Mean (Month 10)&quot;)) +
+    theme(panel.border = element_blank())
+  
+  print(plot)
+  
+  # # save plot
+  # ggsave(paste0(path_plots, phase_name, &quot;_hblsmapdfm_month10.png&quot;), plot = plot,
+  #        width = 8, height = 6, dpi = 300)
+}
+
+lapply(seq_along(phases), function(i) {
+  create_hbls_meanmap(phases[i], phase_titles[i])
+})</code></pre>
+<p><img src="figure/drivers_hbls.Rmd/hbls_dist_mean-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/drivers_hbls.Rmd/hbls_dist_mean-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/drivers_hbls.Rmd/hbls_dist_mean-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/drivers_hbls.Rmd/hbls_dist_mean-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/drivers_hbls.Rmd/hbls_dist_mean-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[3]]</code></pre>
+<p><img src="figure/drivers_hbls.Rmd/hbls_dist_mean-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># write_feather(hblsfull_data, paste0(path_outputs,
+#                                       &quot;hblsfull_meandata.feather&quot;))
+
+rm(create_hbls_meanmap)
+gc()</code></pre>
+<pre><code>             used    (Mb)  gc trigger     (Mb)    max used     (Mb)
+Ncells    1714918    91.6     2646211    141.4     2646211    141.4
+Vcells 5576592392 42546.1 16148457573 123203.0 26697301168 203684.3</code></pre>
+<p>Fraction of dTA subducted under MMD</p>
+<pre class="r"><code># merging relevant alk and hbls data
+mol_data &lt;- Map(function(mol_table, phase) {
+  mol_table &lt;- mol_table[, .SD, .SDcols = c(&quot;lon&quot;, &quot;lat&quot;, &quot;depth&quot;, &quot;time&quot;, &quot;month&quot;, 
+                                      &quot;dTA_full&quot;, &quot;dDIC_full&quot;)]
+  hbls_table &lt;- get(paste0(phase, &quot;_hblsmax&quot;)) # fetch matching hbls table
+  new_table &lt;- merge(mol_table, hbls_table[, .(lat, lon, hbls)],
+                       by = c(&quot;lon&quot;, &quot;lat&quot;), all.x = TRUE) # merging
+  return(new_table)
+  }, mol_data, phases)
+
+# return tables to each item, now mol data has the max mixing depth for each cell
+lanina_dTA_mol &lt;- mol_data[[1]]
+neutral_dTA_mol &lt;- mol_data[[2]]
+elnino_dTA_mol &lt;- mol_data[[3]]
+
+# # setting boundaries of depth bins; only need if going to use boundaries to separate
+
+# depth_ranges &lt;- unique(lanina_dTA_mol[, .(depth)])
+# setorder(depth_ranges, depth)
+# 
+# depth_ranges[, &quot;:=&quot; (
+#     depth_upper = (shift(depth, type = &quot;lag&quot;, fill = 0) + depth) / 2, # set shallower boundary
+#     depth_lower = (shift(depth, type = &quot;lead&quot;, fill = max(depth)) + depth) / 2 
+#   )] # deeper bound
+# 
+# # merge depth ranges back to tables
+# mol_data &lt;- mol_data %&gt;%
+#   lapply(function(table) {
+#     table &lt;- merge(table, depth_ranges, by = &quot;depth&quot;, all.x = TRUE)
+#     return(table)
+#   })
+
+# # return tables to each item 
+# lanina_dTA_mol &lt;- mol_data[[1]]
+# neutral_dTA_mol &lt;- mol_data[[2]]
+# elnino_dTA_mol &lt;- mol_data[[3]]
+
+# calculating subducted portion; assuming it stays subducted? would it make sense
+# here to use the mixing depth at each month rather than the max?
+subducted_data &lt;- lapply(mol_data, function(table){
+  new_table &lt;- table[, .(dTA_int = sum(dTA_full, na.rm = TRUE), # full int dTA moles/month
+            dTA_sub_int = sum(dTA_full[depth &gt; hbls], na.rm = TRUE)), 
+        # only the dTA subducted below MMD, approx with depth ie middle of bin
+            by = .(month)]
+  new_table[, frac_sub := dTA_sub_int / dTA_int] 
+  # calculates approx portion subducted under each cell&#39;s 2-year max hbls 
+  return(new_table)
+  })
+
+# return tables to each item 
+lanina_dTA_subhbls &lt;- subducted_data[[1]]
+neutral_dTA_subhbls &lt;- subducted_data[[2]]
+elnino_dTA_subhbls &lt;- subducted_data[[3]]
+
+# combining all three tables in to one for ease of plotting
+sub_list &lt;- Map(function(table, phase) {
+    table[, phase := phase]
+  }, subducted_data, phases)
+
+sub_fulldata &lt;- rbindlist(sub_list)
+
+# Plotting time series of all three
+ggplot(sub_fulldata, aes(x = month, y = frac_sub, color = phase)) +
+  scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(0, 0.4), expand = c(0,0)) +
+  geom_vline(xintercept = seq(0, 24, by = 12), color = &quot;grey75&quot;, linewidth = 0.4) +
+  geom_line(linewidth = 1) +
+  labs(title = &quot;Added Alkalinity Subducted Beneath Maximum Mixing Depth&quot;, 
+       x = &quot;Months Since OAE Start&quot;, 
+       y = &quot;Fraction of Alkalinity Subducted&quot;) +
+  theme_bw()</code></pre>
+<p><img src="figure/drivers_hbls.Rmd/dta_sub_hblsmax-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(paste0(path_plots, &quot;dTA_sub_hblsmax.png&quot;), plot = last_plot(),
+#               width = 10, height = 6, dpi = 300)
+
+rm(depth_ranges, sub_list, subducted_data)</code></pre>
+<pre><code>Warning in rm(depth_ranges, sub_list, subducted_data): object &#39;depth_ranges&#39;
+not found</code></pre>
+<pre class="r"><code>gc()</code></pre>
+<pre><code>             used    (Mb)  gc trigger    (Mb)    max used     (Mb)
+Ncells    1687643    90.2     2646211   141.4     2646211    141.4
+Vcells 2774651881 21169.0 12918766059 98562.4 26697301168 203684.3</code></pre>
+<pre class="r"><code># calculating subducted portion; assuming it stays subducted? would it make sense
+# here to use the mixing depth at each month rather than the max?
+subducted_data &lt;- lapply(mol_data, function(table){
+  new_table &lt;- table[, .(dDIC_int = sum(dDIC_full, na.rm = TRUE), # full int dDIC moles/month
+            dDIC_sub_int = sum(dDIC_full[depth &gt; hbls], na.rm = TRUE)), 
+        # only the dTA subducted below MMD, approx with depth ie middle of bin
+            by = .(month)]
+  new_table[, frac_sub := dDIC_sub_int / dDIC_int] 
+  # calculates approx portion subducted under each cell&#39;s 2-year max hbls 
+  return(new_table)
+  })
+
+# return tables to each item 
+lanina_dDIC_subhbls &lt;- subducted_data[[1]]
+neutral_dDIC_subhbls &lt;- subducted_data[[2]]
+elnino_dDIC_subhbls &lt;- subducted_data[[3]]
+
+# combining all three tables in to one for ease of plotting
+sub_list &lt;- Map(function(table, phase) {
+    table[, phase := phase]
+  }, subducted_data, phases)
+
+sub_fulldata &lt;- rbindlist(sub_list)
+
+# Plotting time series of all three, either fraction or moles
+ggplot(sub_fulldata, aes(x = month, y = frac_sub, color = phase)) +
+  scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(0, 0.4), expand = c(0,0)) +
+  geom_vline(xintercept = seq(0, 24, by = 12), color = &quot;grey75&quot;, linewidth = 0.4) +
+  geom_line(linewidth = 1) +
+  labs(title = &quot;New DIC Subducted Beneath Maximum Mixing Depth&quot;, 
+       x = &quot;Months Since OAE Start&quot;, 
+       y = &quot;Fraction of dDIC Subducted&quot;) +
+  theme_bw()</code></pre>
+<p><img src="figure/drivers_hbls.Rmd/ddic_sub_hblsmax-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(paste0(path_plots, &quot;dDIC_sub_hblsmax.png&quot;), plot = last_plot(),
+#               width = 10, height = 6, dpi = 300)
+
+rm(list = ls())
+gc()</code></pre>
+<pre><code>          used (Mb)  gc trigger    (Mb)    max used     (Mb)
+Ncells 1689096 90.3     2646211   141.4     2646211    141.4
+Vcells 3002837 23.0 10335012848 78849.9 26697301168 203684.3</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.4.2 (2024-10-31)
+Platform: x86_64-pc-linux-gnu
+Running under: openSUSE Leap 15.6
+
+Matrix products: default
+BLAS/LAPACK: /usr/local/OpenBLAS-0.3.28/lib/libopenblas_haswellp-r0.3.28.so;  LAPACK version 3.12.0
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+time zone: Europe/Zurich
+tzcode source: system (glibc)
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] scales_1.3.0      arrow_18.1.0.1    data.table_1.16.2 tidync_0.4.0     
+ [5] lubridate_1.9.3   forcats_1.0.0     stringr_1.5.1     dplyr_1.1.4      
+ [9] purrr_1.0.2       readr_2.1.5       tidyr_1.3.1       tibble_3.2.1     
+[13] ggplot2_3.5.1     tidyverse_2.0.0   workflowr_1.7.1  
+
+loaded via a namespace (and not attached):
+ [1] gtable_0.3.6      xfun_0.49         bslib_0.8.0       processx_3.8.4   
+ [5] callr_3.7.6       tzdb_0.4.0        vctrs_0.6.5       tools_4.4.2      
+ [9] ps_1.8.1          generics_0.1.3    fansi_1.0.6       pkgconfig_2.0.3  
+[13] assertthat_0.2.1  lifecycle_1.0.4   farver_2.1.2      compiler_4.4.2   
+[17] git2r_0.35.0      munsell_0.5.1     getPass_0.2-4     ncdf4_1.23       
+[21] httpuv_1.6.15     htmltools_0.5.8.1 maps_3.4.2.1      sass_0.4.9       
+[25] yaml_2.3.10       later_1.4.1       pillar_1.9.0      jquerylib_0.1.4  
+[29] whisker_0.4.1     cachem_1.1.0      RNetCDF_2.9-2     ncmeta_0.4.0     
+[33] tidyselect_1.2.1  digest_0.6.37     stringi_1.8.4     labeling_0.4.3   
+[37] rprojroot_2.0.4   fastmap_1.2.0     grid_4.4.2        colorspace_2.1-1 
+[41] cli_3.6.3         magrittr_2.0.3    utf8_1.2.4        withr_3.0.2      
+[45] promises_1.3.2    bit64_4.5.2       timechange_0.3.0  rmarkdown_2.29   
+[49] httr_1.4.7        bit_4.5.0         hms_1.1.3         evaluate_1.0.1   
+[53] knitr_1.49        viridisLite_0.4.2 rlang_1.1.4       Rcpp_1.0.13-1    
+[57] glue_1.8.0        rstudioapi_0.17.1 jsonlite_1.8.9    R6_2.5.1         
+[61] fs_1.6.5         </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

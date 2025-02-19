@@ -353,6 +353,12 @@ div.tocify {
 <li>
   <a href="hovmo_plots.html">Hovmoeller Plots</a>
 </li>
+<li>
+  <a href="drivers_hbls.html">Mixing Depth</a>
+</li>
+<li>
+  <a href="drivers_fgCO2.html">Air-Sea CO2 Flux</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -389,7 +395,7 @@ div.tocify {
 <h1 class="title toc-ignore">Regrid Checks and Column Integrated
 Plots</h1>
 <h4 class="author">Victoria Froh</h4>
-<h4 class="date">03 February, 2025</h4>
+<h4 class="date">19 February, 2025</h4>
 
 </div>
 
@@ -418,7 +424,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-02-03
+<strong>Last updated:</strong> 2025-02-19
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -549,15 +555,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree639b38d3912a5bcacb51b37cd7eeb25d9f77b1adtargetblank639b38da">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreea36bcfe9b50883ec8b4723ee0173a7117e6b0506targetblanka36bcfea">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/639b38d3912a5bcacb51b37cd7eeb25d9f77b1ad" target="_blank">639b38d</a>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/a36bcfe9b50883ec8b4723ee0173a7117e6b0506" target="_blank">a36bcfe</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree639b38d3912a5bcacb51b37cd7eeb25d9f77b1adtargetblank639b38da"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreea36bcfe9b50883ec8b4723ee0173a7117e6b0506targetblanka36bcfea"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -567,7 +573,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/639b38d3912a5bcacb51b37cd7eeb25d9f77b1ad" target="_blank">639b38d</a>.
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/a36bcfe9b50883ec8b4723ee0173a7117e6b0506" target="_blank">a36bcfe</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -586,13 +592,13 @@ Ignored files:
     Ignored:    .Rproj.user/
 
 Untracked files:
-    Untracked:  code/read_data.Rmd
-    Untracked:  oae_ccs_roms.Rproj.RData
+    Untracked:  code/oggrid_surface_data.R
+    Untracked:  code/regrid_surface_data.R
 
 Unstaged changes:
     Modified:   analysis/_site.yml
-    Deleted:    analysis/read_data.Rmd
     Modified:   code/Workflowr_project_managment.R
+    Modified:   code/dTA_dDIC.R
     Modified:   code/regrid_cdr_eff_molar.R
     Modified:   code/regrid_dTA_dDIC.R
 
@@ -644,6 +650,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/a36bcfe9b50883ec8b4723ee0173a7117e6b0506/analysis/column_int_plots.Rmd" target="_blank">a36bcfe</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-19
+</td>
+<td>
+Mixing depth and air-sea co2 flux anlaysis
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/dd18a7835c84df8c10ae76aea9644c06a077efd9/docs/column_int_plots.html" target="_blank">dd18a78</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/639b38d3912a5bcacb51b37cd7eeb25d9f77b1ad/analysis/column_int_plots.Rmd" target="_blank">639b38d</a>
 </td>
 <td>
@@ -685,6 +725,10 @@ path_plots &lt;- &quot;/net/sea/work/vifroh/test_plots/&quot;
 # loading in dTA conc data to make a surface plot/columnint
 lanina_dTA_conc &lt;- read_feather(
   paste0(path_outputs,&quot;lanina_dTA_concdataRG2.feather&quot;))
+neutral_dTA_conc &lt;- read_feather(
+  paste0(path_outputs,&quot;neutral_dTA_concdataRG2.feather&quot;))
+elnino_dTA_conc &lt;- read_feather(
+  paste0(path_outputs,&quot;elnino_dTA_concdataRG2.feather&quot;))
 
 # loading in dTA full integration data for competency check
 lanina_dTA_int&lt;- read_feather(
@@ -733,15 +777,52 @@ This warning is displayed once every 8 hours.
 Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
 generated.</code></pre>
 <p><img src="figure/column_int_plots.Rmd/subset_plot-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code># save plot
-ggsave(paste0(path_plots, &quot;regrid_domainRG2.png&quot;), plot = last_plot(), 
-       width = 8, height = 6, dpi = 300)
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-subset_plot-1">
+Past versions of subset_plot-1.png
+</button>
+</p>
+<div id="fig-subset_plot-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/dd18a7835c84df8c10ae76aea9644c06a077efd9/docs/figure/column_int_plots.Rmd/subset_plot-1.png" target="_blank">dd18a78</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code># # save plot
+# ggsave(paste0(path_plots, &quot;regrid_domainRG2.png&quot;), plot = last_plot(), 
+#        width = 8, height = 6, dpi = 300)
 
 rm(surface_data)
 gc()</code></pre>
 <pre><code>             used    (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells    1657574    88.6    3217118   171.9    2798428   149.5
-Vcells 3148545860 24021.5 4533694348 34589.4 3215779056 24534.5</code></pre>
+Ncells    1650355    88.2    3203601   171.1    2208884   118.0
+Vcells 3148528576 24021.4 4533696249 34589.4 3201277758 24423.9</code></pre>
 <p>Checking the alkalinity containment within the regridded subregion
 over the time series</p>
 <pre class="r"><code># using full integrated data from cdr_eff_molar file
@@ -762,30 +843,44 @@ rm(lanina_dTAint_compare, lanina_intdata_og)</code></pre>
 &#39;lanina_intdata_og&#39; not found</code></pre>
 <pre class="r"><code>gc()</code></pre>
 <pre><code>             used    (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells    1666362    89.0    3217118   171.9    2798428   149.5
-Vcells 3147534806 24013.8 4533694348 34589.4 3215779056 24534.5</code></pre>
+Ncells    1659671    88.7    3203601   171.1    2246529   120.0
+Vcells 3147516782 24013.7 4533696249 34589.4 3201277758 24423.9</code></pre>
 <p>Column integrated plots of added alkalinity to check lateral movement
 during the time series</p>
-<pre class="r"><code># using conc data then multiplied by depth bin size so have mmol/m^2
+<pre class="r"><code># rerunning these on own for different phases/months; can load saved column int
+# files from folder
+
+# using conc data then multiplied by depth bin size so have mmol/m^2
 setDT(lanina_dTA_conc)
 lanina_dTA_conc$depth &lt;- as.numeric(lanina_dTA_conc$depth)
+# filter out only top 100m for top integrated plot
+lanina_dTA_conc &lt;- lanina_dTA_conc[depth &lt;= 100]
+
 lanina_dTA_conc &lt;-
   lanina_dTA_conc[, thickness :=
                     ifelse(depth == 0, 2.5,
                            ifelse(depth &lt; 80, 5,
                                   ifelse(depth == 80, 7.5,
-                                         ifelse(depth &lt; 100, 10,
-                                                ifelse(depth == 100, 15,
-                                                       ifelse(depth &lt; 300, 20,
-                                                              10
-                                                       ))))))]
+                                         ifelse(depth &lt; 100, 10, #edit here for top 100
+                                                5
+                                                # ifelse(depth == 100, 15,
+                                                #        ifelse(depth &lt; 300, 20,
+                                                #               10
+                                                       # ))
+                                  ))))]
 lanina_dTA_conc &lt;- lanina_dTA_conc[, dTA_m2 := dTA * thickness] %&gt;%  # units now moles/m2
-      .[, dDIC_m2 := dDIC * thickness]
+      .[, dDIC_m2 := dDIC * thickness] %&gt;% 
+      .[, CDReff_m2 := fifelse(dDIC_m2/dTA_m2 == Inf, NaN, dDIC_m2/dTA_m2)] 
+# calculating CDR Efficiency per cell, replacing dDIC calcs producing Inf -&gt; Na
 
-# grouping by lat/lon and integrating vertically
-lanina_dTA_columnint&lt;- lanina_dTA_conc[, .(dTA_column = sum(dTA_m2, na.rm = TRUE)), 
-                                      by = c(&quot;lat&quot;, &quot;lon&quot;, &quot;time&quot;)]
-
+# grouping by lat/lon and integrating vertically, averaging the CDR Efficiency
+lanina_dTA_columnint&lt;- lanina_dTA_conc[, .(dTA_column = sum(dTA_m2, na.rm = TRUE),
+                                           dDIC_column = sum(dDIC_m2, na.rm = TRUE),
+                                           CDReff_avg = mean(CDReff_m2, na.rm = TRUE)), 
+                                       # averaging CDReff of individual grid cells
+                                      by = c(&quot;lat&quot;, &quot;lon&quot;, &quot;time&quot;)] %&gt;% 
+  .[, CDReff_col := dDIC_column / dTA_column] # total CDReff for column; this is
+# fine for top 100m if thinking this is mixing
 
 # Convert lat, lon, Alk to numeric 
 lanina_dTA_columnint$lat &lt;- as.numeric(lanina_dTA_columnint$lat)
@@ -793,43 +888,82 @@ lanina_dTA_columnint$lon &lt;- as.numeric(lanina_dTA_columnint$lon)
 lanina_dTA_columnint$dTA_column &lt;- as.numeric(lanina_dTA_columnint$dTA_column)
 
 # filter by time to create a timestop plot
-surface_data &lt;- lanina_dTA_columnint[time == &quot;1999-06&quot;]
+surface_data &lt;- lanina_dTA_columnint[time == &quot;2000-05&quot;]
 
 # # Convert longitude to -180 to 180 range 
 # surface_data$lon &lt;- surface_data$lon - 360
 
-# plotting surface map
+# plotting column integrated map
 ggplot() + 
-  # geom_polygon(data = map_data(&quot;world&quot;), aes(x = long, y = lat, group = group),
-  #              fill = &quot;lightgray&quot;, color = &quot;white&quot;) +
-  geom_raster(data = surface_data, aes(x = lon, y = lat, fill = dTA_column)) +
-  scale_fill_viridis_c() +  # Change the color scale to suit your data
-  theme_minimal() +
-  coord_fixed() + 
+  geom_polygon(data = map_data(&quot;world&quot;), aes(x = long, y = lat, group = group),
+               fill = &quot;lightgray&quot;, color = &quot;white&quot;) +
+  geom_raster(data = surface_data, aes(x = lon, y = lat, fill = CDReff_col)) +
+  scale_fill_viridis_c(limit = c(0, 1)) +  # set the color range
+  theme_light() +
+  coord_fixed(xlim = c(-170, -85),
+              ylim = c(10, 60)) +
   scale_x_continuous(breaks = seq(-170, -85, by = 10)) +
   scale_y_continuous(breaks = seq(10, 60, by = 10)) +
-  labs(title = &quot;Vertically Integrated dTA (La Niña, June 1999)&quot;,
+  labs(title = &quot;Vertically Integrated CDR Efficiency, top 100m (La Niña, May 2000)&quot;, # La Niña
        x = &quot;Longitude&quot;,
        y = &quot;Latitude&quot;,
-       fill = &quot;dTA (mmol/m^2)&quot;)</code></pre>
+       fill = &quot;CDR Efficiency&quot;) + # dTA (mmol/m^2)
+  theme(panel.border = element_blank())</code></pre>
 <p><img src="figure/column_int_plots.Rmd/column_integrated_plots-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code># save plot
-ggsave(paste0(path_plots, &quot;lanina_columnint_Jun1999.png&quot;), plot = last_plot(), 
-       width = 8, height = 6, dpi = 300)
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-column_integrated_plots-1">
+Past versions of column_integrated_plots-1.png
+</button>
+</p>
+<div id="fig-column_integrated_plots-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/dd18a7835c84df8c10ae76aea9644c06a077efd9/docs/figure/column_int_plots.Rmd/column_integrated_plots-1.png" target="_blank">dd18a78</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code># # save plot
+# ggsave(paste0(path_plots, &quot;lanina_columnint_May2000_CDReff100.png&quot;), plot = last_plot(),
+#        width = 8, height = 6, dpi = 300)
 
 # # save column integrated data
 # write_feather(lanina_dTA_columnint, paste0(path_outputs,
-#                                       &quot;lanina_columnintRG2.feather&quot;))
+#                                       &quot;lanina_columnintRG2_top100.feather&quot;))
 # write_feather(neutral_dTA_columnint, paste0(path_outputs,
-#                                        &quot;neutral_columnintRG2.feather&quot;))
+#                                        &quot;neutral_columnintRG2_top100.feather&quot;))
 # write_feather(elnino_dTA_columnint, paste0(path_outputs,
-#                                       &quot;elnino_columnintRG2.feather&quot;))
+#                                       &quot;elnino_columnint_RG2_top100.feather&quot;))
 
 rm(lanina_dTA_columnint, surface_data, lanina_dTA_conc)
 gc()</code></pre>
 <pre><code>          used (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells 1676490 89.6    3217118   171.9    3217118   171.9
-Vcells 4179417 31.9 8052609881 61436.6 9725788468 74201.9</code></pre>
+Ncells 1676244 89.6    3203601   171.1    3203601   171.1
+Vcells 5792214 44.2 6710437852 51196.6 8374342501 63891.2</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -871,18 +1005,17 @@ loaded via a namespace (and not attached):
  [5] callr_3.7.6       tzdb_0.4.0        vctrs_0.6.5       tools_4.4.2      
  [9] ps_1.8.1          generics_0.1.3    fansi_1.0.6       pkgconfig_2.0.3  
 [13] assertthat_0.2.1  lifecycle_1.0.4   compiler_4.4.2    farver_2.1.2     
-[17] git2r_0.35.0      textshaping_0.4.0 munsell_0.5.1     getPass_0.2-4    
-[21] httpuv_1.6.15     htmltools_0.5.8.1 maps_3.4.2.1      sass_0.4.9       
-[25] yaml_2.3.10       crayon_1.5.3      later_1.4.1       pillar_1.9.0     
-[29] jquerylib_0.1.4   whisker_0.4.1     cachem_1.1.0      tidyselect_1.2.1 
-[33] digest_0.6.37     stringi_1.8.4     labeling_0.4.3    rprojroot_2.0.4  
-[37] fastmap_1.2.0     grid_4.4.2        colorspace_2.1-1  cli_3.6.3        
-[41] magrittr_2.0.3    utf8_1.2.4        withr_3.0.2       promises_1.3.2   
-[45] bit64_4.5.2       timechange_0.3.0  rmarkdown_2.29    httr_1.4.7       
-[49] bit_4.5.0         ragg_1.3.3        hms_1.1.3         evaluate_1.0.1   
-[53] knitr_1.49        viridisLite_0.4.2 rlang_1.1.4       Rcpp_1.0.13-1    
-[57] glue_1.8.0        rstudioapi_0.17.1 jsonlite_1.8.9    R6_2.5.1         
-[61] systemfonts_1.1.0 fs_1.6.5         </code></pre>
+[17] git2r_0.35.0      munsell_0.5.1     getPass_0.2-4     httpuv_1.6.15    
+[21] htmltools_0.5.8.1 maps_3.4.2.1      sass_0.4.9        yaml_2.3.10      
+[25] later_1.4.1       pillar_1.9.0      crayon_1.5.3      jquerylib_0.1.4  
+[29] whisker_0.4.1     cachem_1.1.0      tidyselect_1.2.1  digest_0.6.37    
+[33] stringi_1.8.4     labeling_0.4.3    rprojroot_2.0.4   fastmap_1.2.0    
+[37] grid_4.4.2        colorspace_2.1-1  cli_3.6.3         magrittr_2.0.3   
+[41] utf8_1.2.4        withr_3.0.2       promises_1.3.2    bit64_4.5.2      
+[45] timechange_0.3.0  rmarkdown_2.29    httr_1.4.7        bit_4.5.0        
+[49] hms_1.1.3         evaluate_1.0.1    knitr_1.49        viridisLite_0.4.2
+[53] rlang_1.1.4       Rcpp_1.0.13-1     glue_1.8.0        rstudioapi_0.17.1
+[57] jsonlite_1.8.9    R6_2.5.1          fs_1.6.5         </code></pre>
 </div>
 </div>
 </div>

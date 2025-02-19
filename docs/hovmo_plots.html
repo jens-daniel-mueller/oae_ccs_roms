@@ -353,6 +353,12 @@ div.tocify {
 <li>
   <a href="hovmo_plots.html">Hovmoeller Plots</a>
 </li>
+<li>
+  <a href="drivers_hbls.html">Mixing Depth</a>
+</li>
+<li>
+  <a href="drivers_fgCO2.html">Air-Sea CO2 Flux</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -389,7 +395,7 @@ div.tocify {
 <h1 class="title toc-ignore">Hovmoeller dTA, dDIC, and CDR Efficiency
 Plots</h1>
 <h4 class="author">Victoria Froh</h4>
-<h4 class="date">03 February, 2025</h4>
+<h4 class="date">19 February, 2025</h4>
 
 </div>
 
@@ -418,7 +424,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-02-03
+<strong>Last updated:</strong> 2025-02-19
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -549,15 +555,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree639b38d3912a5bcacb51b37cd7eeb25d9f77b1adtargetblank639b38da">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreea36bcfe9b50883ec8b4723ee0173a7117e6b0506targetblanka36bcfea">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/639b38d3912a5bcacb51b37cd7eeb25d9f77b1ad" target="_blank">639b38d</a>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/a36bcfe9b50883ec8b4723ee0173a7117e6b0506" target="_blank">a36bcfe</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree639b38d3912a5bcacb51b37cd7eeb25d9f77b1adtargetblank639b38da"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreea36bcfe9b50883ec8b4723ee0173a7117e6b0506targetblanka36bcfea"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -567,7 +573,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/639b38d3912a5bcacb51b37cd7eeb25d9f77b1ad" target="_blank">639b38d</a>.
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/a36bcfe9b50883ec8b4723ee0173a7117e6b0506" target="_blank">a36bcfe</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -586,13 +592,13 @@ Ignored files:
     Ignored:    .Rproj.user/
 
 Untracked files:
-    Untracked:  code/read_data.Rmd
-    Untracked:  oae_ccs_roms.Rproj.RData
+    Untracked:  code/oggrid_surface_data.R
+    Untracked:  code/regrid_surface_data.R
 
 Unstaged changes:
     Modified:   analysis/_site.yml
-    Deleted:    analysis/read_data.Rmd
     Modified:   code/Workflowr_project_managment.R
+    Modified:   code/dTA_dDIC.R
     Modified:   code/regrid_cdr_eff_molar.R
     Modified:   code/regrid_dTA_dDIC.R
 
@@ -644,6 +650,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/a36bcfe9b50883ec8b4723ee0173a7117e6b0506/analysis/hovmo_plots.Rmd" target="_blank">a36bcfe</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-19
+</td>
+<td>
+Mixing depth and air-sea co2 flux anlaysis
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/dd18a7835c84df8c10ae76aea9644c06a077efd9/docs/hovmo_plots.html" target="_blank">dd18a78</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/639b38d3912a5bcacb51b37cd7eeb25d9f77b1ad/analysis/hovmo_plots.Rmd" target="_blank">639b38d</a>
 </td>
 <td>
@@ -686,12 +726,16 @@ lanina_depthint &lt;- read_feather(
 neutral_depthint &lt;- read_feather(
   paste0(path_outputs, &quot;neutral_depthintRG2.feather&quot;))
 elnino_depthint &lt;- read_feather(
-  paste0(path_outputs, &quot;elnino_depthintRG2.feather&quot;))</code></pre>
+  paste0(path_outputs, &quot;elnino_depthintRG2.feather&quot;))
+
+# plotting
+phase_titles &lt;- c(&quot;La Niña&quot;, &quot;Neutral&quot;, &quot;El Niño&quot;)
+phases &lt;- c(&quot;lanina&quot;, &quot;neutral&quot;, &quot;elnino&quot;)</code></pre>
 </div>
 <div id="regular-hovmoeller-plots" class="section level2">
 <h2>Regular Hovmoeller Plots</h2>
 <p>Change in total (added) alkalinity</p>
-<pre class="r"><code># formatting tables
+<pre class="r"><code># formatting tables, subsetting
 phase_data &lt;- list(lanina_depthint, neutral_depthint, elnino_depthint)
 
 phase_data &lt;- phase_data %&gt;%
@@ -700,19 +744,15 @@ phase_data &lt;- phase_data %&gt;%
     table[, depth := as.numeric(depth)]
     table[, dTA_sum := as.numeric(as.character(dTA_sum))]
     table[, CDR_eff := as.numeric(as.character(CDR_eff))]
-    table[, time := as.Date(paste0(time, &quot;-01&quot;))]
+    table[, month := .GRP, by = time] # gives index in order to each unique time
+    table &lt;- table[month &lt;= 24] # subsets to first two years
     return(table)
   })
 
 # return tables to each item 
-lanina_depthint &lt;- phase_data[[1]]
-neutral_depthint &lt;- phase_data[[2]]
-elnino_depthint &lt;- phase_data[[3]]
-
-# subset first two years
-lanina_depthint_sub &lt;- lanina_depthint[time &lt;= as.Date(&quot;2000-05-01&quot;)]
-neutral_depthint_sub &lt;- neutral_depthint[time &lt;= as.Date(&quot;2005-05-01&quot;)]
-elnino_depthint_sub &lt;- elnino_depthint[time &lt;= as.Date(&quot;2017-05-01&quot;)]
+lanina_depthint_sub &lt;- phase_data[[1]]
+neutral_depthint_sub &lt;- phase_data[[2]]
+elnino_depthint_sub &lt;- phase_data[[3]]
 
 # # removing negative data points and transform
 # lanina_depthint_sub &lt;- lanina_depthint_sub[dTA_sum &gt; 0]
@@ -743,29 +783,23 @@ lanina_depthint_sub &lt;- phase_data[[1]]
 neutral_depthint_sub &lt;- phase_data[[2]]
 elnino_depthint_sub &lt;- phase_data[[3]]
 
-# plotting delta dTA from mean
-phase_titles &lt;- c(&quot;La Niña&quot;, &quot;Neutral&quot;, &quot;El Niño&quot;)
-phases &lt;- c(&quot;lanina&quot;, &quot;neutral&quot;, &quot;elnino&quot;)
-
+# plotting
 create_hovmo_dTA &lt;- function(data, title_text, phase) {
-  plot &lt;- ggplot(data, aes(x = time, y = depth, fill = dTA_sum)) +
+  plot &lt;- ggplot(data, aes(x = month, y = depth, fill = dTA_sum)) +
     geom_rect(aes(ymin = depth_upper, ymax = depth_lower, 
-                  xmin = time - 16, xmax = time + 16)) +
+                  xmin = month - 1, xmax = month)) +
+    scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                       expand = c(0,0)) + 
     scale_y_reverse(expand = c(0, 0)) +
-    scale_x_date(
-      date_breaks = &quot;4 months&quot;,  # Tick every 4 months
-      date_labels = &quot;%Y-%m&quot;,  # Show only the year and month
-      expand = c(0, 0)
-      ) +
     scale_fill_viridis_c(guide = guide_colorbar(
       barwidth = unit(0.7, &quot;cm&quot;), barheight = unit(6, &quot;cm&quot;)),
       limits = c(-926000, 3443000000)) +
       # limits = c(0, 3443000000)) +
     facet_wrap(~category, scales = &quot;free_y&quot;, ncol = 1) + # splits into two panels
-    labs(x = &quot;Time&quot;,
+    labs(x = &quot;Months Since OAE Start&quot;,
          y = &quot;Depth (m)&quot;,
-         fill = &quot;Added Alkalinity (mol/m)&quot;,
-         title = paste0(title_text, &quot; Phase (10N to 60N and -170E to -85E)&quot;)) + 
+         fill = &quot;Added Alkalinity\n(mol/m)&quot;,
+         title = paste0(title_text, &quot; Phase Added Alkalinity&quot;)) + 
     theme_bw() + 
     theme(strip.text = element_blank(),
           axis.ticks.length = unit(0.15, &quot;inches&quot;),
@@ -776,51 +810,161 @@ create_hovmo_dTA &lt;- function(data, title_text, phase) {
   
   print(plot)
   
-  # save plot
-  ggsave(paste0(path_plots, phase, &quot;_hovmo_dTA.png&quot;), plot = plot,
-         width = 8, height = 6, dpi = 300)
+  # # save plot
+  # ggsave(paste0(path_plots, phase, &quot;_hovmo_dTA.png&quot;), plot = plot,
+  #        width = 8, height = 6, dpi = 300)
 }
 
 lapply(seq_along(phase_data), function(i) {
   create_hovmo_dTA(phase_data[[i]], phase_titles[i], phases[i])
 })</code></pre>
-<p><img src="figure/hovmo_plots.Rmd/dTA_hovmo_plots-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/hovmo_plots.Rmd/dTA_hovmo_plots-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/hovmo_plots.Rmd/dTA_hovmo_plots-3.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>[[1]]
-[1] &quot;/net/sea/work/vifroh/test_plots/lanina_hovmo_dTA.png&quot;
-
-[[2]]
-[1] &quot;/net/sea/work/vifroh/test_plots/neutral_hovmo_dTA.png&quot;
-
-[[3]]
-[1] &quot;/net/sea/work/vifroh/test_plots/elnino_hovmo_dTA.png&quot;</code></pre>
-<pre class="r"><code>rm(create_hovmo_dTA)
+<p><img src="figure/hovmo_plots.Rmd/dTA_hovmo_plots-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-dTA_hovmo_plots-1">
+Past versions of dTA_hovmo_plots-1.png
+</button>
+</p>
+<div id="fig-dTA_hovmo_plots-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/dd18a7835c84df8c10ae76aea9644c06a077efd9/docs/figure/hovmo_plots.Rmd/dTA_hovmo_plots-1.png" target="_blank">dd18a78</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/hovmo_plots.Rmd/dTA_hovmo_plots-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-dTA_hovmo_plots-2">
+Past versions of dTA_hovmo_plots-2.png
+</button>
+</p>
+<div id="fig-dTA_hovmo_plots-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/dd18a7835c84df8c10ae76aea9644c06a077efd9/docs/figure/hovmo_plots.Rmd/dTA_hovmo_plots-2.png" target="_blank">dd18a78</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/hovmo_plots.Rmd/dTA_hovmo_plots-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-dTA_hovmo_plots-3">
+Past versions of dTA_hovmo_plots-3.png
+</button>
+</p>
+<div id="fig-dTA_hovmo_plots-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/dd18a7835c84df8c10ae76aea9644c06a077efd9/docs/figure/hovmo_plots.Rmd/dTA_hovmo_plots-3.png" target="_blank">dd18a78</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/hovmo_plots.Rmd/dTA_hovmo_plots-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/hovmo_plots.Rmd/dTA_hovmo_plots-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[3]]</code></pre>
+<p><img src="figure/hovmo_plots.Rmd/dTA_hovmo_plots-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>rm(create_hovmo_dTA, lanina_depthint, elnino_depthint, neutral_depthint)
 gc()</code></pre>
 <pre><code>          used (Mb) gc trigger  (Mb) max used  (Mb)
-Ncells 1703113 91.0    3354720 179.2  2208121 118.0
-Vcells 3118613 23.8    8388608  64.0  6554929  50.1</code></pre>
+Ncells 1726524 92.3    3411250 182.2  3101578 165.7
+Vcells 3198303 24.5    8388608  64.0  6011053  45.9</code></pre>
 <p>Change in DIC</p>
 <pre class="r"><code># building off of data ran in chunk above
 
 # plotting dDIC
 create_hovmo_dDIC &lt;- function(data, title_text, phase) {
-  plot &lt;- ggplot(data, aes(x = time, y = depth, fill = dDIC_sum)) +
+  plot &lt;- ggplot(data, aes(x = month, y = depth, fill = dDIC_sum)) +
     geom_rect(aes(ymin = depth_upper, ymax = depth_lower, 
-                  xmin = time - 16, xmax = time + 16)) +
+                  xmin = month - 1, xmax = month)) +
     scale_y_reverse(expand = c(0, 0)) +
-    scale_x_date(
-      date_breaks = &quot;4 months&quot;,  # Tick every 4 months
-      date_labels = &quot;%Y-%m&quot;,  # Show only the year and month
-      expand = c(0, 0)
-      ) +
+    scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                       expand = c(0,0)) +
     scale_fill_viridis_c(guide = guide_colorbar(
       barwidth = unit(0.7, &quot;cm&quot;), barheight = unit(6, &quot;cm&quot;)),
       limits = c(-480, 2008000000)) +
       # limits = c(0, 2008000000)) +
     facet_wrap(~category, scales = &quot;free_y&quot;, ncol = 1) + # splits into two panels
-    labs(x = &quot;Time&quot;,
+    labs(x = &quot;Months Since OAE Start&quot;,
          y = &quot;Depth (m)&quot;,
-         fill = &quot;Change in DIC (mol/m)&quot;,
-         title = paste0(title_text, &quot; Phase (10N to 60N and -170E to -85E)&quot;)) + 
+         fill = &quot;Change in DIC\n(mol/m)&quot;,
+         title = paste0(title_text, &quot; Phase Change in DIC&quot;)) + 
     theme_bw() + 
     theme(strip.text = element_blank(),
           axis.ticks.length = unit(0.15, &quot;inches&quot;),
@@ -831,50 +975,161 @@ create_hovmo_dDIC &lt;- function(data, title_text, phase) {
   
   print(plot)
   
-  # save plot
-  ggsave(paste0(path_plots, phase, &quot;_hovmo_dDIC.png&quot;), plot = plot,
-         width = 8, height = 6, dpi = 300)
+  # # save plot
+  # ggsave(paste0(path_plots, phase, &quot;_hovmo_dDIC.png&quot;), plot = plot,
+  #        width = 8, height = 6, dpi = 300)
 }
 
 lapply(seq_along(phase_data), function(i) {
   create_hovmo_dDIC(phase_data[[i]], phase_titles[i], phases[i])
 })</code></pre>
-<p><img src="figure/hovmo_plots.Rmd/dDIC_hovmo_plots-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/hovmo_plots.Rmd/dDIC_hovmo_plots-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/hovmo_plots.Rmd/dDIC_hovmo_plots-3.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>[[1]]
-[1] &quot;/net/sea/work/vifroh/test_plots/lanina_hovmo_dDIC.png&quot;
-
-[[2]]
-[1] &quot;/net/sea/work/vifroh/test_plots/neutral_hovmo_dDIC.png&quot;
-
-[[3]]
-[1] &quot;/net/sea/work/vifroh/test_plots/elnino_hovmo_dDIC.png&quot;</code></pre>
+<p><img src="figure/hovmo_plots.Rmd/dDIC_hovmo_plots-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-dDIC_hovmo_plots-1">
+Past versions of dDIC_hovmo_plots-1.png
+</button>
+</p>
+<div id="fig-dDIC_hovmo_plots-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/dd18a7835c84df8c10ae76aea9644c06a077efd9/docs/figure/hovmo_plots.Rmd/dDIC_hovmo_plots-1.png" target="_blank">dd18a78</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/hovmo_plots.Rmd/dDIC_hovmo_plots-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-dDIC_hovmo_plots-2">
+Past versions of dDIC_hovmo_plots-2.png
+</button>
+</p>
+<div id="fig-dDIC_hovmo_plots-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/dd18a7835c84df8c10ae76aea9644c06a077efd9/docs/figure/hovmo_plots.Rmd/dDIC_hovmo_plots-2.png" target="_blank">dd18a78</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/hovmo_plots.Rmd/dDIC_hovmo_plots-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-dDIC_hovmo_plots-3">
+Past versions of dDIC_hovmo_plots-3.png
+</button>
+</p>
+<div id="fig-dDIC_hovmo_plots-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/dd18a7835c84df8c10ae76aea9644c06a077efd9/docs/figure/hovmo_plots.Rmd/dDIC_hovmo_plots-3.png" target="_blank">dd18a78</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/hovmo_plots.Rmd/dDIC_hovmo_plots-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/hovmo_plots.Rmd/dDIC_hovmo_plots-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[3]]</code></pre>
+<p><img src="figure/hovmo_plots.Rmd/dDIC_hovmo_plots-6.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>rm(create_hovmo_dDIC)
 gc()</code></pre>
 <pre><code>          used (Mb) gc trigger  (Mb) max used  (Mb)
-Ncells 1708429 91.3    3354720 179.2  3354720 179.2
-Vcells 3132752 24.0    8388608  64.0  6554929  50.1</code></pre>
-<p>CDR Efficiency (dDIC/dTA)</p>
+Ncells 1732728 92.6    3411250 182.2  3411250 182.2
+Vcells 3212742 24.6    8388608  64.0  6011053  45.9</code></pre>
+<p>Integrated CDR Efficiency (full total dDIC per layer/full total dTA
+per layer)</p>
 <pre class="r"><code># building off of data ran in chunk above
 
 # plotting CDReff
 create_hovmo_CDReff &lt;- function(data, title_text, phase) {
-  plot &lt;- ggplot(data, aes(x = time, y = depth, fill = CDR_eff)) +
+  plot &lt;- ggplot(data, aes(x = month, y = depth, fill = CDR_eff)) +
     geom_rect(aes(ymin = depth_upper, ymax = depth_lower, 
-                  xmin = time - 16, xmax = time + 16)) +
+                  xmin = month - 1, xmax = month)) +
     scale_y_reverse(expand = c(0, 0)) +
-    scale_x_date(
-      date_breaks = &quot;4 months&quot;,  # Tick every 4 months
-      date_labels = &quot;%Y-%m&quot;,  # Show only the year and month
-      expand = c(0, 0)
-      ) +
+    scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                       expand = c(0,0)) +
     scale_fill_viridis_c(guide = guide_colorbar(
       barwidth = unit(0.7, &quot;cm&quot;), barheight = unit(6, &quot;cm&quot;)),
       limits = c(0, 1)) + # cutting off weird negative or &gt;1 CDR effs
     facet_wrap(~category, scales = &quot;free_y&quot;, ncol = 1) + # splits into two panels
-    labs(x = &quot;Time&quot;,
+    labs(x = &quot;Months Since OAE Start&quot;,
          y = &quot;Depth (m)&quot;,
-         fill = &quot;CDR Efficiency (Fraction))&quot;,
-         title = paste0(title_text, &quot; Phase (10N to 60N and -170E to -85E)&quot;)) + 
+         fill = &quot;CDR Efficiency\n(Fraction)&quot;,
+         title = paste0(title_text, &quot; Phase CDR Efficiency&quot;)) + 
     theme_bw() + 
     theme(strip.text = element_blank(),
           axis.ticks.length = unit(0.15, &quot;inches&quot;),
@@ -885,28 +1140,141 @@ create_hovmo_CDReff &lt;- function(data, title_text, phase) {
   
   print(plot)
   
-  # save plot
-  ggsave(paste0(path_plots, phase, &quot;_hovmo_CDReff.png&quot;), plot = plot,
-         width = 8, height = 6, dpi = 300)
+  # # save plot
+  # ggsave(paste0(path_plots, phase, &quot;_hovmo_CDReff.png&quot;), plot = plot,
+  #        width = 8, height = 6, dpi = 300)
 }
 
 lapply(seq_along(phase_data), function(i) {
   create_hovmo_CDReff(phase_data[[i]], phase_titles[i], phases[i])
 })</code></pre>
-<p><img src="figure/hovmo_plots.Rmd/CDReff_hovmo_plots-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/hovmo_plots.Rmd/CDReff_hovmo_plots-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/hovmo_plots.Rmd/CDReff_hovmo_plots-3.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>[[1]]
-[1] &quot;/net/sea/work/vifroh/test_plots/lanina_hovmo_CDReff.png&quot;
-
-[[2]]
-[1] &quot;/net/sea/work/vifroh/test_plots/neutral_hovmo_CDReff.png&quot;
-
-[[3]]
-[1] &quot;/net/sea/work/vifroh/test_plots/elnino_hovmo_CDReff.png&quot;</code></pre>
+<p><img src="figure/hovmo_plots.Rmd/CDReff_hovmo_plots-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-CDReff_hovmo_plots-1">
+Past versions of CDReff_hovmo_plots-1.png
+</button>
+</p>
+<div id="fig-CDReff_hovmo_plots-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/dd18a7835c84df8c10ae76aea9644c06a077efd9/docs/figure/hovmo_plots.Rmd/CDReff_hovmo_plots-1.png" target="_blank">dd18a78</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/hovmo_plots.Rmd/CDReff_hovmo_plots-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-CDReff_hovmo_plots-2">
+Past versions of CDReff_hovmo_plots-2.png
+</button>
+</p>
+<div id="fig-CDReff_hovmo_plots-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/dd18a7835c84df8c10ae76aea9644c06a077efd9/docs/figure/hovmo_plots.Rmd/CDReff_hovmo_plots-2.png" target="_blank">dd18a78</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/hovmo_plots.Rmd/CDReff_hovmo_plots-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-CDReff_hovmo_plots-3">
+Past versions of CDReff_hovmo_plots-3.png
+</button>
+</p>
+<div id="fig-CDReff_hovmo_plots-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/dd18a7835c84df8c10ae76aea9644c06a077efd9/docs/figure/hovmo_plots.Rmd/CDReff_hovmo_plots-3.png" target="_blank">dd18a78</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/hovmo_plots.Rmd/CDReff_hovmo_plots-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/hovmo_plots.Rmd/CDReff_hovmo_plots-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[3]]</code></pre>
+<p><img src="figure/hovmo_plots.Rmd/CDReff_hovmo_plots-6.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>rm(create_hovmo_CDReff)
 gc()</code></pre>
 <pre><code>          used (Mb) gc trigger  (Mb) max used  (Mb)
-Ncells 1708833 91.3    3354720 179.2  3354720 179.2
-Vcells 3134126 24.0    8388608  64.0  6554929  50.1</code></pre>
+Ncells 1733124 92.6    3411250 182.2  3411250 182.2
+Vcells 3216505 24.6    8388608  64.0  6011053  45.9</code></pre>
 </div>
 <div
 id="hovmoeller-plots-of-the-differences-from-the-means-of-all-3-phases"
@@ -915,19 +1283,6 @@ class="section level2">
 phases</h2>
 <p>Difference in added alkalinity from the phases’ mean</p>
 <pre class="r"><code># building off of data ran in chunk above
-
-# convert time column to months since addition begins
-phase_data &lt;- phase_data %&gt;%
-  lapply(function(table) {
-    setorder(table, time)
-    table[, month := .GRP, by = time] # gives index in order to each unique time
-    return(table)
-  })
-
-# return tables to each item
-lanina_depthint_sub &lt;- phase_data[[1]]
-neutral_depthint_sub &lt;- phase_data[[2]]
-elnino_depthint_sub &lt;- phase_data[[3]]
 
 # combining all three tables in to one
 phase_list &lt;- Map(function(table, phase) {
@@ -945,20 +1300,23 @@ phase_fulldata[, &quot;:=&quot; (
   CDR_effmean = mean(CDR_eff[CDR_eff &gt;= 0 &amp; CDR_eff &lt;= 1] , na.rm = TRUE)
 ), by = .(month, depth)]
 
+# plotting delta dTA from mean
 create_hovmo_ddTA &lt;- function(phase_name, title_text) {
   phase_dt &lt;- phase_fulldata[phase_fulldata$phase == phase_name,]
   plot &lt;- ggplot(phase_dt, aes(x = month, y = depth, fill = dTA_sum - dTA_mean)) +
     geom_rect(aes(xmin = month - 1, xmax = month,
                   ymin = depth_upper, ymax = depth_lower)) +
     scale_y_reverse(expand = c(0, 0)) +
+    scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                       expand = c(0,0)) +
     scale_fill_gradient2(low = &quot;blue&quot;, mid = &quot;white&quot;, high = &quot;red&quot;, midpoint = 0,
                          guide = guide_colorbar(
       barwidth = unit(0.7, &quot;cm&quot;), barheight = unit(6, &quot;cm&quot;)),
       limits = c(-410000000, 430000000)) +
     facet_wrap(~category, scales = &quot;free_y&quot;, ncol = 1) + # splits into two panels
-    labs(x = &quot;Months Since Addition Began&quot;,
+    labs(x = &quot;Months Since OAE Start&quot;,
          y = &quot;Depth (m)&quot;,
-         fill = &quot;Added Alkalinity Difference (mol/m)&quot;,
+         fill = &quot;Added Alkalinity\nDifference (mol/m)&quot;,
          title = paste0(title_text, &quot; Phase, Added Alkalinity Difference from Mean&quot;)) +
     theme_bw() +
     theme(strip.text = element_blank(),
@@ -969,28 +1327,141 @@ create_hovmo_ddTA &lt;- function(phase_name, title_text) {
           strip.background = element_blank())
   print(plot)
   
-  # save plot
-  ggsave(paste0(path_plots, phase_name, &quot;_hovmo_ddTA.png&quot;), plot = plot,
-         width = 8, height = 6, dpi = 300)
+  # # save plot
+  # ggsave(paste0(path_plots, phase_name, &quot;_hovmo_ddTA.png&quot;), plot = plot,
+  #        width = 8, height = 6, dpi = 300)
 }
 
 lapply(seq_along(phases), function(i) {
   create_hovmo_ddTA(phases[i], phase_titles[i])
 })</code></pre>
-<p><img src="figure/hovmo_plots.Rmd/delta_hovmo_dTA-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/hovmo_plots.Rmd/delta_hovmo_dTA-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/hovmo_plots.Rmd/delta_hovmo_dTA-3.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>[[1]]
-[1] &quot;/net/sea/work/vifroh/test_plots/lanina_hovmo_ddTA.png&quot;
-
-[[2]]
-[1] &quot;/net/sea/work/vifroh/test_plots/neutral_hovmo_ddTA.png&quot;
-
-[[3]]
-[1] &quot;/net/sea/work/vifroh/test_plots/elnino_hovmo_ddTA.png&quot;</code></pre>
+<p><img src="figure/hovmo_plots.Rmd/delta_hovmo_dTA-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-delta_hovmo_dTA-1">
+Past versions of delta_hovmo_dTA-1.png
+</button>
+</p>
+<div id="fig-delta_hovmo_dTA-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/dd18a7835c84df8c10ae76aea9644c06a077efd9/docs/figure/hovmo_plots.Rmd/delta_hovmo_dTA-1.png" target="_blank">dd18a78</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/hovmo_plots.Rmd/delta_hovmo_dTA-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-delta_hovmo_dTA-2">
+Past versions of delta_hovmo_dTA-2.png
+</button>
+</p>
+<div id="fig-delta_hovmo_dTA-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/dd18a7835c84df8c10ae76aea9644c06a077efd9/docs/figure/hovmo_plots.Rmd/delta_hovmo_dTA-2.png" target="_blank">dd18a78</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/hovmo_plots.Rmd/delta_hovmo_dTA-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-delta_hovmo_dTA-3">
+Past versions of delta_hovmo_dTA-3.png
+</button>
+</p>
+<div id="fig-delta_hovmo_dTA-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/dd18a7835c84df8c10ae76aea9644c06a077efd9/docs/figure/hovmo_plots.Rmd/delta_hovmo_dTA-3.png" target="_blank">dd18a78</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/hovmo_plots.Rmd/delta_hovmo_dTA-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/hovmo_plots.Rmd/delta_hovmo_dTA-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[3]]</code></pre>
+<p><img src="figure/hovmo_plots.Rmd/delta_hovmo_dTA-6.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>rm(phase_list, create_hovmo_ddTA)
 gc()</code></pre>
 <pre><code>          used (Mb) gc trigger  (Mb) max used  (Mb)
-Ncells 1711640 91.5    3354720 179.2  3354720 179.2
-Vcells 3189637 24.4    8388608  64.0  6554929  50.1</code></pre>
+Ncells 1735736 92.7    3411250 182.2  3411250 182.2
+Vcells 3268101 25.0    8388608  64.0  6011053  45.9</code></pre>
 <p>Difference in dDIC from the phases’ mean</p>
 <pre class="r"><code># building off of data ran in chunk above
 
@@ -1000,15 +1471,17 @@ create_hovmo_ddDIC &lt;- function(phase_name, title_text) {
   plot &lt;- ggplot(phase_dt, aes(x = month, y = depth, fill = dDIC_sum - dDIC_mean)) +
     geom_rect(aes(xmin = month - 1, xmax = month,
                   ymin = depth_upper, ymax = depth_lower)) +
+    scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                       expand = c(0,0)) +
     scale_y_reverse(expand = c(0, 0)) +
     scale_fill_gradient2(low = &quot;blue&quot;, mid = &quot;white&quot;, high = &quot;red&quot;, midpoint = 0,
                          guide = guide_colorbar(
       barwidth = unit(0.7, &quot;cm&quot;), barheight = unit(6, &quot;cm&quot;)),
       limits = c(-200000000, 200000000)) +
     facet_wrap(~category, scales = &quot;free_y&quot;, ncol = 1) + # splits into two panels
-    labs(x = &quot;Months Since Addition Began&quot;,
+    labs(x = &quot;Months Since OAE Start&quot;,
          y = &quot;Depth (m)&quot;,
-         fill = &quot;dDIC Difference (mol/m)&quot;,
+         fill = &quot;dDIC Difference\n(mol/m)&quot;,
          title = paste0(title_text, &quot; Phase, dDIC Difference from Mean&quot;)) +
     theme_bw() +
     theme(strip.text = element_blank(),
@@ -1019,28 +1492,141 @@ create_hovmo_ddDIC &lt;- function(phase_name, title_text) {
           strip.background = element_blank())
   print(plot)
   
-  # save plot
-  ggsave(paste0(path_plots, phase_name, &quot;_hovmo_ddDIC.png&quot;), plot = plot,
-         width = 8, height = 6, dpi = 300)
+  # # save plot
+  # ggsave(paste0(path_plots, phase_name, &quot;_hovmo_ddDIC.png&quot;), plot = plot,
+  #        width = 8, height = 6, dpi = 300)
 }
 
 lapply(seq_along(phases), function(i) {
   create_hovmo_ddDIC(phases[i], phase_titles[i])
 })</code></pre>
-<p><img src="figure/hovmo_plots.Rmd/delta_hovmo_dDIC-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/hovmo_plots.Rmd/delta_hovmo_dDIC-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/hovmo_plots.Rmd/delta_hovmo_dDIC-3.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>[[1]]
-[1] &quot;/net/sea/work/vifroh/test_plots/lanina_hovmo_ddDIC.png&quot;
-
-[[2]]
-[1] &quot;/net/sea/work/vifroh/test_plots/neutral_hovmo_ddDIC.png&quot;
-
-[[3]]
-[1] &quot;/net/sea/work/vifroh/test_plots/elnino_hovmo_ddDIC.png&quot;</code></pre>
+<p><img src="figure/hovmo_plots.Rmd/delta_hovmo_dDIC-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-delta_hovmo_dDIC-1">
+Past versions of delta_hovmo_dDIC-1.png
+</button>
+</p>
+<div id="fig-delta_hovmo_dDIC-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/dd18a7835c84df8c10ae76aea9644c06a077efd9/docs/figure/hovmo_plots.Rmd/delta_hovmo_dDIC-1.png" target="_blank">dd18a78</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/hovmo_plots.Rmd/delta_hovmo_dDIC-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-delta_hovmo_dDIC-2">
+Past versions of delta_hovmo_dDIC-2.png
+</button>
+</p>
+<div id="fig-delta_hovmo_dDIC-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/dd18a7835c84df8c10ae76aea9644c06a077efd9/docs/figure/hovmo_plots.Rmd/delta_hovmo_dDIC-2.png" target="_blank">dd18a78</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/hovmo_plots.Rmd/delta_hovmo_dDIC-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-delta_hovmo_dDIC-3">
+Past versions of delta_hovmo_dDIC-3.png
+</button>
+</p>
+<div id="fig-delta_hovmo_dDIC-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/dd18a7835c84df8c10ae76aea9644c06a077efd9/docs/figure/hovmo_plots.Rmd/delta_hovmo_dDIC-3.png" target="_blank">dd18a78</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/hovmo_plots.Rmd/delta_hovmo_dDIC-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/hovmo_plots.Rmd/delta_hovmo_dDIC-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[3]]</code></pre>
+<p><img src="figure/hovmo_plots.Rmd/delta_hovmo_dDIC-6.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>rm(create_hovmo_ddDIC)
 gc()</code></pre>
 <pre><code>          used (Mb) gc trigger  (Mb) max used  (Mb)
-Ncells 1711801 91.5    3354720 179.2  3354720 179.2
-Vcells 3186651 24.4    8388608  64.0  6554929  50.1</code></pre>
+Ncells 1736023 92.8    3411250 182.2  3411250 182.2
+Vcells 3265579 25.0    8388608  64.0  6011053  45.9</code></pre>
 <p>Difference in CDR efficiency from the phases’ mean; wonky
 efficiencies outside the range from 0 to 1 were filtered out (these
 occurred primarily below 150m)</p>
@@ -1058,6 +1644,8 @@ create_hovmo_dCDReff &lt;- function(phase_name, title_text) {
   plot &lt;- ggplot(phase_dt, aes(x = month, y = depth, fill = CDR_eff - CDR_effmean)) +
     geom_rect(aes(xmin = month - 1, xmax = month,
                   ymin = depth_upper, ymax = depth_lower)) +
+    scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                       expand = c(0,0)) +
     scale_y_reverse(expand = c(0, 0)) +
     scale_fill_gradient2(na.value = &quot;lightgray&quot;, low = &quot;blue&quot;, mid = &quot;white&quot;, 
                          high = &quot;red&quot;, midpoint = 0,
@@ -1065,9 +1653,9 @@ create_hovmo_dCDReff &lt;- function(phase_name, title_text) {
       barwidth = unit(0.7, &quot;cm&quot;), barheight = unit(6, &quot;cm&quot;)),
       limits = c(-0.152, 0.152)) +
     facet_wrap(~category, scales = &quot;free_y&quot;, ncol = 1) + # splits into two panels
-    labs(x = &quot;Months Since Addition Began&quot;,
+    labs(x = &quot;Months Since Addition Start&quot;,
          y = &quot;Depth (m)&quot;,
-         fill = &quot;CDR Efficiency Difference&quot;,
+         fill = &quot;CDR Efficiency\nDifference&quot;,
          title = paste0(title_text, &quot; Phase, CDR Efficiency Difference from Mean&quot;)) +
     theme_bw() +
     theme(strip.text = element_blank(),
@@ -1078,28 +1666,141 @@ create_hovmo_dCDReff &lt;- function(phase_name, title_text) {
           strip.background = element_blank())
   print(plot)
   
-  # save plot
-  ggsave(paste0(path_plots, phase_name, &quot;_hovmo_dCDReff.png&quot;), plot = plot,
-         width = 8, height = 6, dpi = 300)
+  # # save plot
+  # ggsave(paste0(path_plots, phase_name, &quot;_hovmo_dCDReff.png&quot;), plot = plot,
+  #        width = 8, height = 6, dpi = 300)
 }
 
 lapply(seq_along(phases), function(i) {
   create_hovmo_dCDReff(phases[i], phase_titles[i])
 })</code></pre>
-<p><img src="figure/hovmo_plots.Rmd/delta_hovmo_CDReff-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/hovmo_plots.Rmd/delta_hovmo_CDReff-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/hovmo_plots.Rmd/delta_hovmo_CDReff-3.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>[[1]]
-[1] &quot;/net/sea/work/vifroh/test_plots/lanina_hovmo_dCDReff.png&quot;
-
-[[2]]
-[1] &quot;/net/sea/work/vifroh/test_plots/neutral_hovmo_dCDReff.png&quot;
-
-[[3]]
-[1] &quot;/net/sea/work/vifroh/test_plots/elnino_hovmo_dCDReff.png&quot;</code></pre>
-<pre class="r"><code>rm(create_hovmo_dCDReff)
+<p><img src="figure/hovmo_plots.Rmd/delta_hovmo_CDReff-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-delta_hovmo_CDReff-1">
+Past versions of delta_hovmo_CDReff-1.png
+</button>
+</p>
+<div id="fig-delta_hovmo_CDReff-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/dd18a7835c84df8c10ae76aea9644c06a077efd9/docs/figure/hovmo_plots.Rmd/delta_hovmo_CDReff-1.png" target="_blank">dd18a78</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/hovmo_plots.Rmd/delta_hovmo_CDReff-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-delta_hovmo_CDReff-2">
+Past versions of delta_hovmo_CDReff-2.png
+</button>
+</p>
+<div id="fig-delta_hovmo_CDReff-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/dd18a7835c84df8c10ae76aea9644c06a077efd9/docs/figure/hovmo_plots.Rmd/delta_hovmo_CDReff-2.png" target="_blank">dd18a78</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/hovmo_plots.Rmd/delta_hovmo_CDReff-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-delta_hovmo_CDReff-3">
+Past versions of delta_hovmo_CDReff-3.png
+</button>
+</p>
+<div id="fig-delta_hovmo_CDReff-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/dd18a7835c84df8c10ae76aea9644c06a077efd9/docs/figure/hovmo_plots.Rmd/delta_hovmo_CDReff-3.png" target="_blank">dd18a78</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/hovmo_plots.Rmd/delta_hovmo_CDReff-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/hovmo_plots.Rmd/delta_hovmo_CDReff-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[3]]</code></pre>
+<p><img src="figure/hovmo_plots.Rmd/delta_hovmo_CDReff-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>rm(list = ls())
 gc()</code></pre>
 <pre><code>          used (Mb) gc trigger  (Mb) max used  (Mb)
-Ncells 1713134 91.5    3354720 179.2  3354720 179.2
-Vcells 3191967 24.4    8388608  64.0  6554929  50.1</code></pre>
+Ncells 1737840 92.9    3411250 182.2  3411250 182.2
+Vcells 3230628 24.7    8388608  64.0  6011053  45.9</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1137,21 +1838,21 @@ other attached packages:
 [13] tidyverse_2.0.0   workflowr_1.7.1  
 
 loaded via a namespace (and not attached):
- [1] gtable_0.3.6      xfun_0.49         bslib_0.8.0       processx_3.8.4   
- [5] callr_3.7.6       tzdb_0.4.0        vctrs_0.6.5       tools_4.4.2      
- [9] ps_1.8.1          generics_0.1.3    fansi_1.0.6       pkgconfig_2.0.3  
-[13] assertthat_0.2.1  lifecycle_1.0.4   compiler_4.4.2    farver_2.1.2     
-[17] git2r_0.35.0      textshaping_0.4.0 munsell_0.5.1     getPass_0.2-4    
-[21] httpuv_1.6.15     htmltools_0.5.8.1 sass_0.4.9        yaml_2.3.10      
-[25] later_1.4.1       pillar_1.9.0      jquerylib_0.1.4   whisker_0.4.1    
-[29] cachem_1.1.0      tidyselect_1.2.1  digest_0.6.37     stringi_1.8.4    
-[33] labeling_0.4.3    rprojroot_2.0.4   fastmap_1.2.0     grid_4.4.2       
-[37] colorspace_2.1-1  cli_3.6.3         magrittr_2.0.3    utf8_1.2.4       
-[41] withr_3.0.2       promises_1.3.2    bit64_4.5.2       timechange_0.3.0 
-[45] rmarkdown_2.29    httr_1.4.7        bit_4.5.0         ragg_1.3.3       
-[49] hms_1.1.3         evaluate_1.0.1    knitr_1.49        viridisLite_0.4.2
-[53] rlang_1.1.4       Rcpp_1.0.13-1     glue_1.8.0        rstudioapi_0.17.1
-[57] jsonlite_1.8.9    R6_2.5.1          systemfonts_1.1.0 fs_1.6.5         </code></pre>
+ [1] sass_0.4.9        utf8_1.2.4        generics_0.1.3    stringi_1.8.4    
+ [5] hms_1.1.3         digest_0.6.37     magrittr_2.0.3    timechange_0.3.0 
+ [9] evaluate_1.0.1    grid_4.4.2        fastmap_1.2.0     rprojroot_2.0.4  
+[13] jsonlite_1.8.9    processx_3.8.4    whisker_0.4.1     ps_1.8.1         
+[17] promises_1.3.2    httr_1.4.7        fansi_1.0.6       viridisLite_0.4.2
+[21] jquerylib_0.1.4   cli_3.6.3         rlang_1.1.4       bit64_4.5.2      
+[25] munsell_0.5.1     withr_3.0.2       cachem_1.1.0      yaml_2.3.10      
+[29] tools_4.4.2       tzdb_0.4.0        colorspace_2.1-1  httpuv_1.6.15    
+[33] assertthat_0.2.1  vctrs_0.6.5       R6_2.5.1          lifecycle_1.0.4  
+[37] git2r_0.35.0      bit_4.5.0         fs_1.6.5          pkgconfig_2.0.3  
+[41] callr_3.7.6       pillar_1.9.0      bslib_0.8.0       later_1.4.1      
+[45] gtable_0.3.6      glue_1.8.0        Rcpp_1.0.13-1     xfun_0.49        
+[49] tidyselect_1.2.1  rstudioapi_0.17.1 knitr_1.49        farver_2.1.2     
+[53] htmltools_0.5.8.1 labeling_0.4.3    rmarkdown_2.29    compiler_4.4.2   
+[57] getPass_0.2-4    </code></pre>
 </div>
 </div>
 </div>
