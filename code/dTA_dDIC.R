@@ -28,8 +28,13 @@ path_outputs <- "/net/sea/work/vifroh/oae_ccs_roms_data/original_grid/"
   # -------------------------------
   # 1.1 - Looking at Data Files
   # -------------------------------
-# nc <- tidync(paste0(path_ROMS_results, "lanina/avg/lanina_avg_1999-2000.nc"))
-# print(nc)
+nc <- tidync(paste0(path_ROMS_results, "lanina/avg/lanina_avg_1999-2000.nc"))
+print(nc)
+
+# view_nc <- nc_open(paste0(
+#   path_ROMS_results, "lanina/avg/lanina_avg_1999-2000.nc"))
+# print(view_nc)
+# nc_close(view_nc)
 
 # -------------------------------
 # 2. Gathering Data Files

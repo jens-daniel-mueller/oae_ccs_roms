@@ -106,10 +106,9 @@ gc()
 
 ```
 
-## Exploring Air-Sea FLux
+## Air-Sea Flux Regional Distribution
 
-Regional distribution of flux in OAE runs
-
+# Regional distribution of flux in OAE runs
 ```{r fgCO2_dist, message=FALSE}
 
 # can rerun code for months of choice
@@ -147,8 +146,7 @@ gc()
 
 ```
 
-Regional distribution of dflux in OAE runs (OAE flux - control flux)
-
+# Regional distribution of dflux in OAE runs (OAE flux - control flux)
 ```{r dfgCO2_dist, message=FALSE}
 
 # can rerun code for months of choice,
@@ -189,8 +187,7 @@ gc()
 
 ```
 
-Zoomed in maps of dflux in OAE runs (OAE flux - control flux) near add site
-
+# Zoomed in maps of dflux in OAE runs (OAE flux - control flux) near add site
 ```{r dfgCO2_dist_zoom, message=FALSE}
 
 # can rerun code for months of choice
@@ -232,9 +229,10 @@ gc()
 
 ```
 
+# Zoomed in difference from mean dflux maps
 ```{r dfgco2_dfm, message=FALSE}
 
-# calculating mean max mixing depth across all 3 phases for each grid cell
+# calculating mean max delta flux across all 3 phases for each grid cell
 surface_data[, ":=" (
   dFG_mean = mean(dFG, na.rm = TRUE)
 ), by = .(lat, lon, month)]
@@ -276,6 +274,8 @@ rm(create_dfg_meanmap)
 gc()
 
 ```
+
+## Quantifying Uptake
 
 ```{r co2_uptake, message=FALSE}
 

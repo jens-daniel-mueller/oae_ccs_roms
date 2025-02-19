@@ -95,10 +95,9 @@ phases <- c("lanina", "neutral", "elnino")
 
 ```
 
-## Exploring Mixing Depth
+## Mixing Depth Maximums
 
-Regional distribution of maximum depths
-
+# Regional distribution of maximum depths
 ```{r hbls_max, message=FALSE}
 
 # finding max mixing depth at each grid cell
@@ -159,8 +158,7 @@ gc()
 
 ```
 
-Maximum depth difference from mean
-
+# Maximum depth difference from mean
 ```{r hbls_max_means, message=FALSE}
 
 # calculating mean max mixing depth across all 3 phases for each grid cell
@@ -204,8 +202,10 @@ gc()
 
 ```
 
-Mixing depth maps during months of interest
 
+## Regional Distribution
+
+# Mixing depth maps during months of interest
 ```{r hbls_dist, message=FALSE}
 
 phase_data <- list(lanina_surf_data, neutral_surf_data, elnino_surf_data)
@@ -255,8 +255,7 @@ gc()
 
 ```
 
-Mixing depth difference from mean maps during months of interest
-
+# Mixing depth difference from mean maps during months of interest
 ```{r hbls_dist_mean, message=FALSE}
 
 # calculating mean mixing depth across all 3 phases for each grid cell, 1st 2 years
@@ -305,8 +304,9 @@ gc()
 
 ```
 
-Fraction of dTA subducted under MMD
+## Subduction Out of Mixing Layer
 
+# Fraction of dTA subducted under MMD
 ```{r dta_sub_hblsmax, message=FALSE}
 
 # merging relevant alk and hbls data
@@ -389,7 +389,7 @@ rm(depth_ranges, sub_list, subducted_data)
 gc()
 ```
 
-
+# Fraction of dDIC subducted under MMD
 ```{r ddic_sub_hblsmax, message=FALSE}
 
 # calculating subducted portion; assuming it stays subducted? would it make sense

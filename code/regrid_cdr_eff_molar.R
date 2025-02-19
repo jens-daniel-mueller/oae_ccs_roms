@@ -53,7 +53,7 @@ phase_data <- phase_data %>%
     setDT(table) # ensure it is properly set as a data table again
     set(table, j = "lat", value = as.numeric(table$lat)) # makes lat numeric
     set(table, j = "lon", value = as.numeric(table$lon))
-    set(table, j = "depth", value = as.numeric(table$depth)) # makes lat numeric
+    set(table, j = "depth", value = as.numeric(table$depth)) # makes depth numeric
     set(table, j = "area", value = earth_surf(table$lat) * cellsize)
     # converts from 1x1deg output to correct grid cell size
     return(table)  # Return the modified data.table
@@ -143,17 +143,17 @@ write_feather(elnino_depth_int, paste0(path_outputs,
 #                               "elnino_depthintRG.Rdata"))
 
 # -------------------------------
-# 6. Full Dimension Integrating
+# 6. Full Grid Mole Data
 # -------------------------------
 
-# calculating thickess and multiplying dTA and dDIC mol/m by  it -> moles
+# calculating thickness/multiplying dTA and dDIC mol/m by it -> moles per cell
 phase_data <- phase_data %>%
   mclapply(function(table) {
     table[, thickness :=
             ifelse(depth == 0, 2.5,
                    ifelse(depth < 80, 5,
                           ifelse(depth == 80, 7.5,
-                                 ifelse(depth < 100, 10,
+                                 ifelse(depth == 90, 10,
                                         ifelse(depth == 100, 15,
                                                ifelse(depth < 300, 20,
                                                       10
@@ -183,7 +183,7 @@ write_feather(elnino_dTA_mol, paste0(path_outputs,
 phase_sum <- phase_data %>%
   mclapply(function(table) {
     new_table <- table[, .(dTA_sum = sum(dTA_full, na.rm = TRUE),
-                           dDIC_sum = sum(dDIC_mol, na.rm = TRUE)),
+                           dDIC_sum = sum(dDIC_full, na.rm = TRUE)),
                        by = time]
     new_table <- new_table[, CDR_eff := dDIC_sum / dTA_sum]
     return(new_table)

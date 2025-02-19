@@ -11,6 +11,10 @@ navbar:
     href: column_int_plots.html
   - text: Hovmoeller Plots
     href: hovmo_plots.html
+  - text: Mixing Depth
+    href: drivers_hbls.html
+  - text: Air-Sea CO2 Flux
+    href: drivers_fgCO2.html
   right:
   - icon: fa-home
     text: Jens' homepage

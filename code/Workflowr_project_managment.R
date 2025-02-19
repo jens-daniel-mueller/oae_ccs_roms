@@ -42,10 +42,12 @@ wflow_publish(here::here(
     "enso_indices.Rmd",
     "cdreff_plots.Rmd",
     "column_int_plots.Rmd",
-    "hovmo_plots.Rmd"
+    "hovmo_plots.Rmd",
+    "drivers_hbls.Rmd",
+    "drivers_fgCO2.Rmd"
   )
 ),
-message = "Column integrated plots and hovmoeller plots completed",
+message = "Mixing depth and air-sea co2 flux anlaysis",
 republish = TRUE) #USE THIS ONE
 
 
