@@ -30,6 +30,10 @@ path_plots <- "/net/sea/work/vifroh/test_plots/"
 # loading in dTA conc data to make a surface plot/columnint
 lanina_dTA_conc <- read_feather(
   paste0(path_outputs,"lanina_dTA_concdataRG2.feather"))
+neutral_dTA_conc <- read_feather(
+  paste0(path_outputs,"neutral_dTA_concdataRG2.feather"))
+elnino_dTA_conc <- read_feather(
+  paste0(path_outputs,"elnino_dTA_concdataRG2.feather"))
 
 # loading in dTA full integration data for competency check
 lanina_dTA_int<- read_feather(
@@ -79,9 +83,9 @@ ggplot() +
        y = "Latitude",
        fill = "dTA (mmol/m^3)")
 
-# save plot
-ggsave(paste0(path_plots, "regrid_domainRG2.png"), plot = last_plot(), 
-       width = 8, height = 6, dpi = 300)
+# # save plot
+# ggsave(paste0(path_plots, "regrid_domainRG2.png"), plot = last_plot(), 
+#        width = 8, height = 6, dpi = 300)
 
 rm(surface_data)
 gc()
@@ -113,27 +117,40 @@ gc()
 Column integrated plots of added alkalinity to check lateral movement during the time series
 
 ```{r column_integrated_plots, message=FALSE}
+# rerunning these on own for different phases/months; can load saved column int
+# files from folder
 
 # using conc data then multiplied by depth bin size so have mmol/m^2
 setDT(lanina_dTA_conc)
 lanina_dTA_conc$depth <- as.numeric(lanina_dTA_conc$depth)
+# filter out only top 100m for top integrated plot
+lanina_dTA_conc <- lanina_dTA_conc[depth <= 100]
+
 lanina_dTA_conc <-
   lanina_dTA_conc[, thickness :=
                     ifelse(depth == 0, 2.5,
                            ifelse(depth < 80, 5,
                                   ifelse(depth == 80, 7.5,
-                                         ifelse(depth < 100, 10,
-                                                ifelse(depth == 100, 15,
-                                                       ifelse(depth < 300, 20,
-                                                              10
-                                                       ))))))]
+                                         ifelse(depth < 100, 10, #edit here for top 100
+                                                5
+                                                # ifelse(depth == 100, 15,
+                                                #        ifelse(depth < 300, 20,
+                                                #               10
+                                                       # ))
+                                  ))))]
 lanina_dTA_conc <- lanina_dTA_conc[, dTA_m2 := dTA * thickness] %>%  # units now moles/m2
-      .[, dDIC_m2 := dDIC * thickness]
+      .[, dDIC_m2 := dDIC * thickness] %>% 
+      .[, CDReff_m2 := fifelse(dDIC_m2/dTA_m2 == Inf, NaN, dDIC_m2/dTA_m2)] 
+# calculating CDR Efficiency per cell, replacing dDIC calcs producing Inf -> Na
 
-# grouping by lat/lon and integrating vertically
-lanina_dTA_columnint<- lanina_dTA_conc[, .(dTA_column = sum(dTA_m2, na.rm = TRUE)), 
-                                      by = c("lat", "lon", "time")]
-
+# grouping by lat/lon and integrating vertically, averaging the CDR Efficiency
+lanina_dTA_columnint<- lanina_dTA_conc[, .(dTA_column = sum(dTA_m2, na.rm = TRUE),
+                                           dDIC_column = sum(dDIC_m2, na.rm = TRUE),
+                                           CDReff_avg = mean(CDReff_m2, na.rm = TRUE)), 
+                                       # averaging CDReff of individual grid cells
+                                      by = c("lat", "lon", "time")] %>% 
+  .[, CDReff_col := dDIC_column / dTA_column] # total CDReff for column; this is
+# fine for top 100m if thinking this is mixing
 
 # Convert lat, lon, Alk to numeric 
 lanina_dTA_columnint$lat <- as.numeric(lanina_dTA_columnint$lat)
@@ -141,37 +158,39 @@ lanina_dTA_columnint$lon <- as.numeric(lanina_dTA_columnint$lon)
 lanina_dTA_columnint$dTA_column <- as.numeric(lanina_dTA_columnint$dTA_column)
 
 # filter by time to create a timestop plot
-surface_data <- lanina_dTA_columnint[time == "1999-06"]
+surface_data <- lanina_dTA_columnint[time == "2000-05"]
 
 # # Convert longitude to -180 to 180 range 
 # surface_data$lon <- surface_data$lon - 360
 
-# plotting surface map
+# plotting column integrated map
 ggplot() + 
-  # geom_polygon(data = map_data("world"), aes(x = long, y = lat, group = group),
-  #              fill = "lightgray", color = "white") +
-  geom_raster(data = surface_data, aes(x = lon, y = lat, fill = dTA_column)) +
-  scale_fill_viridis_c() +  # Change the color scale to suit your data
-  theme_minimal() +
-  coord_fixed() + 
+  geom_polygon(data = map_data("world"), aes(x = long, y = lat, group = group),
+               fill = "lightgray", color = "white") +
+  geom_raster(data = surface_data, aes(x = lon, y = lat, fill = CDReff_col)) +
+  scale_fill_viridis_c(limit = c(0, 1)) +  # set the color range
+  theme_light() +
+  coord_fixed(xlim = c(-170, -85),
+              ylim = c(10, 60)) +
   scale_x_continuous(breaks = seq(-170, -85, by = 10)) +
   scale_y_continuous(breaks = seq(10, 60, by = 10)) +
-  labs(title = "Vertically Integrated dTA (La Niña, June 1999)",
+  labs(title = "Vertically Integrated CDR Efficiency, top 100m (La Niña, May 2000)", # La Niña
        x = "Longitude",
        y = "Latitude",
-       fill = "dTA (mmol/m^2)")
+       fill = "CDR Efficiency") + # dTA (mmol/m^2)
+  theme(panel.border = element_blank())
 
-# save plot
-ggsave(paste0(path_plots, "lanina_columnint_Jun1999.png"), plot = last_plot(), 
-       width = 8, height = 6, dpi = 300)
+# # save plot
+# ggsave(paste0(path_plots, "lanina_columnint_May2000_CDReff100.png"), plot = last_plot(),
+#        width = 8, height = 6, dpi = 300)
 
 # # save column integrated data
 # write_feather(lanina_dTA_columnint, paste0(path_outputs,
-#                                       "lanina_columnintRG2.feather"))
+#                                       "lanina_columnintRG2_top100.feather"))
 # write_feather(neutral_dTA_columnint, paste0(path_outputs,
-#                                        "neutral_columnintRG2.feather"))
+#                                        "neutral_columnintRG2_top100.feather"))
 # write_feather(elnino_dTA_columnint, paste0(path_outputs,
-#                                       "elnino_columnintRG2.feather"))
+#                                       "elnino_columnint_RG2_top100.feather"))
 
 rm(lanina_dTA_columnint, surface_data, lanina_dTA_conc)
 gc()

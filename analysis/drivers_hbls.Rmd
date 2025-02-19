@@ -1,0 +1,437 @@
+---
+title: "Drivers - Mixing Depth"
+author: "Victoria Froh"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+1. Calculate and map maximum mixing depth of each grid cell over first 2 years (all 3 phases)
+2. Map the difference from the 3-phase mean MMD for each grid cell
+3. Map the regional distribution of mixing depth in select months (all 3 phases)
+4. Map the difference from the 3-phase mean MD per grid cell for select months
+5. Load in dTA data and calculate what fraction was beneath the MMD for time series
+6. Repeat subducted time series for dDIC data
+
+```{r setup, message=FALSE}
+
+#loading packages
+library(tidyverse)
+library(tidync)
+library(data.table)
+library(arrow)
+library(scales)
+
+# Path to intermediate computation outputs
+path_outputs <- "/net/sea/work/vifroh/oae_ccs_roms_data/regrid_2/"
+
+# Path to save practice plots when working on them
+path_plots <- "/net/sea/work/vifroh/test_plots/"
+
+# loading in previous saved surface variable data
+lanina_surf_data <- read_feather(
+  paste0(path_outputs, "lanina_surf_dataRG2.feather"))
+neutral_surf_data <- read_feather(
+  paste0(path_outputs, "neutral_surf_dataRG2.feather"))
+elnino_surf_data <- read_feather(
+  paste0(path_outputs, "elnino_surf_dataRG2.feather"))
+
+# loading in dTA molar data
+lanina_dTA_mol <- read_feather(
+  paste0(path_outputs,"lanina_dTA_moldataRG2.feather"))
+neutral_dTA_mol <- read_feather(
+  paste0(path_outputs,"neutral_dTA_moldataRG2.feather"))
+elnino_dTA_mol <- read_feather(
+  paste0(path_outputs,"elnino_dTA_moldataRG2.feather"))
+
+```
+
+```{r data_prep, message=FALSE}
+
+phase_data <- list(lanina_surf_data, neutral_surf_data, elnino_surf_data)
+
+# Convert lat/lon to numeric and subset first two years
+phase_data <- phase_data %>%
+  lapply(function(table) {
+    setDT(table)
+    setorder(table, time)
+    table[, lat := as.numeric(lat)]
+    table[, lon := as.numeric(lon)]
+    table[, month := .GRP, by = time] # gives index in order to each unique time
+    table <- table[month <= 24] # subsets to first two years
+    
+    return(table)
+  })
+
+# return tables to each item 
+lanina_surf_data <- phase_data[[1]]
+neutral_surf_data <- phase_data[[2]]
+elnino_surf_data <- phase_data[[3]]
+
+# for alkalinity subduction: using full grid dTA moles data, subset first 2 years
+mol_data <- list(lanina_dTA_mol, neutral_dTA_mol, elnino_dTA_mol)
+
+mol_data <- mol_data %>%
+  lapply(function(table) {
+    setDT(table)
+    setorder(table, time)
+    table[, month := .GRP, by = time] # gives index in order to each unique time
+    table <- table[month <= 24] # subsets to first two years
+    
+    return(table)
+  })
+
+# return tables to each item 
+lanina_dTA_mol <- mol_data[[1]]
+neutral_dTA_mol <- mol_data[[2]]
+elnino_dTA_mol <- mol_data[[3]]
+
+# plotting names for later
+phase_titles <- c("La Niña", "Neutral", "El Niño")
+phases <- c("lanina", "neutral", "elnino")
+
+```
+
+## Exploring Mixing Depth
+
+Regional distribution of maximum depths
+
+```{r hbls_max, message=FALSE}
+
+# finding max mixing depth at each grid cell
+phase_data <- phase_data %>%
+  lapply(function(table) {
+    table[, c("FG_CO2_OAE", "FG_CO2", "dFG") := NULL]
+    # removes fugacity columns
+    max_table <- table[, .SD[which.max(hbls)], by = .(lat, lon)] 
+    # subsets by each lat/lon combo, calculates max hbls, keeps that row
+    
+    return(max_table)
+  })
+
+# return tables to new item
+lanina_hblsmax <- phase_data[[1]]
+neutral_hblsmax <- phase_data[[2]]
+elnino_hblsmax <- phase_data[[3]]
+
+# adding phase and combining all 3 into one table
+phase_list <- Map(function(table, phase) {
+    table[, phase := phase]
+  }, phase_data, phases)
+
+hblsmax_data <- rbindlist(phase_list)
+
+# plotting map of deepest hbls for each point
+create_hblsmax_map <- function(phase_name, title_text) {
+  phase_dt <- hblsmax_data[hblsmax_data$phase == phase_name,]
+  plot <- ggplot(phase_dt, aes(x = lon, y = lat, fill = hbls)) +
+    geom_polygon(data = map_data("world"), aes(x = long, y = lat, group = group), 
+                 fill = "lightgray", color = "white") +
+    geom_raster() +
+    scale_fill_viridis_c(limit = c(0, 180)) +  # set the color range
+    theme_light() +
+    coord_fixed(xlim = c(-170, -85),
+              ylim = c(10, 60)) +
+    scale_x_continuous(breaks = seq(-170, -85, by = 10)) +
+    scale_y_continuous(breaks = seq(10, 60, by = 10)) +
+    labs(x = "Longitude",
+         y = "Latitude",
+         fill = "Maximum Mixing\nDepth (m)",
+         title = paste0(title_text, " Phase, Maximum Mixing Depth in First Two Years")) +
+    theme(panel.border = element_blank())
+  
+  print(plot)
+  
+  # # save plot
+  # ggsave(paste0(path_plots, phase_name, "_hblsmax_map.png"), plot = plot,
+  #        width = 8, height = 6, dpi = 300)
+}
+
+lapply(seq_along(phases), function(i) {
+  create_hblsmax_map(phases[i], phase_titles[i])
+})
+
+rm(create_hblsmax_map)
+gc()
+
+```
+
+Maximum depth difference from mean
+
+```{r hbls_max_means, message=FALSE}
+
+# calculating mean max mixing depth across all 3 phases for each grid cell
+hblsmax_data[, ":=" (
+  hbls_mean = mean(hbls, na.rm = TRUE)
+), by = .(lat, lon)]
+
+# plotting map of deepest hbls for each point
+create_hblsmax_meanmap <- function(phase_name, title_text) {
+  phase_dt <- hblsmax_data[hblsmax_data$phase == phase_name,]
+  plot <- ggplot(phase_dt, aes(x = lon, y = lat, fill = hbls - hbls_mean)) +
+    geom_polygon(data = map_data("world"), aes(x = long, y = lat, group = group), 
+                 fill = "lightgray", color = "white") +
+    geom_raster() +
+    scale_fill_gradient2(low = "blue", mid = "white", high = "red", midpoint = 0,
+                         limits = c(-50, 52)) +
+    theme_light() +
+    coord_fixed(xlim = c(-170, -85),
+              ylim = c(10, 60)) +
+    scale_x_continuous(breaks = seq(-170, -85, by = 10)) +
+    scale_y_continuous(breaks = seq(10, 60, by = 10)) +
+    labs(x = "Longitude",
+         y = "Latitude",
+         fill = "Maximum Mixing\nDepth Difference (m)",
+         title = paste0(title_text, " Phase, Maximum Mixing Depth in First Two Years Difference from the Mean")) +
+    theme(panel.border = element_blank())
+  
+  print(plot)
+  
+  # # save plot
+  # ggsave(paste0(path_plots, phase_name, "_hblsmax_meanmap.png"), plot = plot,
+  #        width = 8, height = 6, dpi = 300)
+}
+
+lapply(seq_along(phases), function(i) {
+  create_hblsmax_meanmap(phases[i], phase_titles[i])
+})
+
+rm(create_hblsmax_meanmap)
+gc()
+
+```
+
+Mixing depth maps during months of interest
+
+```{r hbls_dist, message=FALSE}
+
+phase_data <- list(lanina_surf_data, neutral_surf_data, elnino_surf_data)
+
+# adding phase and combining all 3 into one table
+phase_list <- Map(function(table, phase) {
+    table[, phase := phase]
+  }, phase_data, phases)
+
+hblsfull_data <- rbindlist(phase_list) # now has all hbls data for all phases
+
+# can rerun code for months of choice; 12-16
+create_hbls_distmap <- function(phase_name, title_text) {
+  phase_dt <- hblsfull_data[hblsfull_data$phase == phase_name & hblsfull_data$month == 22]
+  plot <- ggplot(phase_dt, aes(x = lon, y = lat, fill = hbls)) +
+    geom_polygon(data = map_data("world"), aes(x = long, y = lat, group = group), 
+                 fill = "lightgray", color = "white") +
+    geom_raster() +
+    scale_fill_viridis_c(limit = c(0, 180)) +  # set the color range
+    theme_light() +
+    coord_fixed(xlim = c(-170, -85),
+              ylim = c(10, 60)) +
+    scale_x_continuous(breaks = seq(-170, -85, by = 10)) +
+    scale_y_continuous(breaks = seq(10, 60, by = 10)) +
+    labs(x = "Longitude",
+         y = "Latitude",
+         fill = "Mixing Depth (m)",
+         title = paste0(title_text, " Phase, Mixing Depth (Month 22)")) +
+    theme(panel.border = element_blank())
+  
+  print(plot)
+
+  # # save plot
+  # ggsave(paste0(path_plots, phase_name, "_hblsmap_month22.png"), plot = plot,
+  #        width = 8, height = 6, dpi = 300)
+}
+
+lapply(seq_along(phases), function(i) {
+  create_hbls_distmap(phases[i], phase_titles[i])
+})
+
+# write_feather(hblsfull_data, paste0(path_outputs,
+#                                       "hblsfull_data.feather"))
+
+rm(create_hbls_distmap)
+gc()
+
+```
+
+Mixing depth difference from mean maps during months of interest
+
+```{r hbls_dist_mean, message=FALSE}
+
+# calculating mean mixing depth across all 3 phases for each grid cell, 1st 2 years
+setDT(hblsfull_data)
+hblsfull_data[, ":=" (
+  hbls_mean = mean(hbls, na.rm = TRUE)
+), by = .(lat, lon, month)]
+
+# can rerun code for months of choice; 12-16
+create_hbls_meanmap <- function(phase_name, title_text) {
+  phase_dt <- hblsfull_data[hblsfull_data$phase == phase_name & hblsfull_data$month == 10]
+                             # & lat > 20 & lat < 40 & lon > -130 & lon < -110]
+  plot <- ggplot(phase_dt, aes(x = lon, y = lat, fill = hbls - hbls_mean)) +
+    geom_polygon(data = map_data("world"), aes(x = long, y = lat, group = group), 
+                 fill = "lightgray", color = "white") +
+    geom_raster() +
+    scale_fill_gradient2(low = "blue", mid = "white", high = "red", midpoint = 0,
+                         limits = c(-75, 75), breaks = c(-50, -25, 0, 25, 50)) +
+    theme_light() +
+    coord_fixed(xlim = c(-170, -85),
+              ylim = c(10, 60)) +
+    scale_x_continuous(breaks = seq(-170, -85, by = 10)) +
+    scale_y_continuous(breaks = seq(10, 60, by = 10)) +
+    labs(x = "Longitude",
+         y = "Latitude",
+         fill = "Difference from Mean Mixing Depth (m)",
+         title = paste0(title_text, " Phase, Mixing Depth Difference from Mean (Month 10)")) +
+    theme(panel.border = element_blank())
+  
+  print(plot)
+  
+  # # save plot
+  # ggsave(paste0(path_plots, phase_name, "_hblsmapdfm_month10.png"), plot = plot,
+  #        width = 8, height = 6, dpi = 300)
+}
+
+lapply(seq_along(phases), function(i) {
+  create_hbls_meanmap(phases[i], phase_titles[i])
+})
+
+# write_feather(hblsfull_data, paste0(path_outputs,
+#                                       "hblsfull_meandata.feather"))
+
+rm(create_hbls_meanmap)
+gc()
+
+```
+
+Fraction of dTA subducted under MMD
+
+```{r dta_sub_hblsmax, message=FALSE}
+
+# merging relevant alk and hbls data
+mol_data <- Map(function(mol_table, phase) {
+  mol_table <- mol_table[, .SD, .SDcols = c("lon", "lat", "depth", "time", "month", 
+                                      "dTA_full", "dDIC_full")]
+  hbls_table <- get(paste0(phase, "_hblsmax")) # fetch matching hbls table
+  new_table <- merge(mol_table, hbls_table[, .(lat, lon, hbls)],
+                       by = c("lon", "lat"), all.x = TRUE) # merging
+  return(new_table)
+  }, mol_data, phases)
+
+# return tables to each item, now mol data has the max mixing depth for each cell
+lanina_dTA_mol <- mol_data[[1]]
+neutral_dTA_mol <- mol_data[[2]]
+elnino_dTA_mol <- mol_data[[3]]
+
+# # setting boundaries of depth bins; only need if going to use boundaries to separate
+
+# depth_ranges <- unique(lanina_dTA_mol[, .(depth)])
+# setorder(depth_ranges, depth)
+# 
+# depth_ranges[, ":=" (
+#     depth_upper = (shift(depth, type = "lag", fill = 0) + depth) / 2, # set shallower boundary
+#     depth_lower = (shift(depth, type = "lead", fill = max(depth)) + depth) / 2 
+#   )] # deeper bound
+# 
+# # merge depth ranges back to tables
+# mol_data <- mol_data %>%
+#   lapply(function(table) {
+#     table <- merge(table, depth_ranges, by = "depth", all.x = TRUE)
+#     return(table)
+#   })
+
+# # return tables to each item 
+# lanina_dTA_mol <- mol_data[[1]]
+# neutral_dTA_mol <- mol_data[[2]]
+# elnino_dTA_mol <- mol_data[[3]]
+
+# calculating subducted portion; assuming it stays subducted? would it make sense
+# here to use the mixing depth at each month rather than the max?
+subducted_data <- lapply(mol_data, function(table){
+  new_table <- table[, .(dTA_int = sum(dTA_full, na.rm = TRUE), # full int dTA moles/month
+            dTA_sub_int = sum(dTA_full[depth > hbls], na.rm = TRUE)), 
+        # only the dTA subducted below MMD, approx with depth ie middle of bin
+            by = .(month)]
+  new_table[, frac_sub := dTA_sub_int / dTA_int] 
+  # calculates approx portion subducted under each cell's 2-year max hbls 
+  return(new_table)
+  })
+
+# return tables to each item 
+lanina_dTA_subhbls <- subducted_data[[1]]
+neutral_dTA_subhbls <- subducted_data[[2]]
+elnino_dTA_subhbls <- subducted_data[[3]]
+
+# combining all three tables in to one for ease of plotting
+sub_list <- Map(function(table, phase) {
+    table[, phase := phase]
+  }, subducted_data, phases)
+
+sub_fulldata <- rbindlist(sub_list)
+
+# Plotting time series of all three
+ggplot(sub_fulldata, aes(x = month, y = frac_sub, color = phase)) +
+  scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(0, 0.4), expand = c(0,0)) +
+  geom_vline(xintercept = seq(0, 24, by = 12), color = "grey75", linewidth = 0.4) +
+  geom_line(linewidth = 1) +
+  labs(title = "Added Alkalinity Subducted Beneath Maximum Mixing Depth", 
+       x = "Months Since OAE Start", 
+       y = "Fraction of Alkalinity Subducted") +
+  theme_bw()
+
+# ggsave(paste0(path_plots, "dTA_sub_hblsmax.png"), plot = last_plot(),
+#               width = 10, height = 6, dpi = 300)
+
+rm(depth_ranges, sub_list, subducted_data)
+gc()
+```
+
+
+```{r ddic_sub_hblsmax, message=FALSE}
+
+# calculating subducted portion; assuming it stays subducted? would it make sense
+# here to use the mixing depth at each month rather than the max?
+subducted_data <- lapply(mol_data, function(table){
+  new_table <- table[, .(dDIC_int = sum(dDIC_full, na.rm = TRUE), # full int dDIC moles/month
+            dDIC_sub_int = sum(dDIC_full[depth > hbls], na.rm = TRUE)), 
+        # only the dTA subducted below MMD, approx with depth ie middle of bin
+            by = .(month)]
+  new_table[, frac_sub := dDIC_sub_int / dDIC_int] 
+  # calculates approx portion subducted under each cell's 2-year max hbls 
+  return(new_table)
+  })
+
+# return tables to each item 
+lanina_dDIC_subhbls <- subducted_data[[1]]
+neutral_dDIC_subhbls <- subducted_data[[2]]
+elnino_dDIC_subhbls <- subducted_data[[3]]
+
+# combining all three tables in to one for ease of plotting
+sub_list <- Map(function(table, phase) {
+    table[, phase := phase]
+  }, subducted_data, phases)
+
+sub_fulldata <- rbindlist(sub_list)
+
+# Plotting time series of all three, either fraction or moles
+ggplot(sub_fulldata, aes(x = month, y = frac_sub, color = phase)) +
+  scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(0, 0.4), expand = c(0,0)) +
+  geom_vline(xintercept = seq(0, 24, by = 12), color = "grey75", linewidth = 0.4) +
+  geom_line(linewidth = 1) +
+  labs(title = "New DIC Subducted Beneath Maximum Mixing Depth", 
+       x = "Months Since OAE Start", 
+       y = "Fraction of dDIC Subducted") +
+  theme_bw()
+
+# ggsave(paste0(path_plots, "dDIC_sub_hblsmax.png"), plot = last_plot(),
+#               width = 10, height = 6, dpi = 300)
+
+rm(list = ls())
+gc()
+```
+

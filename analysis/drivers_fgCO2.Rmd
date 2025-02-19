@@ -1,0 +1,361 @@
+---
+title: "Drivers - Air-Sea CO2 Flux"
+author: "Victoria Froh"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+1. Map air-sea CO2 flux of each surface cell (all 3 phases, monthly maps)
+2. Map dFlux of each cell (OAE - control), monthly maps, also on zoomed in region
+3. Map dFlux difference from mean of each phase on zoomed region
+4. Calculate moles of CO2 uptake per month dist and time series
+
+
+```{r setup, message=FALSE}
+
+#loading packages
+library(tidyverse)
+library(tidync)
+library(data.table)
+library(arrow)
+library(scales)
+
+# Path to intermediate computation outputs
+path_outputs <- "/net/sea/work/vifroh/oae_ccs_roms_data/regrid_2/"
+
+# Path to original grid intermediate computation outputs
+path_outputs_og <- "/net/sea/work/vifroh/oae_ccs_roms_data/original_grid/"
+
+# Path to save practice plots when working on them
+path_plots <- "/net/sea/work/vifroh/test_plots/"
+
+# loading in previous saved surface variable data
+lanina_surf_data <- read_feather(
+  paste0(path_outputs, "lanina_surf_dataRG2.feather"))
+neutral_surf_data <- read_feather(
+  paste0(path_outputs, "neutral_surf_dataRG2.feather"))
+elnino_surf_data <- read_feather(
+  paste0(path_outputs, "elnino_surf_dataRG2.feather"))
+
+# loading in previous saved data with area
+lanina_dTA_mol <- read_feather(
+  paste0(path_outputs,"lanina_dTA_mol_mdataRG2.feather"))
+
+# loading in original grid integrated CDR data
+lanina_cdreff_sum <- read_feather(
+  paste0(path_outputs_og, "lanina_CDReff_integrated.feather"))
+neutral_cdreff_sum <- read_feather(
+  paste0(path_outputs_og, "neutral_CDReff_integrated.feather"))
+elnino_cdreff_sum <- read_feather(
+  paste0(path_outputs_og, "elnino_CDReff_integrated.feather"))
+
+```
+
+```{r data_prep, message=FALSE}
+
+phase_data <- list(lanina_surf_data, neutral_surf_data, elnino_surf_data)
+
+# Convert lat/lon to numeric and subset first two years
+phase_data <- phase_data %>%
+  lapply(function(table) {
+    setDT(table)
+    setorder(table, time)
+    table[, lat := as.numeric(lat)]
+    table[, lon := as.numeric(lon)]
+    table[, month := .GRP, by = time] # gives index in order to each unique time
+    table <- table[month <= 24] # subsets to first two years
+    
+    return(table)
+  })
+
+# return tables to each item 
+lanina_surf_data <- phase_data[[1]]
+neutral_surf_data <- phase_data[[2]]
+elnino_surf_data <- phase_data[[3]]
+
+# plotting names for later
+phase_titles <- c("La Niña", "Neutral", "El Niño")
+phases <- c("lanina", "neutral", "elnino")
+
+# adding phase and combining all 3 into one table for plotting
+phase_list <- Map(function(table, phase) {
+    table[, phase := phase]
+  }, phase_data, phases)
+
+surface_data <- rbindlist(phase_list)
+
+# subset down to just area data; figure out how to subset just the unique?
+setDT(lanina_dTA_mol)
+lanina_dTA_mol <- unique(lanina_dTA_mol[, .(lat, lon, area)])
+
+# create combined table of original grid data with "phase" column
+full_cdreff_og <- rbindlist(
+  list(lanina = lanina_cdreff_sum, neutral = neutral_cdreff_sum,
+       elnino = elnino_cdreff_sum),
+  idcol = "phase")
+
+# add column for months since oae addition begins for x-axis
+full_cdreff_og <- full_cdreff_og[, month := seq_len(.N), by = phase]
+
+rm(elnino_cdreff_sum, lanina_cdreff_sum, neutral_cdreff_sum)
+gc()
+
+```
+
+## Exploring Air-Sea FLux
+
+Regional distribution of flux in OAE runs
+
+```{r fgCO2_dist, message=FALSE}
+
+# can rerun code for months of choice
+create_fgOAE_distmap <- function(phase_name, title_text) {
+  phase_dt <- surface_data[surface_data$phase == phase_name & surface_data$month == 14]
+  plot <- ggplot(phase_dt, aes(x = lon, y = lat, fill = FG_CO2_OAE)) +
+    geom_polygon(data = map_data("world"), aes(x = long, y = lat, group = group), 
+                 fill = "lightgray", color = "white") +
+    geom_raster() +
+    scale_fill_distiller(limit = c(-0.0055, 0.0055), palette = "PRGn") +  # set the color range
+    theme_light() +
+    coord_fixed(xlim = c(-170, -85),
+              ylim = c(10, 60)) +
+    scale_x_continuous(breaks = seq(-170, -85, by = 10)) +
+    scale_y_continuous(breaks = seq(10, 60, by = 10)) +
+    labs(x = "Longitude",
+         y = "Latitude",
+         fill = "Air-Sea CO2 Flux (mmol/m^2/s)",
+         title = paste0(title_text, " Phase, Air-Sea CO2 Flux (Month 14)")) +
+    theme(panel.border = element_blank())
+  
+  print(plot)
+
+  # # save plot
+  # ggsave(paste0(path_plots, phase_name, "_fgOAEmap_month14.png"), plot = plot,
+  #        width = 8, height = 6, dpi = 300)
+}
+
+lapply(seq_along(phases), function(i) {
+  create_fgOAE_distmap(phases[i], phase_titles[i])
+})
+
+rm(create_fgOAE_distmap, phase_data, phase_list)
+gc()
+
+```
+
+Regional distribution of dflux in OAE runs (OAE flux - control flux)
+
+```{r dfgCO2_dist, message=FALSE}
+
+# can rerun code for months of choice,
+create_dfg_distmap <- function(phase_name, title_text) {
+  phase_dt <- surface_data[surface_data$phase == phase_name & surface_data$month == 22]
+  plot <- ggplot(phase_dt, aes(x = lon, y = lat, fill = dFG)) +
+    geom_polygon(data = map_data("world"), aes(x = long, y = lat, group = group), 
+                 fill = "lightgray", color = "white") +
+    geom_raster() +
+    # scale_fill_viridis_c(limit = c(0, 0.00022)) +
+    scale_fill_gradient2(low = "green", mid = "white", high = "purple", midpoint = 0,
+                         limit = c(0, 0.00022)) +
+    theme_light() +
+    coord_fixed(xlim = c(-170, -85),
+              ylim = c(10, 60)) +
+    scale_x_continuous(breaks = seq(-170, -90, by = 10)) +
+    scale_y_continuous(breaks = seq(10, 60, by = 10)) +
+    labs(x = "Longitude",
+         y = "Latitude",
+         fill = "dCO2 Flux 
+         (mmol/m^2/s)",
+         title = paste0(title_text, " Phase, Change in Air-Sea CO2 Flux (Month 22)")) +
+    theme(panel.border = element_blank())
+  
+  print(plot)
+
+  # # save plot
+  # ggsave(paste0(path_plots, phase_name, "_dfgmap_month22.png"), plot = plot,
+  #        width = 8, height = 6, dpi = 300)
+}
+
+lapply(seq_along(phases), function(i) {
+  create_dfg_distmap(phases[i], phase_titles[i])
+})
+
+rm(create_dfg_distmap)
+gc()
+
+```
+
+Zoomed in maps of dflux in OAE runs (OAE flux - control flux) near add site
+
+```{r dfgCO2_dist_zoom, message=FALSE}
+
+# can rerun code for months of choice
+create_dfg_distmap <- function(phase_name, title_text) {
+  phase_dt <- surface_data[surface_data$phase == phase_name & surface_data$month == 15]
+  plot <- ggplot(phase_dt, aes(x = lon, y = lat, fill = dFG)) +
+    geom_polygon(data = map_data("world"), aes(x = long, y = lat, group = group), 
+                 fill = "lightgray", color = "white") +
+    geom_raster() +
+    # scale_fill_viridis_c(limit = c(0, 0.00022)) +
+    scale_fill_gradient2(low = "green", mid = "white", high = "purple", midpoint = 0,
+                         limit = c(0, 0.0000575)) +
+    theme_light() +
+    coord_fixed(xlim = c(-135, -100),
+              ylim = c(10, 45)) +
+    scale_x_continuous(breaks = seq(-135, -100, by = 10)) +
+    scale_y_continuous(breaks = seq(10, 45, by = 10)) +
+    labs(x = "Longitude",
+         y = "Latitude",
+         fill = "dCO2 Flux 
+         (mmol/m^2/s)",
+         title = paste0(title_text, " Phase, Change in Air-Sea CO2 Flux (Month 15)")) +
+    theme(panel.border = element_blank())
+  
+  print(plot)
+
+  # # save plot
+  # ggsave(paste0(path_plots, phase_name, "_dfgmapzoom_month15.png"), plot = plot,
+  #        width = 8, height = 6, dpi = 300)
+}
+
+lapply(seq_along(phases), function(i) {
+  create_dfg_distmap(phases[i], phase_titles[i])
+})
+
+rm(create_fgd_distmap)
+gc()
+
+
+```
+
+```{r dfgco2_dfm, message=FALSE}
+
+# calculating mean max mixing depth across all 3 phases for each grid cell
+surface_data[, ":=" (
+  dFG_mean = mean(dFG, na.rm = TRUE)
+), by = .(lat, lon, month)]
+
+# can rerun code for months of choice, subset coordinates in place
+create_dfg_meanmap <- function(phase_name, title_text) {
+  phase_dt <- surface_data[surface_data$phase == phase_name & surface_data$month == 1]
+  plot <- ggplot(phase_dt, aes(x = lon, y = lat, fill = dFG - dFG_mean)) +
+    geom_polygon(data = map_data("world"), aes(x = long, y = lat, group = group), 
+                 fill = "lightgray", color = "white") +
+    geom_raster() +
+    scale_fill_gradient2(low = "blue", mid = "white", high = "red", midpoint = 0,
+                        limits = c(-0.00005, 0.00005)) + 
+                        # breaks = c(-0.000005, -0.0000025, 0, 0.0000025, 0.000005)) +
+    theme_light() +
+    coord_fixed(xlim = c(-135, -100),
+              ylim = c(10, 45)) +
+    scale_x_continuous(breaks = seq(-135, -100, by = 10)) +
+    scale_y_continuous(breaks = seq(10, 45, by = 10)) +
+    labs(x = "Longitude",
+         y = "Latitude",
+         fill = "Difference from Mean dCO2 Flux 
+         (mmol/m^2/s)",
+         title = paste0(title_text, " Phase, Difference from Mean delta Air-Sea CO2 Flux (Month 1)")) +
+    theme(panel.border = element_blank())
+  
+  print(plot)
+
+  # # save plot
+  # ggsave(paste0(path_plots, phase_name, "_dfgmapdfm_month1.png"), plot = plot,
+  #        width = 8, height = 6, dpi = 300)
+}
+
+lapply(seq_along(phases), function(i) {
+  create_dfg_meanmap(phases[i], phase_titles[i])
+})
+
+rm(create_dfg_meanmap)
+gc()
+
+```
+
+```{r co2_uptake, message=FALSE}
+
+# merging area data to dFG and calculating moles per month from the dFG rate
+uptake_data <- surface_data[, .SD, .SDcols = c("lat", "lon", "time", "dFG", 
+                                               "month", "phase")] %>% 
+  merge(lanina_dTA_mol, by = c("lon", "lat"), all.x = TRUE) 
+
+uptake_data[, secs := as.numeric(days_in_month(ymd(paste0(time, "-01"))))
+            * 60 * 60 * 24] # pulls days in the month and converts to seconds
+uptake_data[, CO2_uptake := dFG * area * secs / 1000] # mmol/m2/s -> moles
+
+# can rerun code for months of choice, using zoomed region
+create_uptake_distmap <- function(phase_name, title_text) {
+  phase_dt <- uptake_data[uptake_data$phase == phase_name & uptake_data$month == 24]
+  plot <- ggplot(phase_dt, aes(x = lon, y = lat, fill = CO2_uptake)) +
+    geom_polygon(data = map_data("world"), aes(x = long, y = lat, group = group), 
+                 fill = "lightgray", color = "white") +
+    geom_raster() +
+    # scale_fill_viridis_c(limit = c(0, 91000000)) +
+    scale_fill_gradient2(low = "green", mid = "white", high = "purple", midpoint = 0,
+                         limit = c(0, 1500000)) +
+    theme_light() +
+    coord_fixed(xlim = c(-135, -100),
+              ylim = c(10, 45)) +
+    scale_x_continuous(breaks = seq(-135, -100, by = 10)) +
+    scale_y_continuous(breaks = seq(10, 45, by = 10)) +
+    labs(x = "Longitude",
+         y = "Latitude",
+         fill = "CO2 Uptake (moles)",
+         title = paste0(title_text, " Phase, CO2 Uptake (Month 24)")) +
+    theme(panel.border = element_blank())
+  
+  print(plot)
+
+  # # save plot
+  # ggsave(paste0(path_plots, phase_name, "_co2uptakemap_month24.png"), plot = plot,
+  #        width = 8, height = 6, dpi = 300)
+}
+
+lapply(seq_along(phases), function(i) {
+  create_uptake_distmap(phases[i], phase_titles[i])
+})
+
+# integrate by time and compare it to the native grid dDIC to check scope
+# # need to add these up sequentially
+uptake_data_int <- uptake_data[, .(CO2_sum_ind = sum(CO2_uptake, na.rm = TRUE)),
+                                   by = .(phase, month)] %>% 
+  .[, CO2_sum_cum := cumsum(CO2_sum_ind), by = phase]
+
+uptake_data_int <- merge(uptake_data_int, full_cdreff_og[, .(phase, month, dDIC_sum)], 
+                         by = c("phase", "month"), all.x = TRUE) %>% 
+  .[, fraction := CO2_sum_cum / dDIC_sum]
+
+# saving uptake individual and sum value tables
+write_feather(uptake_data, paste0(path_outputs,
+                                      "fguptake_data.feather"))
+write_feather(uptake_data_int, paste0(path_outputs,
+                                      "fguptake_data_intsum.feather"))
+
+# plot time series of accumulating uptaken CO2
+ggplot(uptake_data_int, aes(x = month, y = CO2_sum_cum/1e10, color = phase)) +
+  scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(0, 18), expand = c(0,0)) +
+  geom_vline(xintercept = seq(0, 24, by = 12), color = "grey75", linewidth = 0.4) +
+  geom_hline(yintercept = 16.7, linetype = "dashed", color = "black", linewidth = 0.6) +
+  geom_line(linewidth = 1) +
+  labs(title = "Cumulative Uptaken CO2 from Surface Flux Values", 
+       x = "Months Since OAE Began", 
+       y = "Moles of CO2 (10^10)") +
+  theme_bw()
+
+# ggsave(paste0(path_plots, "total_fg_co2uptake.png"), plot = last_plot(),
+#               width = 10, height = 6, dpi = 300)
+
+
+
+rm(list = ls())
+gc()
+
+```
+
