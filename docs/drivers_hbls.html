@@ -394,7 +394,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Drivers - Mixing Depth</h1>
 <h4 class="author">Victoria Froh</h4>
-<h4 class="date">19 February, 2025</h4>
+<h4 class="date">07 April, 2025</h4>
 
 </div>
 
@@ -423,7 +423,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-02-19
+<strong>Last updated:</strong> 2025-04-07
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -554,15 +554,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreea36bcfe9b50883ec8b4723ee0173a7117e6b0506targetblanka36bcfea">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree5a5f21a2e978557be55a382158b4e2283612765etargetblank5a5f21aa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/a36bcfe9b50883ec8b4723ee0173a7117e6b0506" target="_blank">a36bcfe</a>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/5a5f21a2e978557be55a382158b4e2283612765e" target="_blank">5a5f21a</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreea36bcfe9b50883ec8b4723ee0173a7117e6b0506targetblanka36bcfea"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree5a5f21a2e978557be55a382158b4e2283612765etargetblank5a5f21aa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -572,7 +572,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/a36bcfe9b50883ec8b4723ee0173a7117e6b0506" target="_blank">a36bcfe</a>.
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/5a5f21a2e978557be55a382158b4e2283612765e" target="_blank">5a5f21a</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -591,15 +591,17 @@ Ignored files:
     Ignored:    .Rproj.user/
 
 Untracked files:
-    Untracked:  code/oggrid_surface_data.R
-    Untracked:  code/regrid_surface_data.R
+    Untracked:  code/dist_maps.R
+    Untracked:  code/flux_driver_correlations.Rmd
+    Untracked:  code/flux_drivers_calcs.R
+    Untracked:  code/lineplot_stacks.R
+    Untracked:  code/subregions.Rmd
+    Untracked:  surface_dataRG2.feather
 
 Unstaged changes:
-    Modified:   analysis/_site.yml
     Modified:   code/Workflowr_project_managment.R
-    Modified:   code/dTA_dDIC.R
-    Modified:   code/regrid_cdr_eff_molar.R
-    Modified:   code/regrid_dTA_dDIC.R
+    Modified:   code/regrid_surface_data.R
+    Modified:   code/temperature_indices.Rmd
 
 </code></pre>
 <p>
@@ -649,6 +651,57 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/5a5f21a2e978557be55a382158b4e2283612765e/analysis/drivers_hbls.Rmd" target="_blank">5a5f21a</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-04-07
+</td>
+<td>
+Final code push
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/9445deae314ee0f7f8966b23cac5020b0c07b8e1/analysis/drivers_hbls.Rmd" target="_blank">9445dea</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-19
+</td>
+<td>
+Updates to files/coding fixes
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/91e2272d0cddb69d3b6e97b5d7fae079a9fca9da/docs/drivers_hbls.html" target="_blank">91e2272</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-19
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/a36bcfe9b50883ec8b4723ee0173a7117e6b0506/analysis/drivers_hbls.Rmd" target="_blank">a36bcfe</a>
 </td>
 <td>
@@ -668,8 +721,8 @@ Mixing depth and air-sea co2 flux anlaysis
 </div>
 </div>
 </div>
-<div id="introduction" class="section level2">
-<h2>Introduction</h2>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
 <ol style="list-style-type: decimal">
 <li>Calculate and map maximum mixing depth of each grid cell over first
 2 years (all 3 phases)</li>
@@ -680,6 +733,9 @@ Mixing depth and air-sea co2 flux anlaysis
 months</li>
 <li>Load in dTA data and calculate what fraction was beneath the MMD for
 time series</li>
+<li>Repeat subducted time series for dDIC data</li>
+<li>Combine full mixing depth data with moles and calculate what
+fraction was beneath the current mixing depth for time series</li>
 <li>Repeat subducted time series for dDIC data</li>
 </ol>
 <pre class="r"><code>#loading packages
@@ -752,9 +808,11 @@ elnino_dTA_mol &lt;- mol_data[[3]]
 phase_titles &lt;- c(&quot;La Niña&quot;, &quot;Neutral&quot;, &quot;El Niño&quot;)
 phases &lt;- c(&quot;lanina&quot;, &quot;neutral&quot;, &quot;elnino&quot;)</code></pre>
 </div>
-<div id="exploring-mixing-depth" class="section level2">
-<h2>Exploring Mixing Depth</h2>
-<p>Regional distribution of maximum depths</p>
+<div id="mixing-depth-maximums" class="section level1">
+<h1>Mixing Depth Maximums</h1>
+<div id="regional-distribution-of-maximum-depths"
+class="section level2">
+<h2>Regional distribution of maximum depths</h2>
 <pre class="r"><code># finding max mixing depth at each grid cell
 phase_data &lt;- phase_data %&gt;%
   lapply(function(table) {
@@ -777,6 +835,9 @@ phase_list &lt;- Map(function(table, phase) {
   }, phase_data, phases)
 
 hblsmax_data &lt;- rbindlist(phase_list)
+# save
+write_feather(hblsmax_data, paste0(path_outputs,
+                                      &quot;hblsmax_data.feather&quot;))
 
 # plotting map of deepest hbls for each point
 create_hblsmax_map &lt;- function(phase_name, title_text) {
@@ -797,7 +858,7 @@ create_hblsmax_map &lt;- function(phase_name, title_text) {
          title = paste0(title_text, &quot; Phase, Maximum Mixing Depth in First Two Years&quot;)) +
     theme(panel.border = element_blank())
   
-  print(plot)
+  # print(plot)
   
   # # save plot
   # ggsave(paste0(path_plots, phase_name, &quot;_hblsmax_map.png&quot;), plot = plot,
@@ -807,21 +868,133 @@ create_hblsmax_map &lt;- function(phase_name, title_text) {
 lapply(seq_along(phases), function(i) {
   create_hblsmax_map(phases[i], phase_titles[i])
 })</code></pre>
-<p><img src="figure/drivers_hbls.Rmd/hbls_max-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/drivers_hbls.Rmd/hbls_max-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/drivers_hbls.Rmd/hbls_max-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>[[1]]</code></pre>
-<p><img src="figure/drivers_hbls.Rmd/hbls_max-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/drivers_hbls.Rmd/hbls_max-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hbls_max-1">
+Past versions of hbls_max-1.png
+</button>
+</p>
+<div id="fig-hbls_max-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/91e2272d0cddb69d3b6e97b5d7fae079a9fca9da/docs/figure/drivers_hbls.Rmd/hbls_max-1.png" target="_blank">91e2272</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[2]]</code></pre>
-<p><img src="figure/drivers_hbls.Rmd/hbls_max-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/drivers_hbls.Rmd/hbls_max-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hbls_max-2">
+Past versions of hbls_max-2.png
+</button>
+</p>
+<div id="fig-hbls_max-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/91e2272d0cddb69d3b6e97b5d7fae079a9fca9da/docs/figure/drivers_hbls.Rmd/hbls_max-2.png" target="_blank">91e2272</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[3]]</code></pre>
-<p><img src="figure/drivers_hbls.Rmd/hbls_max-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/drivers_hbls.Rmd/hbls_max-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hbls_max-3">
+Past versions of hbls_max-3.png
+</button>
+</p>
+<div id="fig-hbls_max-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/91e2272d0cddb69d3b6e97b5d7fae079a9fca9da/docs/figure/drivers_hbls.Rmd/hbls_max-3.png" target="_blank">91e2272</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>rm(create_hblsmax_map)
 gc()</code></pre>
 <pre><code>             used    (Mb)  gc trigger     (Mb)    max used     (Mb)
-Ncells    1706587    91.2     2646211    141.4     2646211    141.4
-Vcells 5484132796 41840.7 16148457573 123203.0 26697301168 203684.3</code></pre>
-<p>Maximum depth difference from mean</p>
+Ncells    1700829    90.9     3339778    178.4     2224955    118.9
+Vcells 5480933153 41816.3 16148459135 123203.0 26695227774 203668.5</code></pre>
+</div>
+<div id="maximum-depth-difference-from-mean" class="section level2">
+<h2>Maximum depth difference from mean</h2>
 <pre class="r"><code># calculating mean max mixing depth across all 3 phases for each grid cell
 hblsmax_data[, &quot;:=&quot; (
   hbls_mean = mean(hbls, na.rm = TRUE)
@@ -847,7 +1020,7 @@ create_hblsmax_meanmap &lt;- function(phase_name, title_text) {
          title = paste0(title_text, &quot; Phase, Maximum Mixing Depth in First Two Years Difference from the Mean&quot;)) +
     theme(panel.border = element_blank())
   
-  print(plot)
+  # print(plot)
   
   # # save plot
   # ggsave(paste0(path_plots, phase_name, &quot;_hblsmax_meanmap.png&quot;), plot = plot,
@@ -857,21 +1030,137 @@ create_hblsmax_meanmap &lt;- function(phase_name, title_text) {
 lapply(seq_along(phases), function(i) {
   create_hblsmax_meanmap(phases[i], phase_titles[i])
 })</code></pre>
-<p><img src="figure/drivers_hbls.Rmd/hbls_max_means-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/drivers_hbls.Rmd/hbls_max_means-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/drivers_hbls.Rmd/hbls_max_means-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>[[1]]</code></pre>
-<p><img src="figure/drivers_hbls.Rmd/hbls_max_means-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/drivers_hbls.Rmd/hbls_max_means-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hbls_max_means-1">
+Past versions of hbls_max_means-1.png
+</button>
+</p>
+<div id="fig-hbls_max_means-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/91e2272d0cddb69d3b6e97b5d7fae079a9fca9da/docs/figure/drivers_hbls.Rmd/hbls_max_means-1.png" target="_blank">91e2272</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[2]]</code></pre>
-<p><img src="figure/drivers_hbls.Rmd/hbls_max_means-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/drivers_hbls.Rmd/hbls_max_means-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hbls_max_means-2">
+Past versions of hbls_max_means-2.png
+</button>
+</p>
+<div id="fig-hbls_max_means-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/91e2272d0cddb69d3b6e97b5d7fae079a9fca9da/docs/figure/drivers_hbls.Rmd/hbls_max_means-2.png" target="_blank">91e2272</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[3]]</code></pre>
-<p><img src="figure/drivers_hbls.Rmd/hbls_max_means-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/drivers_hbls.Rmd/hbls_max_means-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hbls_max_means-3">
+Past versions of hbls_max_means-3.png
+</button>
+</p>
+<div id="fig-hbls_max_means-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/91e2272d0cddb69d3b6e97b5d7fae079a9fca9da/docs/figure/drivers_hbls.Rmd/hbls_max_means-3.png" target="_blank">91e2272</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>rm(create_hblsmax_meanmap)
 gc()</code></pre>
 <pre><code>             used    (Mb)  gc trigger     (Mb)    max used     (Mb)
-Ncells    1714170    91.6     2646211    141.4     2646211    141.4
-Vcells 5484828802 41846.0 16148457573 123203.0 26697301168 203684.3</code></pre>
-<p>Mixing depth maps during months of interest</p>
+Ncells    1708430    91.3     3339778    178.4     3339778    178.4
+Vcells 5481631430 41821.6 16148459135 123203.0 26695227774 203668.5</code></pre>
+</div>
+</div>
+<div id="regional-distribution" class="section level1">
+<h1>Regional Distribution</h1>
+<div id="mixing-depth-maps-during-months-of-interest"
+class="section level2">
+<h2>Mixing depth maps during months of interest</h2>
 <pre class="r"><code>phase_data &lt;- list(lanina_surf_data, neutral_surf_data, elnino_surf_data)
 
 # adding phase and combining all 3 into one table
@@ -900,7 +1189,7 @@ create_hbls_distmap &lt;- function(phase_name, title_text) {
          title = paste0(title_text, &quot; Phase, Mixing Depth (Month 22)&quot;)) +
     theme(panel.border = element_blank())
   
-  print(plot)
+  # print(plot)
 
   # # save plot
   # ggsave(paste0(path_plots, phase_name, &quot;_hblsmap_month22.png&quot;), plot = plot,
@@ -910,24 +1199,139 @@ create_hbls_distmap &lt;- function(phase_name, title_text) {
 lapply(seq_along(phases), function(i) {
   create_hbls_distmap(phases[i], phase_titles[i])
 })</code></pre>
-<p><img src="figure/drivers_hbls.Rmd/hbls_dist-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/drivers_hbls.Rmd/hbls_dist-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/drivers_hbls.Rmd/hbls_dist-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>[[1]]</code></pre>
-<p><img src="figure/drivers_hbls.Rmd/hbls_dist-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/drivers_hbls.Rmd/hbls_dist-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hbls_dist-1">
+Past versions of hbls_dist-1.png
+</button>
+</p>
+<div id="fig-hbls_dist-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/91e2272d0cddb69d3b6e97b5d7fae079a9fca9da/docs/figure/drivers_hbls.Rmd/hbls_dist-1.png" target="_blank">91e2272</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[2]]</code></pre>
-<p><img src="figure/drivers_hbls.Rmd/hbls_dist-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/drivers_hbls.Rmd/hbls_dist-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hbls_dist-2">
+Past versions of hbls_dist-2.png
+</button>
+</p>
+<div id="fig-hbls_dist-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/91e2272d0cddb69d3b6e97b5d7fae079a9fca9da/docs/figure/drivers_hbls.Rmd/hbls_dist-2.png" target="_blank">91e2272</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[3]]</code></pre>
-<p><img src="figure/drivers_hbls.Rmd/hbls_dist-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/drivers_hbls.Rmd/hbls_dist-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hbls_dist-3">
+Past versions of hbls_dist-3.png
+</button>
+</p>
+<div id="fig-hbls_dist-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/91e2272d0cddb69d3b6e97b5d7fae079a9fca9da/docs/figure/drivers_hbls.Rmd/hbls_dist-3.png" target="_blank">91e2272</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># write_feather(hblsfull_data, paste0(path_outputs,
 #                                       &quot;hblsfull_data.feather&quot;))
 
 rm(create_hbls_distmap)
 gc()</code></pre>
 <pre><code>             used    (Mb)  gc trigger     (Mb)    max used     (Mb)
-Ncells    1713573    91.6     2646211    141.4     2646211    141.4
-Vcells 5564184240 42451.4 16148457573 123203.0 26697301168 203684.3</code></pre>
-<p>Mixing depth difference from mean maps during months of interest</p>
+Ncells    1708140    91.3     3339778    178.4     3339778    178.4
+Vcells 5560988094 42427.0 16148459135 123203.0 26695227774 203668.5</code></pre>
+</div>
+<div
+id="mixing-depth-difference-from-mean-maps-during-months-of-interest"
+class="section level2">
+<h2>Mixing depth difference from mean maps during months of
+interest</h2>
 <pre class="r"><code># calculating mean mixing depth across all 3 phases for each grid cell, 1st 2 years
 setDT(hblsfull_data)
 hblsfull_data[, &quot;:=&quot; (
@@ -955,7 +1359,7 @@ create_hbls_meanmap &lt;- function(phase_name, title_text) {
          title = paste0(title_text, &quot; Phase, Mixing Depth Difference from Mean (Month 10)&quot;)) +
     theme(panel.border = element_blank())
   
-  print(plot)
+  # print(plot)
   
   # # save plot
   # ggsave(paste0(path_plots, phase_name, &quot;_hblsmapdfm_month10.png&quot;), plot = plot,
@@ -965,24 +1369,139 @@ create_hbls_meanmap &lt;- function(phase_name, title_text) {
 lapply(seq_along(phases), function(i) {
   create_hbls_meanmap(phases[i], phase_titles[i])
 })</code></pre>
-<p><img src="figure/drivers_hbls.Rmd/hbls_dist_mean-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/drivers_hbls.Rmd/hbls_dist_mean-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/drivers_hbls.Rmd/hbls_dist_mean-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>[[1]]</code></pre>
-<p><img src="figure/drivers_hbls.Rmd/hbls_dist_mean-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/drivers_hbls.Rmd/hbls_dist_mean-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hbls_dist_mean-1">
+Past versions of hbls_dist_mean-1.png
+</button>
+</p>
+<div id="fig-hbls_dist_mean-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/91e2272d0cddb69d3b6e97b5d7fae079a9fca9da/docs/figure/drivers_hbls.Rmd/hbls_dist_mean-1.png" target="_blank">91e2272</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[2]]</code></pre>
-<p><img src="figure/drivers_hbls.Rmd/hbls_dist_mean-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/drivers_hbls.Rmd/hbls_dist_mean-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hbls_dist_mean-2">
+Past versions of hbls_dist_mean-2.png
+</button>
+</p>
+<div id="fig-hbls_dist_mean-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/91e2272d0cddb69d3b6e97b5d7fae079a9fca9da/docs/figure/drivers_hbls.Rmd/hbls_dist_mean-2.png" target="_blank">91e2272</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[3]]</code></pre>
-<p><img src="figure/drivers_hbls.Rmd/hbls_dist_mean-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/drivers_hbls.Rmd/hbls_dist_mean-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hbls_dist_mean-3">
+Past versions of hbls_dist_mean-3.png
+</button>
+</p>
+<div id="fig-hbls_dist_mean-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/91e2272d0cddb69d3b6e97b5d7fae079a9fca9da/docs/figure/drivers_hbls.Rmd/hbls_dist_mean-3.png" target="_blank">91e2272</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># write_feather(hblsfull_data, paste0(path_outputs,
 #                                       &quot;hblsfull_meandata.feather&quot;))
 
 rm(create_hbls_meanmap)
 gc()</code></pre>
 <pre><code>             used    (Mb)  gc trigger     (Mb)    max used     (Mb)
-Ncells    1714918    91.6     2646211    141.4     2646211    141.4
-Vcells 5576592392 42546.1 16148457573 123203.0 26697301168 203684.3</code></pre>
-<p>Fraction of dTA subducted under MMD</p>
+Ncells    1709126    91.3     3339778    178.4     3339778    178.4
+Vcells 5573395500 42521.7 16148459135 123203.0 26695227774 203668.5</code></pre>
+</div>
+</div>
+<div id="subduction-out-of-mixing-layer" class="section level1">
+<h1>Subduction Out of Mixing Layer</h1>
+<div id="fraction-of-dta-subducted-under-mmd" class="section level2">
+<h2>Fraction of dTA subducted under MMD</h2>
 <pre class="r"><code># merging relevant alk and hbls data
 mol_data &lt;- Map(function(mol_table, phase) {
   mol_table &lt;- mol_table[, .SD, .SDcols = c(&quot;lon&quot;, &quot;lat&quot;, &quot;depth&quot;, &quot;time&quot;, &quot;month&quot;, 
@@ -997,6 +1516,11 @@ mol_data &lt;- Map(function(mol_table, phase) {
 lanina_dTA_mol &lt;- mol_data[[1]]
 neutral_dTA_mol &lt;- mol_data[[2]]
 elnino_dTA_mol &lt;- mol_data[[3]]
+
+# save data file if needed later
+hblsmax_mol_data &lt;- rbindlist(mol_data)
+# write_feather(hblsmax_mol_data, paste0(
+#   path_outputs, &quot;hblsmax_mol_fulldata.feather&quot;))
 
 # # setting boundaries of depth bins; only need if going to use boundaries to separate
 
@@ -1044,6 +1568,10 @@ sub_list &lt;- Map(function(table, phase) {
 
 sub_fulldata &lt;- rbindlist(sub_list)
 
+# save
+# write_feather(sub_fulldata, paste0(
+#   path_outputs, &quot;subdTA_hblsmax_int.feather&quot;))
+
 # Plotting time series of all three
 ggplot(sub_fulldata, aes(x = month, y = frac_sub, color = phase)) +
   scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
@@ -1056,6 +1584,54 @@ ggplot(sub_fulldata, aes(x = month, y = frac_sub, color = phase)) +
        y = &quot;Fraction of Alkalinity Subducted&quot;) +
   theme_bw()</code></pre>
 <p><img src="figure/drivers_hbls.Rmd/dta_sub_hblsmax-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-dta_sub_hblsmax-1">
+Past versions of dta_sub_hblsmax-1.png
+</button>
+</p>
+<div id="fig-dta_sub_hblsmax-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/91e2272d0cddb69d3b6e97b5d7fae079a9fca9da/docs/figure/drivers_hbls.Rmd/dta_sub_hblsmax-1.png" target="_blank">91e2272</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>ggplot(sub_fulldata, aes(x = month, y = dTA_sub_int/1e10, color = phase)) +
+  scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(0, 7), expand = c(0,0)) +
+  geom_vline(xintercept = seq(0, 24, by = 12), color = &quot;grey75&quot;, linewidth = 0.4) +
+  geom_line(linewidth = 1) +
+  labs(title = &quot;Added Alkalinity Subducted Beneath Maximum Mixing Depth&quot;, 
+       x = &quot;Months Since OAE Start&quot;, 
+       y = &quot;Moles of Alkalinity Subducted (1e10)&quot;) +
+  theme_bw()</code></pre>
+<p><img src="figure/drivers_hbls.Rmd/dta_sub_hblsmax-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># ggsave(paste0(path_plots, &quot;dTA_sub_hblsmax.png&quot;), plot = last_plot(),
 #               width = 10, height = 6, dpi = 300)
 
@@ -1063,9 +1639,12 @@ rm(depth_ranges, sub_list, subducted_data)</code></pre>
 <pre><code>Warning in rm(depth_ranges, sub_list, subducted_data): object &#39;depth_ranges&#39;
 not found</code></pre>
 <pre class="r"><code>gc()</code></pre>
-<pre><code>             used    (Mb)  gc trigger    (Mb)    max used     (Mb)
-Ncells    1687643    90.2     2646211   141.4     2646211    141.4
-Vcells 2774651881 21169.0 12918766059 98562.4 26697301168 203684.3</code></pre>
+<pre><code>             used    (Mb)  gc trigger     (Mb)    max used     (Mb)
+Ncells    1730986    92.5     3339778    178.4     3339778    178.4
+Vcells 5393478516 41149.0 16148459135 123203.0 26695227774 203668.5</code></pre>
+</div>
+<div id="fraction-of-ddic-subducted-under-mmd" class="section level2">
+<h2>Fraction of dDIC subducted under MMD</h2>
 <pre class="r"><code># calculating subducted portion; assuming it stays subducted? would it make sense
 # here to use the mixing depth at each month rather than the max?
 subducted_data &lt;- lapply(mol_data, function(table){
@@ -1090,6 +1669,10 @@ sub_list &lt;- Map(function(table, phase) {
 
 sub_fulldata &lt;- rbindlist(sub_list)
 
+# save
+# write_feather(sub_fulldata, paste0(
+#   path_outputs, &quot;subdDIC_hblsmax_int.feather&quot;))
+
 # Plotting time series of all three, either fraction or moles
 ggplot(sub_fulldata, aes(x = month, y = frac_sub, color = phase)) +
   scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
@@ -1102,14 +1685,186 @@ ggplot(sub_fulldata, aes(x = month, y = frac_sub, color = phase)) +
        y = &quot;Fraction of dDIC Subducted&quot;) +
   theme_bw()</code></pre>
 <p><img src="figure/drivers_hbls.Rmd/ddic_sub_hblsmax-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-ddic_sub_hblsmax-1">
+Past versions of ddic_sub_hblsmax-1.png
+</button>
+</p>
+<div id="fig-ddic_sub_hblsmax-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/91e2272d0cddb69d3b6e97b5d7fae079a9fca9da/docs/figure/drivers_hbls.Rmd/ddic_sub_hblsmax-1.png" target="_blank">91e2272</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>ggplot(sub_fulldata, aes(x = month, y = dDIC_sub_int/1e10, color = phase)) +
+  scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(0, 7), expand = c(0,0)) +
+  geom_vline(xintercept = seq(0, 24, by = 12), color = &quot;grey75&quot;, linewidth = 0.4) +
+  geom_line(linewidth = 1) +
+  labs(title = &quot;New DIC Subducted Beneath Maximum Mixing Depth&quot;, 
+       x = &quot;Months Since OAE Start&quot;, 
+       y = &quot;Moles of dDIC Subducted (1e10)&quot;) +
+  theme_bw()</code></pre>
+<p><img src="figure/drivers_hbls.Rmd/ddic_sub_hblsmax-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># ggsave(paste0(path_plots, &quot;dDIC_sub_hblsmax.png&quot;), plot = last_plot(),
+#               width = 10, height = 6, dpi = 300)
+
+rm(subducted_data)
+gc()</code></pre>
+<pre><code>             used    (Mb)  gc trigger     (Mb)    max used     (Mb)
+Ncells    1731231    92.5     3339778    178.4     3339778    178.4
+Vcells 5393482186 41149.1 16148459135 123203.0 26695227774 203668.5</code></pre>
+</div>
+<div id="fraction-of-dta-subducted-under-instantaneous-mixing-depth"
+class="section level2">
+<h2>Fraction of dTA subducted under instantaneous mixing depth</h2>
+<pre class="r"><code># merging relevant alk and hbls data
+mol_data &lt;- Map(function(mol_table, phase) {
+  mol_table &lt;- mol_table[, .SD, .SDcols = c(&quot;lon&quot;, &quot;lat&quot;, &quot;depth&quot;, &quot;time&quot;, &quot;month&quot;, 
+                                      &quot;dTA_full&quot;, &quot;dDIC_full&quot;)]
+  hbls_table &lt;- hblsfull_data[hblsfull_data$phase == phase] # filter fullhbls table
+  new_table &lt;- merge(mol_table, hbls_table[, .(lat, lon, hbls, time)],
+                       by = c(&quot;lon&quot;, &quot;lat&quot;, &quot;time&quot;), all.x = TRUE) # merging
+  return(new_table)
+  }, mol_data, phases)
+
+# return tables to each item, now mol data has the max mixing depth for each cell
+lanina_dTA_mol &lt;- mol_data[[1]]
+neutral_dTA_mol &lt;- mol_data[[2]]
+elnino_dTA_mol &lt;- mol_data[[3]]
+
+hbls_mol_full_data &lt;- rbindlist(mol_data) # all hbls data and dTA/dDIC for all phases
+
+# write_feather(hbls_mol_full_data, paste0(path_outputs,
+#                                       &quot;hbls_mol_full_data.feather&quot;))
+
+# calculating subducted portion for dTA and dDIC
+subducted_data &lt;- lapply(mol_data, function(table){
+  new_table &lt;- table[, .(dTA_int = sum(dTA_full, na.rm = TRUE), # full int dTA moles/month
+            dTA_sub_int = sum(dTA_full[depth &gt; hbls], na.rm = TRUE),
+            # only the dTA subducted below hbls, approx with depth ie middle of bin
+            dDIC_int = sum(dDIC_full, na.rm = TRUE), # full int DIC moles/month
+            dDIC_sub_int = sum(dDIC_full[depth &gt; hbls], na.rm = TRUE)), 
+        # only the dDIC subducted below hbls, approx with depth ie middle of bin
+            by = .(month)]
+  new_table[, frac_sub_dTA := dTA_sub_int / dTA_int] 
+  new_table[, frac_sub_dDIC := dDIC_sub_int / dDIC_int]
+  # calculates approx portion subducted under each cell&#39;s 2-year max hbls 
+  return(new_table)
+  })
+
+# return tables to each item 
+lanina_dTA_subhbls &lt;- subducted_data[[1]]
+neutral_dTA_subhbls &lt;- subducted_data[[2]]
+elnino_dTA_subhbls &lt;- subducted_data[[3]]
+
+# combining all three tables in to one for ease of plotting
+sub_list &lt;- Map(function(table, phase) {
+    table[, phase := phase]
+  }, subducted_data, phases)
+
+sub_fulldata &lt;- rbindlist(sub_list)
+# save
+# write_feather(sub_fulldata, paste0(path_outputs, &quot;subfull_hbls_int.feather&quot;))
+
+# Plotting time series of all three, fraction
+ggplot(sub_fulldata, aes(x = month, y = frac_sub_dTA, color = phase)) +
+  scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(0, 1), expand = c(0,0)) +
+  geom_vline(xintercept = seq(0, 24, by = 12), color = &quot;grey75&quot;, linewidth = 0.4) +
+  geom_line(linewidth = 1) +
+  labs(title = &quot;Added Alkalinity Subducted Beneath Current Mixing Depth&quot;, 
+       x = &quot;Months Since OAE Start&quot;, 
+       y = &quot;Fraction of Total Currently Subducted&quot;) +
+  theme_bw()</code></pre>
+<p><img src="figure/drivers_hbls.Rmd/dta_sub_hblsinst-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Plotting time series of all three, moles
+ggplot(sub_fulldata, aes(x = month, y = dTA_sub_int/1e10, color = phase)) +
+  scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(0, 15), expand = c(0,0)) +
+  geom_vline(xintercept = seq(0, 24, by = 12), color = &quot;grey75&quot;, linewidth = 0.4) +
+  geom_line(linewidth = 1) +
+  labs(title = &quot;Added Alkalinity Subducted Beneath Current Mixing Depth&quot;, 
+       x = &quot;Months Since OAE Start&quot;, 
+       y = &quot;Moles of Alkalinity Subducted (1e10)&quot;) +
+  theme_bw()</code></pre>
+<p><img src="figure/drivers_hbls.Rmd/dta_sub_hblsinst-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(paste0(path_plots, &quot;dTA_sub_hblsinst_mol.png&quot;), plot = last_plot(),
+#               width = 10, height = 6, dpi = 300)
+
+rm(depth_ranges, sub_list, subducted_data)</code></pre>
+<pre><code>Warning in rm(depth_ranges, sub_list, subducted_data): object &#39;depth_ranges&#39;
+not found</code></pre>
+<pre class="r"><code>gc()</code></pre>
+<pre><code>             used    (Mb)  gc trigger     (Mb)    max used     (Mb)
+Ncells    1731711    92.5     3339778    178.4     3339778    178.4
+Vcells 8012223285 61128.5 16148459135 123203.0 26695227774 203668.5</code></pre>
+</div>
+<div id="fraction-of-ddic-subducted-under-instantaneous-mixing-depth"
+class="section level2">
+<h2>Fraction of dDIC subducted under instantaneous mixing depth</h2>
+<pre class="r"><code># calculations done above
+# Plotting time series of all three, fraction
+ggplot(sub_fulldata, aes(x = month, y = frac_sub_dDIC, color = phase)) +
+  scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(0, 1), expand = c(0,0)) +
+  geom_vline(xintercept = seq(0, 24, by = 12), color = &quot;grey75&quot;, linewidth = 0.4) +
+  geom_line(linewidth = 1) +
+  labs(title = &quot;New DIC Subducted Beneath Current Mixing Depth&quot;, 
+       x = &quot;Months Since OAE Start&quot;, 
+       y = &quot;Fraction of Total Currently Subducted&quot;) +
+  theme_bw()</code></pre>
+<p><img src="figure/drivers_hbls.Rmd/dDIC_sub_hblsinst-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Plotting time series of all three, moles
+ggplot(sub_fulldata, aes(x = month, y = dDIC_sub_int/1e10, color = phase)) +
+  scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(0, 15), expand = c(0,0)) +
+  geom_vline(xintercept = seq(0, 24, by = 12), color = &quot;grey75&quot;, linewidth = 0.4) +
+  geom_line(linewidth = 1) +
+  labs(title = &quot;New DIC Subducted Beneath Current Mixing Depth&quot;, 
+       x = &quot;Months Since OAE Start&quot;, 
+       y = &quot;Moles of DIC Subducted (1e10)&quot;) +
+  theme_bw()</code></pre>
+<p><img src="figure/drivers_hbls.Rmd/dDIC_sub_hblsinst-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(paste0(path_plots, &quot;dDIC_sub_hblsinst_mol.png&quot;), plot = last_plot(),
 #               width = 10, height = 6, dpi = 300)
 
 rm(list = ls())
 gc()</code></pre>
 <pre><code>          used (Mb)  gc trigger    (Mb)    max used     (Mb)
-Ncells 1689096 90.3     2646211   141.4     2646211    141.4
-Vcells 3002837 23.0 10335012848 78849.9 26697301168 203684.3</code></pre>
+Ncells 1730956 92.5     3339778   178.4     3339778    178.4
+Vcells 3102434 23.7 12918767308 98562.4 26695227774 203668.5</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1163,6 +1918,7 @@ loaded via a namespace (and not attached):
 [53] knitr_1.49        viridisLite_0.4.2 rlang_1.1.4       Rcpp_1.0.13-1    
 [57] glue_1.8.0        rstudioapi_0.17.1 jsonlite_1.8.9    R6_2.5.1         
 [61] fs_1.6.5         </code></pre>
+</div>
 </div>
 </div>
 </div>

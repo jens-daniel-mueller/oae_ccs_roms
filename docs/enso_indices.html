@@ -394,7 +394,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">CCS ENSO evaluation metrics</h1>
 <h4 class="author">Victoria Froh &amp; Jens Daniel Müller</h4>
-<h4 class="date">19 February, 2025</h4>
+<h4 class="date">07 April, 2025</h4>
 
 </div>
 
@@ -423,7 +423,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-02-19
+<strong>Last updated:</strong> 2025-04-07
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -554,15 +554,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreea36bcfe9b50883ec8b4723ee0173a7117e6b0506targetblanka36bcfea">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree5a5f21a2e978557be55a382158b4e2283612765etargetblank5a5f21aa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/a36bcfe9b50883ec8b4723ee0173a7117e6b0506" target="_blank">a36bcfe</a>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/5a5f21a2e978557be55a382158b4e2283612765e" target="_blank">5a5f21a</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreea36bcfe9b50883ec8b4723ee0173a7117e6b0506targetblanka36bcfea"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree5a5f21a2e978557be55a382158b4e2283612765etargetblank5a5f21aa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -572,7 +572,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/a36bcfe9b50883ec8b4723ee0173a7117e6b0506" target="_blank">a36bcfe</a>.
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/5a5f21a2e978557be55a382158b4e2283612765e" target="_blank">5a5f21a</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -591,15 +591,17 @@ Ignored files:
     Ignored:    .Rproj.user/
 
 Untracked files:
-    Untracked:  code/oggrid_surface_data.R
-    Untracked:  code/regrid_surface_data.R
+    Untracked:  code/dist_maps.R
+    Untracked:  code/flux_driver_correlations.Rmd
+    Untracked:  code/flux_drivers_calcs.R
+    Untracked:  code/lineplot_stacks.R
+    Untracked:  code/subregions.Rmd
+    Untracked:  surface_dataRG2.feather
 
 Unstaged changes:
-    Modified:   analysis/_site.yml
     Modified:   code/Workflowr_project_managment.R
-    Modified:   code/dTA_dDIC.R
-    Modified:   code/regrid_cdr_eff_molar.R
-    Modified:   code/regrid_dTA_dDIC.R
+    Modified:   code/regrid_surface_data.R
+    Modified:   code/temperature_indices.Rmd
 
 </code></pre>
 <p>
@@ -644,6 +646,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/5a5f21a2e978557be55a382158b4e2283612765e/analysis/enso_indices.Rmd" target="_blank">5a5f21a</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-04-07
+</td>
+<td>
+Final code push
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/91e2272d0cddb69d3b6e97b5d7fae079a9fca9da/docs/enso_indices.html" target="_blank">91e2272</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-19
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -991,9 +1027,9 @@ Adding full enso indices file
 </div>
 </div>
 </div>
-<div id="read-this" class="section level2">
-<h2>Read this</h2>
-<p>this is the script to open the data</p>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>CCS Enso Index proxy calculations for choosing ideal location</p>
 <pre class="r"><code># loading packages
 library(ncdf4)
 library(stars)
@@ -1014,18 +1050,18 @@ path_ROMSv2RG_results &lt;-
 
 # saving theme formatting for all plots in this code
 custom_theme &lt;- theme_bw() + 
-  theme(axis.text.x = element_text(size = 11),
-        axis.text.y = element_text(size = 11),
+  theme(axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
         axis.ticks = element_line(linewidth = 0.3, color = &quot;black&quot;),
         axis.ticks.length = unit(-0.3, &quot;cm&quot;),
         axis.title.x = element_blank() ,
-        axis.title.y = element_text(size = 12),
+        axis.title.y = element_text(size = 14),
         plot.title = element_text(hjust = 0.5),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         legend.position = &quot;right&quot;,
         legend.title = element_blank(),
-        legend.text = element_text(size = 10),
+        legend.text = element_text(size = 12),
         legend.direction = &quot;vertical&quot;,
         legend.background = element_rect(color = &quot;grey&quot;, linewidth = 0.25),
         panel.border = element_rect(color = &quot;black&quot;, linewidth = 0.5, fill = NA))
@@ -1083,6 +1119,11 @@ annual_monthly_sst &lt;- reduce(annual_monthly_sst_list, bind_rows)
 
 # clearing unneeded objects
 rm(annual_cycles, annual_monthly_sst_list)</code></pre>
+</div>
+<div id="proxies" class="section level1">
+<h1>Proxies</h1>
+<div id="sea-surface-temperature" class="section level2">
+<h2>Sea Surface Temperature</h2>
 <pre class="r"><code># computing the climatological monthly mean for each location
 monthly_mean_baseline &lt;- annual_monthly_sst %&gt;%
   mutate(month = format(as.Date(yr_mon), &quot;%m&quot;)) %&gt;% 
@@ -1460,6 +1501,10 @@ vgfroh
 </table>
 </div>
 </div>
+</div>
+<div id="m-temperature-isopycnal-26-kgm3-density-and-salinity"
+class="section level2">
+<h2>50m Temperature, Isopycnal 26 kg/m3 density and salinity</h2>
 <pre class="r"><code># Loading in time series for temperature at 50m depth
 locations_2 &lt;- c(&quot;ColumbiaRiver&quot;, &quot;SanFrancisco&quot;, &quot;Huntington&quot;)
 annual_cycles &lt;- list()
@@ -1921,7 +1966,8 @@ enso_metric_monthly %&gt;%
        y = &quot;Correlation Coefficient&quot;,
        x = &quot;Region&quot;) +
   custom_theme +
-  theme(panel.grid.major.y = element_line())</code></pre>
+  theme(panel.grid.major.y = element_line(), 
+        axis.text.x = element_text(angle = 90))</code></pre>
 <p><img src="figure/enso_indices.Rmd/metrics_correlation_coeffs-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-metrics_correlation_coeffs-1">
@@ -1971,6 +2017,11 @@ vgfroh
 </table>
 </div>
 </div>
+<pre class="r"><code>rm(list = ls())
+gc()</code></pre>
+<pre><code>          used (Mb) gc trigger   (Mb)  max used   (Mb)
+Ncells 1745251 93.3    2872160  153.4   2872160  153.4
+Vcells 3100497 23.7  160931147 1227.9 314304603 2398.0</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -2026,6 +2077,7 @@ loaded via a namespace (and not attached):
 [57] knitr_1.49         rlang_1.1.4        Rcpp_1.0.13-1      glue_1.8.0        
 [61] DBI_1.2.3          rstudioapi_0.17.1  jsonlite_1.8.9     R6_2.5.1          
 [65] fs_1.6.5          </code></pre>
+</div>
 </div>
 </div>
 </div>

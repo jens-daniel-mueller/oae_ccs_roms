@@ -394,7 +394,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Integrated CDR Efficiency Plots</h1>
 <h4 class="author">Victoria Froh &amp; Jens Daniel Müller</h4>
-<h4 class="date">19 February, 2025</h4>
+<h4 class="date">07 April, 2025</h4>
 
 </div>
 
@@ -423,7 +423,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-02-19
+<strong>Last updated:</strong> 2025-04-07
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -554,15 +554,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreea36bcfe9b50883ec8b4723ee0173a7117e6b0506targetblanka36bcfea">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree5a5f21a2e978557be55a382158b4e2283612765etargetblank5a5f21aa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/a36bcfe9b50883ec8b4723ee0173a7117e6b0506" target="_blank">a36bcfe</a>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/5a5f21a2e978557be55a382158b4e2283612765e" target="_blank">5a5f21a</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstreea36bcfe9b50883ec8b4723ee0173a7117e6b0506targetblanka36bcfea"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuelleroaeccsromstree5a5f21a2e978557be55a382158b4e2283612765etargetblank5a5f21aa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -572,7 +572,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/a36bcfe9b50883ec8b4723ee0173a7117e6b0506" target="_blank">a36bcfe</a>.
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/tree/5a5f21a2e978557be55a382158b4e2283612765e" target="_blank">5a5f21a</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -591,15 +591,17 @@ Ignored files:
     Ignored:    .Rproj.user/
 
 Untracked files:
-    Untracked:  code/oggrid_surface_data.R
-    Untracked:  code/regrid_surface_data.R
+    Untracked:  code/dist_maps.R
+    Untracked:  code/flux_driver_correlations.Rmd
+    Untracked:  code/flux_drivers_calcs.R
+    Untracked:  code/lineplot_stacks.R
+    Untracked:  code/subregions.Rmd
+    Untracked:  surface_dataRG2.feather
 
 Unstaged changes:
-    Modified:   analysis/_site.yml
     Modified:   code/Workflowr_project_managment.R
-    Modified:   code/dTA_dDIC.R
-    Modified:   code/regrid_cdr_eff_molar.R
-    Modified:   code/regrid_dTA_dDIC.R
+    Modified:   code/regrid_surface_data.R
+    Modified:   code/temperature_indices.Rmd
 
 </code></pre>
 <p>
@@ -644,6 +646,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/5a5f21a2e978557be55a382158b4e2283612765e/analysis/cdreff_plots.Rmd" target="_blank">5a5f21a</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-04-07
+</td>
+<td>
+Final code push
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/oae_ccs_roms/91e2272d0cddb69d3b6e97b5d7fae079a9fca9da/docs/cdreff_plots.html" target="_blank">91e2272</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-19
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -736,10 +772,9 @@ Plotted time series of integrated dTA and CDREff data
 </div>
 </div>
 </div>
-<div id="read-this" class="section level2">
-<h2>Read this</h2>
+<p>#Introduction</p>
 <p>Plotting the results of the full-grid integrated time series of dTA,
-CDR efficiency, and dDIC for each 3 phases</p>
+CDR efficiency, and dDIC for each 3 phases and the mean</p>
 <pre class="r"><code>#loading packages
 library(tidyverse)
 library(data.table)
@@ -765,20 +800,62 @@ full_cdreff &lt;- rbindlist(
   idcol = &quot;phase&quot;)
 
 # add column for months since oae addition begins for x-axis
-full_cdreff &lt;- full_cdreff[, month := seq_len(.N), by = phase]</code></pre>
+full_cdreff &lt;- full_cdreff[, month := seq_len(.N), by = phase]
+
+# computing means
+full_cdreff[, &quot;:=&quot; (
+  dTA_mean = mean(dTA_sum, na.rm = TRUE),
+  dDIC_mean = mean(dDIC_sum, na.rm = TRUE),
+  CDReff_mean = mean(CDR_eff, na.rm = TRUE)
+), by = month]
+
+
+# save
+# write_feather(full_cdreff, paste0(path_outputs, 
+# &quot;full_CDReff_integrated.feather&quot;))</code></pre>
+<div id="integrated-line-plots-of-3-phases" class="section level1">
+<h1>Integrated Line Plots of 3 Phases</h1>
 <pre class="r"><code># plotting dTA
 ggplot(full_cdreff, aes(x = month, y = dTA_sum/1e10, color = phase)) +
-  scale_x_continuous(breaks = seq(0, 72, by = 6), limits = c(0,72),
+  scale_x_continuous(breaks = seq(6, 72, by = 6), limits = c(0,72),
                      expand = c(0,0)) +
-  scale_y_continuous(limits = c(0, 18), expand = c(0,0)) +
-  geom_vline(xintercept = seq(0, 60, by = 12), color = &quot;grey75&quot;, linewidth = 0.4) +
+  scale_y_continuous(limits = c(0, 19), expand = c(0,0)) +
+  geom_vline(xintercept = 12, linetype = &quot;dashed&quot;, color = &quot;grey75&quot;, linewidth = 0.6) +
   geom_hline(yintercept = 16.7, linetype = &quot;dashed&quot;, color = &quot;black&quot;, linewidth = 0.6) +
   geom_line(linewidth = 1) +
+  scale_color_discrete(labels = c(&quot;elnino&quot; = &quot;El Niño&quot;, &quot;lanina&quot; = &quot;La Niña&quot;, &quot;neutral&quot; = &quot;Neutral&quot;)
+  ) +
   labs(x = &quot;Months Since OAE Start&quot;,
-       y = &quot;Added Alkalinity (in 10^10 moles)&quot;,
-       title = &quot;Total Added Alkalinity&quot;) +
+       y = &quot;Integrated TA&#39; [10\u00B9\u2070 mol]&quot; #, title = &quot;Total Added Alkalinity&quot;
+       ) +
   theme_bw() + 
-  theme(panel.grid.major.y = element_line(color = &quot;grey75&quot;, linewidth = 0.4))</code></pre>
+  theme(panel.grid = element_blank(), legend.position = c(0.875, 0.2), 
+        legend.text = element_text(size = 15),
+        legend.box.background = element_rect(color = &quot;grey80&quot;, size = 0.5),
+        axis.text = element_text(size = 15, color = &quot;black&quot;),
+        axis.title = element_text(size = 16),
+        plot.title = element_blank(), legend.title = element_blank(), 
+        axis.ticks = element_line(color = &quot;black&quot;, size = 0.5),
+        axis.ticks.length = unit(0.3, &quot;cm&quot;),
+        panel.border = element_rect(color = &quot;black&quot;, size = 0.5),
+        plot.margin = margin(15, 15, 15, 15)) + 
+  coord_cartesian(clip = &#39;off&#39;, expand = FALSE)</code></pre>
+<pre><code>Warning: The `size` argument of `element_line()` is deprecated as of ggplot2 3.4.0.
+ℹ Please use the `linewidth` argument instead.
+This warning is displayed once every 8 hours.
+Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+generated.</code></pre>
+<pre><code>Warning: The `size` argument of `element_rect()` is deprecated as of ggplot2 3.4.0.
+ℹ Please use the `linewidth` argument instead.
+This warning is displayed once every 8 hours.
+Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+generated.</code></pre>
+<pre><code>Warning: A numeric `legend.position` argument in `theme()` was deprecated in ggplot2
+3.5.0.
+ℹ Please use the `legend.position.inside` argument of `theme()` instead.
+This warning is displayed once every 8 hours.
+Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+generated.</code></pre>
 <p><img src="figure/cdreff_plots.Rmd/dTA_cdreff_plots-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-dTA_cdreff_plots-1">
@@ -804,6 +881,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/91e2272d0cddb69d3b6e97b5d7fae079a9fca9da/docs/figure/cdreff_plots.Rmd/dTA_cdreff_plots-1.png" target="_blank">91e2272</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-19
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/ce1905769d987ad6c2264d384fd57c8a00a310ff/docs/figure/cdreff_plots.Rmd/dTA_cdreff_plots-1.png" target="_blank">ce19057</a>
 </td>
 <td>
@@ -818,20 +906,32 @@ vgfroh
 </div>
 </div>
 <pre class="r"><code># ggsave(paste0(path_plots, &quot;total_dTA_cum.png&quot;), plot = last_plot(),
-#               width = 10, height = 6, dpi = 300)
+#               width = 6, height = 4, dpi = 300)
 
 # plotting CDReff
 ggplot(full_cdreff, aes(x = month, y = CDR_eff, color = phase)) +
-  geom_vline(xintercept = seq(0, 60, by = 12), color = &quot;grey75&quot;, linewidth = 0.4) +
+  geom_vline(xintercept = 12, linetype = &quot;dashed&quot;, color = &quot;grey75&quot;, linewidth = 0.6) +
   geom_line(linewidth = 1) +
-  scale_x_continuous(breaks = seq(0, 72, by = 6), limits = c(0, 72),
+  scale_x_continuous(breaks = seq(6, 72, by = 6), limits = c(0, 72),
                      expand = c(0, 0)) +
-  scale_y_continuous(limits = c(0, 0.85), expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0, 1), expand = c(0, 0)) +
+  scale_color_discrete(labels = c(&quot;elnino&quot; = &quot;El Niño&quot;, &quot;lanina&quot; = &quot;La Niña&quot;, &quot;neutral&quot; = &quot;Neutral&quot;)
+  ) +
   labs(x = &quot;Months Since OAE Start&quot;,
-       y = &quot;CDR Efficiency (dDIC/dTA)&quot;,
-       title = &quot;Integrated CDR Efficiency &quot;) +
+       y = &quot;Integrated \u03B7&quot; #, title = &quot;Integrated CDR Efficiency&quot;
+       ) +
   theme_bw() +
-  theme(panel.grid.major.y = element_line(color = &quot;grey75&quot;, linewidth = 0.4))</code></pre>
+  theme(panel.grid = element_blank(), legend.position = c(0.87, 0.2), 
+        legend.text = element_text(size = 15),
+        legend.box.background = element_rect(color = &quot;grey80&quot;, size = 0.5),
+        axis.text = element_text(size = 15, color = &quot;black&quot;),
+        axis.title = element_text(size = 16),
+        plot.title = element_blank(), legend.title = element_blank(), 
+        axis.ticks = element_line(color = &quot;black&quot;, size = 0.5),
+        axis.ticks.length = unit(0.3, &quot;cm&quot;),
+        panel.border = element_rect(color = &quot;black&quot;, size = 0.5),
+        plot.margin = margin(15, 15, 15, 15)) + 
+  coord_cartesian(clip = &#39;off&#39;, expand = FALSE)</code></pre>
 <p><img src="figure/cdreff_plots.Rmd/dTA_cdreff_plots-2.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-dTA_cdreff_plots-2">
@@ -857,6 +957,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/91e2272d0cddb69d3b6e97b5d7fae079a9fca9da/docs/figure/cdreff_plots.Rmd/dTA_cdreff_plots-2.png" target="_blank">91e2272</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-19
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/ce1905769d987ad6c2264d384fd57c8a00a310ff/docs/figure/cdreff_plots.Rmd/dTA_cdreff_plots-2.png" target="_blank">ce19057</a>
 </td>
 <td>
@@ -871,24 +982,258 @@ vgfroh
 </div>
 </div>
 <pre class="r"><code># ggsave(paste0(path_plots, &quot;CDReff_int.png&quot;), plot = last_plot(),
-#               width = 10, height = 6, dpi = 300)
+#               width = 6, height = 4, dpi = 300)
 
 # plotting dDIC
 ggplot(full_cdreff, aes(x = month, y = dDIC_sum/1e10, color = phase)) +
-  scale_x_continuous(breaks = seq(0, 72, by = 6), limits = c(0,72),
+  scale_x_continuous(breaks = seq(6, 72, by = 6), limits = c(0,72),
                      expand = c(0,0)) +
-  scale_y_continuous(limits = c(0, 18), expand = c(0,0)) +
-  geom_vline(xintercept = seq(0, 60, by = 12), color = &quot;grey75&quot;, linewidth = 0.4) +
+  scale_y_continuous(limits = c(0, 19), expand = c(0,0)) +
+  geom_vline(xintercept = 12, linetype = &quot;dashed&quot;, color = &quot;grey75&quot;, linewidth = 0.6) +
+  geom_hline(yintercept = 13.36, linetype = &quot;dashed&quot;, color = &quot;black&quot;, linewidth = 0.6) +
+  geom_line(linewidth = 1) +
+  scale_color_discrete(labels = c(&quot;elnino&quot; = &quot;El Niño&quot;, &quot;lanina&quot; = &quot;La Niña&quot;, &quot;neutral&quot; = &quot;Neutral&quot;)
+  ) +
+  labs(x = &quot;Months Since OAE Start&quot;,
+       y = &quot;Integrated DIC&#39; [10\u00B9\u2070 mol]&quot; #, title = &quot;Total Change in Dissolved Inorganic Carbon&quot;
+       ) +
+  theme_bw() + 
+  theme(panel.grid = element_blank(), legend.position = c(0.875, 0.2), 
+        legend.text = element_text(size = 15),
+        legend.box.background = element_rect(color = &quot;grey80&quot;, size = 0.5),
+        axis.text = element_text(size = 15, color = &quot;black&quot;),
+        axis.title = element_text(size = 16),
+        plot.title = element_blank(), legend.title = element_blank(), 
+        axis.ticks = element_line(color = &quot;black&quot;, size = 0.5),
+        axis.ticks.length = unit(0.3, &quot;cm&quot;),
+        panel.border = element_rect(color = &quot;black&quot;, size = 0.5),
+        plot.margin = margin(15, 15, 15, 15)) + 
+  coord_cartesian(clip = &#39;off&#39;, expand = FALSE)</code></pre>
+<p><img src="figure/cdreff_plots.Rmd/dTA_cdreff_plots-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-dTA_cdreff_plots-3">
+Past versions of dTA_cdreff_plots-3.png
+</button>
+</p>
+<div id="fig-dTA_cdreff_plots-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/oae_ccs_roms/blob/91e2272d0cddb69d3b6e97b5d7fae079a9fca9da/docs/figure/cdreff_plots.Rmd/dTA_cdreff_plots-3.png" target="_blank">91e2272</a>
+</td>
+<td>
+vgfroh
+</td>
+<td>
+2025-02-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code># ggsave(paste0(path_plots, &quot;total_dDIC_cum.png&quot;), plot = last_plot(),
+#               width = 6, height = 4, dpi = 300)</code></pre>
+</div>
+<div id="integrated-line-plots-of-means" class="section level1">
+<h1>Integrated Line Plots of Means</h1>
+<pre class="r"><code># to add a shaded ribbon showing the range:
+full_cdreff &lt;- full_cdreff[, &#39;:=&#39;(
+  min_TA = min(dTA_sum), max_TA = max(dTA_sum),
+  min_DIC = min(dDIC_sum), max_DIC = max(dDIC_sum),
+  min_eff = min(CDR_eff), max_eff = max(CDR_eff)
+), by = month]
+
+
+# plotting dTA
+ggplot(full_cdreff, aes(x = month, y = dTA_mean/1e10)) +
+  scale_x_continuous(breaks = seq(6, 72, by = 6), limits = c(0,72),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(0, 19), expand = c(0,0)) +
+  geom_vline(xintercept = 12, linetype = &quot;dashed&quot;, color = &quot;grey75&quot;, linewidth = 0.6) +
   geom_hline(yintercept = 16.7, linetype = &quot;dashed&quot;, color = &quot;black&quot;, linewidth = 0.6) +
+  geom_ribbon(aes(ymin = min_TA/1e10, ymax = max_TA/1e10), fill = &quot;#A6CEE3&quot;, alpha = 0.45) +
   geom_line(linewidth = 1) +
   labs(x = &quot;Months Since OAE Start&quot;,
-       y = &quot;dDissolved Inorganic Carbon (in 10^10 moles)&quot;,
-       title = &quot;Total Change in Dissolved Inorganic Carbon&quot;) +
+       y = &quot; Mean Integrated TA&#39; [10\u00B9\u2070 mol]&quot; #,  title = &quot;Mean Total Added Alkalinity&quot;
+       ) +
   theme_bw() + 
-  theme(panel.grid.major.y = element_line(color = &quot;grey75&quot;, linewidth = 0.4))</code></pre>
-<p><img src="figure/cdreff_plots.Rmd/dTA_cdreff_plots-3.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code># ggsave(paste0(path_plots, &quot;total_dDIC_cum.png&quot;), plot = last_plot(),
-#               width = 10, height = 6, dpi = 300)</code></pre>
+  theme(panel.grid = element_blank(), #legend.position = c(0.9, 0.2), 
+        # legend.text = element_text(size = 12),
+        # legend.box.background = element_rect(color = &quot;grey80&quot;, size = 0.5),
+        axis.text = element_text(size = 13, color = &quot;black&quot;),
+        axis.title = element_text(size = 15),
+        plot.title = element_blank(), legend.title = element_blank(), 
+        axis.ticks = element_line(color = &quot;black&quot;, size = 0.5),
+        axis.ticks.length = unit(0.3, &quot;cm&quot;),
+        panel.border = element_rect(color = &quot;black&quot;, size = 0.5),
+        plot.margin = margin(15, 15, 15, 15)) + 
+  coord_cartesian(clip = &#39;off&#39;, expand = FALSE)</code></pre>
+<p><img src="figure/cdreff_plots.Rmd/mean_plots-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(paste0(path_plots, &quot;total_dTA_cum_mean.png&quot;), plot = last_plot(),
+#               width = 8, height = 4, dpi = 300)
+
+# plotting CDReff
+ggplot(full_cdreff, aes(x = month, y = CDReff_mean)) +
+  geom_vline(xintercept = 12, linetype = &quot;dashed&quot;, color = &quot;grey75&quot;, linewidth = 0.6) +
+  geom_ribbon(aes(ymin = min_eff, ymax = max_eff), fill = &quot;#A6CEE3&quot;, alpha = 0.45) +
+  geom_line(linewidth = 1) +
+  scale_x_continuous(breaks = seq(6, 72, by = 6), limits = c(0, 72),
+                     expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0, 1), expand = c(0, 0)) +
+  labs(x = &quot;Months Since OAE Start&quot;,
+       y = &quot;Mean Integrated \u03B7&quot; #, title = &quot;Mean Integrated CDR Efficiency&quot;
+       ) +
+  theme_bw() +
+  theme(panel.grid = element_blank(), #legend.position = c(0.9, 0.2),
+        # legend.text = element_text(size = 12),
+        # legend.box.background = element_rect(color = &quot;grey80&quot;, size = 0.5),
+        axis.text = element_text(size = 13, color = &quot;black&quot;),
+        axis.title = element_text(size = 15),
+        plot.title = element_blank(), legend.title = element_blank(), 
+        axis.ticks = element_line(color = &quot;black&quot;, size = 0.5),
+        axis.ticks.length = unit(0.3, &quot;cm&quot;),
+        panel.border = element_rect(color = &quot;black&quot;, size = 0.5),
+        plot.margin = margin(15, 15, 15, 15)) + 
+  coord_cartesian(clip = &#39;off&#39;, expand = FALSE)</code></pre>
+<p><img src="figure/cdreff_plots.Rmd/mean_plots-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(paste0(path_plots, &quot;CDReff_int_mean.png&quot;), plot = last_plot(),
+#               width = 8, height = 4, dpi = 300)
+
+# plotting dDIC
+ggplot(full_cdreff, aes(x = month, y = dDIC_mean/1e10)) +
+  scale_x_continuous(breaks = seq(6, 72, by = 6), limits = c(0,72),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(0, 19), expand = c(0,0)) +
+  geom_vline(xintercept = 12, linetype = &quot;dashed&quot;, color = &quot;grey75&quot;, linewidth = 0.6) +
+  geom_hline(yintercept = 13.36, linetype = &quot;dashed&quot;, color = &quot;black&quot;, linewidth = 0.6) +
+  geom_ribbon(aes(ymin = min_DIC/1e10, ymax = max_DIC/1e10), fill = &quot;#A6CEE3&quot;, alpha = 0.45) +
+  geom_line(linewidth = 1) +
+  labs(x = &quot;Months Since OAE Start&quot;,
+       y = &quot;Mean Integrated DIC&#39; [10\u00B9\u2070 mol]&quot; #, title = &quot;Mean Total New Dissolved Inorganic Carbon&quot;
+       ) +
+  theme_bw() + 
+  theme(panel.grid = element_blank(), #legend.position = c(0.9, 0.2), 
+        # legend.text = element_text(size = 12),
+        # legend.box.background = element_rect(color = &quot;grey80&quot;, size = 0.5),
+        axis.text = element_text(size = 13, color = &quot;black&quot;),
+        axis.title = element_text(size = 15),
+        plot.title = element_blank(), legend.title = element_blank(), 
+        axis.ticks = element_line(color = &quot;black&quot;, size = 0.5),
+        axis.ticks.length = unit(0.3, &quot;cm&quot;),
+        panel.border = element_rect(color = &quot;black&quot;, size = 0.5),
+        plot.margin = margin(15, 15, 15, 15)) + 
+  coord_cartesian(clip = &#39;off&#39;, expand = FALSE)</code></pre>
+<p><img src="figure/cdreff_plots.Rmd/mean_plots-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(paste0(path_plots, &quot;total_dDIC_cum_mean.png&quot;), plot = last_plot(),
+#               width = 8, height = 4, dpi = 300)</code></pre>
+<p>Difference from Mean Plots</p>
+<pre class="r"><code># plotting dTA
+ggplot(full_cdreff, aes(x = month, y = (dTA_sum - dTA_mean)/1e10, color = phase)) +
+  scale_x_continuous(breaks = seq(6, 72, by = 6), limits = c(0,72),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(-1, 1), expand = c(0,0)) +
+  geom_vline(xintercept = 12, linetype = &quot;dashed&quot;, color = &quot;grey75&quot;, linewidth = 0.6) +
+  #geom_hline(yintercept = 16.7, linetype = &quot;dashed&quot;, color = &quot;black&quot;, linewidth = 0.6) +
+  geom_line(linewidth = 1) +
+  scale_color_discrete(labels = c(&quot;elnino&quot; = &quot;El Niño&quot;, &quot;lanina&quot; = &quot;La Niña&quot;, &quot;neutral&quot; = &quot;Neutral&quot;)
+  ) +
+  labs(x = &quot;Months Since OAE Start&quot;,
+       y = &quot;Integrated \u0394TA&#39; [10\u00B9\u2070 mol]&quot; #, title = &quot;Total Added Alkalinity&quot;
+       ) +
+  theme_bw() + 
+  theme(panel.grid = element_blank(), legend.position = c(0.875, 0.2), 
+        legend.text = element_text(size = 15),
+        legend.box.background = element_rect(color = &quot;grey80&quot;, size = 0.5),
+        axis.text = element_text(size = 15, color = &quot;black&quot;),
+        axis.title = element_text(size = 16),
+        plot.title = element_blank(), legend.title = element_blank(), 
+        axis.ticks = element_line(color = &quot;black&quot;, size = 0.5),
+        axis.ticks.length = unit(0.3, &quot;cm&quot;),
+        panel.border = element_rect(color = &quot;black&quot;, size = 0.5),
+        plot.margin = margin(15, 15, 15, 15)) + 
+  coord_cartesian(clip = &#39;off&#39;, expand = FALSE)</code></pre>
+<p><img src="figure/cdreff_plots.Rmd/dTA_cdreff_dfmplots-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(paste0(path_plots, &quot;total_dTA_cum_dfm.png&quot;), plot = last_plot(),
+#               width = 6, height = 4, dpi = 300)
+
+# plotting CDReff
+ggplot(full_cdreff, aes(x = month, y = CDR_eff - CDReff_mean, color = phase)) +
+  geom_vline(xintercept = 12, linetype = &quot;dashed&quot;, color = &quot;grey75&quot;, linewidth = 0.6) +
+  geom_line(linewidth = 1) +
+  scale_x_continuous(breaks = seq(6, 72, by = 6), limits = c(0, 72),
+                     expand = c(0, 0)) +
+  scale_y_continuous(limits = c(-.1, .1), expand = c(0, 0)) +
+  scale_color_discrete(labels = c(&quot;elnino&quot; = &quot;El Niño&quot;, &quot;lanina&quot; = &quot;La Niña&quot;, &quot;neutral&quot; = &quot;Neutral&quot;)
+  ) +
+  labs(x = &quot;Months Since OAE Start&quot;,
+       y = &quot;Integrated \u0394\u03B7&quot; #, title = &quot;Integrated CDR Efficiency&quot;
+       ) +
+  theme_bw() +
+  theme(panel.grid = element_blank(), legend.position = c(0.87, 0.2), 
+        legend.text = element_text(size = 15),
+        legend.box.background = element_rect(color = &quot;grey80&quot;, size = 0.5),
+        axis.text = element_text(size = 15, color = &quot;black&quot;),
+        axis.title = element_text(size = 16),
+        plot.title = element_blank(), legend.title = element_blank(), 
+        axis.ticks = element_line(color = &quot;black&quot;, size = 0.5),
+        axis.ticks.length = unit(0.3, &quot;cm&quot;),
+        panel.border = element_rect(color = &quot;black&quot;, size = 0.5),
+        plot.margin = margin(15, 15, 15, 15)) + 
+  coord_cartesian(clip = &#39;off&#39;, expand = FALSE)</code></pre>
+<p><img src="figure/cdreff_plots.Rmd/dTA_cdreff_dfmplots-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(paste0(path_plots, &quot;CDReff_int_dfm.png&quot;), plot = last_plot(),
+#               width = 6, height = 4, dpi = 300)
+
+# plotting dDIC
+ggplot(full_cdreff, aes(x = month, y = (dDIC_sum - dDIC_mean)/1e10, color = phase)) +
+  scale_x_continuous(breaks = seq(6, 72, by = 6), limits = c(0,72),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(-1, 1), expand = c(0,0)) +
+  geom_vline(xintercept = 12, linetype = &quot;dashed&quot;, color = &quot;grey75&quot;, linewidth = 0.6) +
+  #geom_hline(yintercept = 13.36, linetype = &quot;dashed&quot;, color = &quot;black&quot;, linewidth = 0.6) +
+  geom_line(linewidth = 1) +
+  scale_color_discrete(labels = c(&quot;elnino&quot; = &quot;El Niño&quot;, &quot;lanina&quot; = &quot;La Niña&quot;, &quot;neutral&quot; = &quot;Neutral&quot;)
+  ) +
+  labs(x = &quot;Months Since OAE Start&quot;,
+       y = &quot;Integrated \u0394DIC&#39; [10\u00B9\u2070 mol]&quot; #, title = &quot;Total Change in Dissolved Inorganic Carbon&quot;
+       ) +
+  theme_bw() + 
+  theme(panel.grid = element_blank(), legend.position = c(0.875, 0.2), 
+        legend.text = element_text(size = 15),
+        legend.box.background = element_rect(color = &quot;grey80&quot;, size = 0.5),
+        axis.text = element_text(size = 15, color = &quot;black&quot;),
+        axis.title = element_text(size = 16),
+        plot.title = element_blank(), legend.title = element_blank(), 
+        axis.ticks = element_line(color = &quot;black&quot;, size = 0.5),
+        axis.ticks.length = unit(0.3, &quot;cm&quot;),
+        panel.border = element_rect(color = &quot;black&quot;, size = 0.5),
+        plot.margin = margin(15, 15, 15, 15)) + 
+  coord_cartesian(clip = &#39;off&#39;, expand = FALSE)</code></pre>
+<p><img src="figure/cdreff_plots.Rmd/dTA_cdreff_dfmplots-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(paste0(path_plots, &quot;total_dDIC_cum_dfm.png&quot;), plot = last_plot(),
+#               width = 6, height = 4, dpi = 300)
+
+rm(list = ls())
+gc()</code></pre>
+<pre><code>          used (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells 1688229 90.2    3260507 174.2  3260507 174.2
+Vcells 2981135 22.8    8388608  64.0  6327066  48.3</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -931,16 +1276,16 @@ loaded via a namespace (and not attached):
  [9] evaluate_1.0.1    grid_4.4.2        fastmap_1.2.0     rprojroot_2.0.4  
 [13] jsonlite_1.8.9    processx_3.8.4    whisker_0.4.1     ps_1.8.1         
 [17] promises_1.3.2    httr_1.4.7        fansi_1.0.6       scales_1.3.0     
-[21] jquerylib_0.1.4   cli_3.6.3         rlang_1.1.4       bit64_4.5.2      
-[25] munsell_0.5.1     withr_3.0.2       cachem_1.1.0      yaml_2.3.10      
-[29] tools_4.4.2       tzdb_0.4.0        colorspace_2.1-1  httpuv_1.6.15    
-[33] assertthat_0.2.1  vctrs_0.6.5       R6_2.5.1          lifecycle_1.0.4  
-[37] git2r_0.35.0      bit_4.5.0         fs_1.6.5          pkgconfig_2.0.3  
-[41] callr_3.7.6       pillar_1.9.0      bslib_0.8.0       later_1.4.1      
-[45] gtable_0.3.6      glue_1.8.0        Rcpp_1.0.13-1     xfun_0.49        
-[49] tidyselect_1.2.1  rstudioapi_0.17.1 knitr_1.49        farver_2.1.2     
-[53] htmltools_0.5.8.1 labeling_0.4.3    rmarkdown_2.29    compiler_4.4.2   
-[57] getPass_0.2-4    </code></pre>
+[21] jquerylib_0.1.4   cli_3.6.3         crayon_1.5.3      rlang_1.1.4      
+[25] bit64_4.5.2       munsell_0.5.1     withr_3.0.2       cachem_1.1.0     
+[29] yaml_2.3.10       tools_4.4.2       tzdb_0.4.0        colorspace_2.1-1 
+[33] httpuv_1.6.15     assertthat_0.2.1  vctrs_0.6.5       R6_2.5.1         
+[37] lifecycle_1.0.4   git2r_0.35.0      bit_4.5.0         fs_1.6.5         
+[41] pkgconfig_2.0.3   callr_3.7.6       pillar_1.9.0      bslib_0.8.0      
+[45] later_1.4.1       gtable_0.3.6      glue_1.8.0        Rcpp_1.0.13-1    
+[49] xfun_0.49         tidyselect_1.2.1  rstudioapi_0.17.1 knitr_1.49       
+[53] farver_2.1.2      htmltools_0.5.8.1 labeling_0.4.3    rmarkdown_2.29   
+[57] compiler_4.4.2    getPass_0.2-4    </code></pre>
 </div>
 </div>
 </div>
