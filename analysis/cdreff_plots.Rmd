@@ -7,10 +7,10 @@ editor_options:
   chunk_output_type: console
 ---
 
-## Read this
+#Introduction
 
 Plotting the results of the full-grid integrated time series of dTA,
-CDR efficiency, and dDIC for each 3 phases
+CDR efficiency, and dDIC for each 3 phases and the mean
 
 ```{r setup, message=FALSE}
 
@@ -46,58 +46,297 @@ full_cdreff <- rbindlist(
 # add column for months since oae addition begins for x-axis
 full_cdreff <- full_cdreff[, month := seq_len(.N), by = phase]
 
+# computing means
+full_cdreff[, ":=" (
+  dTA_mean = mean(dTA_sum, na.rm = TRUE),
+  dDIC_mean = mean(dDIC_sum, na.rm = TRUE),
+  CDReff_mean = mean(CDR_eff, na.rm = TRUE)
+), by = month]
+
+
+# save
+# write_feather(full_cdreff, paste0(path_outputs, 
+# "full_CDReff_integrated.feather"))
+
 ```
 
+# Integrated Line Plots of 3 Phases
 ```{r  dTA_cdreff_plots, message=FALSE}
 
 # plotting dTA
 ggplot(full_cdreff, aes(x = month, y = dTA_sum/1e10, color = phase)) +
-  scale_x_continuous(breaks = seq(0, 72, by = 6), limits = c(0,72),
+  scale_x_continuous(breaks = seq(6, 72, by = 6), limits = c(0,72),
                      expand = c(0,0)) +
-  scale_y_continuous(limits = c(0, 18), expand = c(0,0)) +
-  geom_vline(xintercept = seq(0, 60, by = 12), color = "grey75", linewidth = 0.4) +
+  scale_y_continuous(limits = c(0, 19), expand = c(0,0)) +
+  geom_vline(xintercept = 12, linetype = "dashed", color = "grey75", linewidth = 0.6) +
   geom_hline(yintercept = 16.7, linetype = "dashed", color = "black", linewidth = 0.6) +
   geom_line(linewidth = 1) +
+  scale_color_discrete(labels = c("elnino" = "El Niño", "lanina" = "La Niña", "neutral" = "Neutral")
+  ) +
   labs(x = "Months Since OAE Start",
-       y = "Added Alkalinity (in 10^10 moles)",
-       title = "Total Added Alkalinity") +
+       y = "Integrated TA' [10\u00B9\u2070 mol]" #, title = "Total Added Alkalinity"
+       ) +
   theme_bw() + 
-  theme(panel.grid.major.y = element_line(color = "grey75", linewidth = 0.4))
+  theme(panel.grid = element_blank(), legend.position = c(0.875, 0.2), 
+        legend.text = element_text(size = 15),
+        legend.box.background = element_rect(color = "grey80", size = 0.5),
+        axis.text = element_text(size = 15, color = "black"),
+        axis.title = element_text(size = 16),
+        plot.title = element_blank(), legend.title = element_blank(), 
+        axis.ticks = element_line(color = "black", size = 0.5),
+        axis.ticks.length = unit(0.3, "cm"),
+        panel.border = element_rect(color = "black", size = 0.5),
+        plot.margin = margin(15, 15, 15, 15)) + 
+  coord_cartesian(clip = 'off', expand = FALSE)
 
 # ggsave(paste0(path_plots, "total_dTA_cum.png"), plot = last_plot(),
-#               width = 10, height = 6, dpi = 300)
+#               width = 6, height = 4, dpi = 300)
 
 # plotting CDReff
 ggplot(full_cdreff, aes(x = month, y = CDR_eff, color = phase)) +
-  geom_vline(xintercept = seq(0, 60, by = 12), color = "grey75", linewidth = 0.4) +
+  geom_vline(xintercept = 12, linetype = "dashed", color = "grey75", linewidth = 0.6) +
   geom_line(linewidth = 1) +
-  scale_x_continuous(breaks = seq(0, 72, by = 6), limits = c(0, 72),
+  scale_x_continuous(breaks = seq(6, 72, by = 6), limits = c(0, 72),
                      expand = c(0, 0)) +
-  scale_y_continuous(limits = c(0, 0.85), expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0, 1), expand = c(0, 0)) +
+  scale_color_discrete(labels = c("elnino" = "El Niño", "lanina" = "La Niña", "neutral" = "Neutral")
+  ) +
   labs(x = "Months Since OAE Start",
-       y = "CDR Efficiency (dDIC/dTA)",
-       title = "Integrated CDR Efficiency ") +
+       y = "Integrated \u03B7" #, title = "Integrated CDR Efficiency"
+       ) +
   theme_bw() +
-  theme(panel.grid.major.y = element_line(color = "grey75", linewidth = 0.4))
+  theme(panel.grid = element_blank(), legend.position = c(0.87, 0.2), 
+        legend.text = element_text(size = 15),
+        legend.box.background = element_rect(color = "grey80", size = 0.5),
+        axis.text = element_text(size = 15, color = "black"),
+        axis.title = element_text(size = 16),
+        plot.title = element_blank(), legend.title = element_blank(), 
+        axis.ticks = element_line(color = "black", size = 0.5),
+        axis.ticks.length = unit(0.3, "cm"),
+        panel.border = element_rect(color = "black", size = 0.5),
+        plot.margin = margin(15, 15, 15, 15)) + 
+  coord_cartesian(clip = 'off', expand = FALSE)
 
 # ggsave(paste0(path_plots, "CDReff_int.png"), plot = last_plot(),
-#               width = 10, height = 6, dpi = 300)
+#               width = 6, height = 4, dpi = 300)
 
 # plotting dDIC
 ggplot(full_cdreff, aes(x = month, y = dDIC_sum/1e10, color = phase)) +
-  scale_x_continuous(breaks = seq(0, 72, by = 6), limits = c(0,72),
+  scale_x_continuous(breaks = seq(6, 72, by = 6), limits = c(0,72),
                      expand = c(0,0)) +
-  scale_y_continuous(limits = c(0, 18), expand = c(0,0)) +
-  geom_vline(xintercept = seq(0, 60, by = 12), color = "grey75", linewidth = 0.4) +
-  geom_hline(yintercept = 16.7, linetype = "dashed", color = "black", linewidth = 0.6) +
+  scale_y_continuous(limits = c(0, 19), expand = c(0,0)) +
+  geom_vline(xintercept = 12, linetype = "dashed", color = "grey75", linewidth = 0.6) +
+  geom_hline(yintercept = 13.36, linetype = "dashed", color = "black", linewidth = 0.6) +
   geom_line(linewidth = 1) +
+  scale_color_discrete(labels = c("elnino" = "El Niño", "lanina" = "La Niña", "neutral" = "Neutral")
+  ) +
   labs(x = "Months Since OAE Start",
-       y = "dDissolved Inorganic Carbon (in 10^10 moles)",
-       title = "Total Change in Dissolved Inorganic Carbon") +
+       y = "Integrated DIC' [10\u00B9\u2070 mol]" #, title = "Total Change in Dissolved Inorganic Carbon"
+       ) +
   theme_bw() + 
-  theme(panel.grid.major.y = element_line(color = "grey75", linewidth = 0.4))
+  theme(panel.grid = element_blank(), legend.position = c(0.875, 0.2), 
+        legend.text = element_text(size = 15),
+        legend.box.background = element_rect(color = "grey80", size = 0.5),
+        axis.text = element_text(size = 15, color = "black"),
+        axis.title = element_text(size = 16),
+        plot.title = element_blank(), legend.title = element_blank(), 
+        axis.ticks = element_line(color = "black", size = 0.5),
+        axis.ticks.length = unit(0.3, "cm"),
+        panel.border = element_rect(color = "black", size = 0.5),
+        plot.margin = margin(15, 15, 15, 15)) + 
+  coord_cartesian(clip = 'off', expand = FALSE)
 
 # ggsave(paste0(path_plots, "total_dDIC_cum.png"), plot = last_plot(),
-#               width = 10, height = 6, dpi = 300)
+#               width = 6, height = 4, dpi = 300)
 
 ```
+
+# Integrated Line Plots of Means
+```{r  mean_plots, message=FALSE}
+# to add a shaded ribbon showing the range:
+full_cdreff <- full_cdreff[, ':='(
+  min_TA = min(dTA_sum), max_TA = max(dTA_sum),
+  min_DIC = min(dDIC_sum), max_DIC = max(dDIC_sum),
+  min_eff = min(CDR_eff), max_eff = max(CDR_eff)
+), by = month]
+
+
+# plotting dTA
+ggplot(full_cdreff, aes(x = month, y = dTA_mean/1e10)) +
+  scale_x_continuous(breaks = seq(6, 72, by = 6), limits = c(0,72),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(0, 19), expand = c(0,0)) +
+  geom_vline(xintercept = 12, linetype = "dashed", color = "grey75", linewidth = 0.6) +
+  geom_hline(yintercept = 16.7, linetype = "dashed", color = "black", linewidth = 0.6) +
+  geom_ribbon(aes(ymin = min_TA/1e10, ymax = max_TA/1e10), fill = "#A6CEE3", alpha = 0.45) +
+  geom_line(linewidth = 1) +
+  labs(x = "Months Since OAE Start",
+       y = " Mean Integrated TA' [10\u00B9\u2070 mol]" #,  title = "Mean Total Added Alkalinity"
+       ) +
+  theme_bw() + 
+  theme(panel.grid = element_blank(), #legend.position = c(0.9, 0.2), 
+        # legend.text = element_text(size = 12),
+        # legend.box.background = element_rect(color = "grey80", size = 0.5),
+        axis.text = element_text(size = 13, color = "black"),
+        axis.title = element_text(size = 15),
+        plot.title = element_blank(), legend.title = element_blank(), 
+        axis.ticks = element_line(color = "black", size = 0.5),
+        axis.ticks.length = unit(0.3, "cm"),
+        panel.border = element_rect(color = "black", size = 0.5),
+        plot.margin = margin(15, 15, 15, 15)) + 
+  coord_cartesian(clip = 'off', expand = FALSE)
+
+# ggsave(paste0(path_plots, "total_dTA_cum_mean.png"), plot = last_plot(),
+#               width = 8, height = 4, dpi = 300)
+
+# plotting CDReff
+ggplot(full_cdreff, aes(x = month, y = CDReff_mean)) +
+  geom_vline(xintercept = 12, linetype = "dashed", color = "grey75", linewidth = 0.6) +
+  geom_ribbon(aes(ymin = min_eff, ymax = max_eff), fill = "#A6CEE3", alpha = 0.45) +
+  geom_line(linewidth = 1) +
+  scale_x_continuous(breaks = seq(6, 72, by = 6), limits = c(0, 72),
+                     expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0, 1), expand = c(0, 0)) +
+  labs(x = "Months Since OAE Start",
+       y = "Mean Integrated \u03B7" #, title = "Mean Integrated CDR Efficiency"
+       ) +
+  theme_bw() +
+  theme(panel.grid = element_blank(), #legend.position = c(0.9, 0.2),
+        # legend.text = element_text(size = 12),
+        # legend.box.background = element_rect(color = "grey80", size = 0.5),
+        axis.text = element_text(size = 13, color = "black"),
+        axis.title = element_text(size = 15),
+        plot.title = element_blank(), legend.title = element_blank(), 
+        axis.ticks = element_line(color = "black", size = 0.5),
+        axis.ticks.length = unit(0.3, "cm"),
+        panel.border = element_rect(color = "black", size = 0.5),
+        plot.margin = margin(15, 15, 15, 15)) + 
+  coord_cartesian(clip = 'off', expand = FALSE)
+
+# ggsave(paste0(path_plots, "CDReff_int_mean.png"), plot = last_plot(),
+#               width = 8, height = 4, dpi = 300)
+
+# plotting dDIC
+ggplot(full_cdreff, aes(x = month, y = dDIC_mean/1e10)) +
+  scale_x_continuous(breaks = seq(6, 72, by = 6), limits = c(0,72),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(0, 19), expand = c(0,0)) +
+  geom_vline(xintercept = 12, linetype = "dashed", color = "grey75", linewidth = 0.6) +
+  geom_hline(yintercept = 13.36, linetype = "dashed", color = "black", linewidth = 0.6) +
+  geom_ribbon(aes(ymin = min_DIC/1e10, ymax = max_DIC/1e10), fill = "#A6CEE3", alpha = 0.45) +
+  geom_line(linewidth = 1) +
+  labs(x = "Months Since OAE Start",
+       y = "Mean Integrated DIC' [10\u00B9\u2070 mol]" #, title = "Mean Total New Dissolved Inorganic Carbon"
+       ) +
+  theme_bw() + 
+  theme(panel.grid = element_blank(), #legend.position = c(0.9, 0.2), 
+        # legend.text = element_text(size = 12),
+        # legend.box.background = element_rect(color = "grey80", size = 0.5),
+        axis.text = element_text(size = 13, color = "black"),
+        axis.title = element_text(size = 15),
+        plot.title = element_blank(), legend.title = element_blank(), 
+        axis.ticks = element_line(color = "black", size = 0.5),
+        axis.ticks.length = unit(0.3, "cm"),
+        panel.border = element_rect(color = "black", size = 0.5),
+        plot.margin = margin(15, 15, 15, 15)) + 
+  coord_cartesian(clip = 'off', expand = FALSE)
+
+# ggsave(paste0(path_plots, "total_dDIC_cum_mean.png"), plot = last_plot(),
+#               width = 8, height = 4, dpi = 300)
+
+```
+
+Difference from Mean Plots
+```{r  dTA_cdreff_dfmplots, message=FALSE}
+
+# plotting dTA
+ggplot(full_cdreff, aes(x = month, y = (dTA_sum - dTA_mean)/1e10, color = phase)) +
+  scale_x_continuous(breaks = seq(6, 72, by = 6), limits = c(0,72),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(-1, 1), expand = c(0,0)) +
+  geom_vline(xintercept = 12, linetype = "dashed", color = "grey75", linewidth = 0.6) +
+  #geom_hline(yintercept = 16.7, linetype = "dashed", color = "black", linewidth = 0.6) +
+  geom_line(linewidth = 1) +
+  scale_color_discrete(labels = c("elnino" = "El Niño", "lanina" = "La Niña", "neutral" = "Neutral")
+  ) +
+  labs(x = "Months Since OAE Start",
+       y = "Integrated \u0394TA' [10\u00B9\u2070 mol]" #, title = "Total Added Alkalinity"
+       ) +
+  theme_bw() + 
+  theme(panel.grid = element_blank(), legend.position = c(0.875, 0.2), 
+        legend.text = element_text(size = 15),
+        legend.box.background = element_rect(color = "grey80", size = 0.5),
+        axis.text = element_text(size = 15, color = "black"),
+        axis.title = element_text(size = 16),
+        plot.title = element_blank(), legend.title = element_blank(), 
+        axis.ticks = element_line(color = "black", size = 0.5),
+        axis.ticks.length = unit(0.3, "cm"),
+        panel.border = element_rect(color = "black", size = 0.5),
+        plot.margin = margin(15, 15, 15, 15)) + 
+  coord_cartesian(clip = 'off', expand = FALSE)
+
+# ggsave(paste0(path_plots, "total_dTA_cum_dfm.png"), plot = last_plot(),
+#               width = 6, height = 4, dpi = 300)
+
+# plotting CDReff
+ggplot(full_cdreff, aes(x = month, y = CDR_eff - CDReff_mean, color = phase)) +
+  geom_vline(xintercept = 12, linetype = "dashed", color = "grey75", linewidth = 0.6) +
+  geom_line(linewidth = 1) +
+  scale_x_continuous(breaks = seq(6, 72, by = 6), limits = c(0, 72),
+                     expand = c(0, 0)) +
+  scale_y_continuous(limits = c(-.1, .1), expand = c(0, 0)) +
+  scale_color_discrete(labels = c("elnino" = "El Niño", "lanina" = "La Niña", "neutral" = "Neutral")
+  ) +
+  labs(x = "Months Since OAE Start",
+       y = "Integrated \u0394\u03B7" #, title = "Integrated CDR Efficiency"
+       ) +
+  theme_bw() +
+  theme(panel.grid = element_blank(), legend.position = c(0.87, 0.2), 
+        legend.text = element_text(size = 15),
+        legend.box.background = element_rect(color = "grey80", size = 0.5),
+        axis.text = element_text(size = 15, color = "black"),
+        axis.title = element_text(size = 16),
+        plot.title = element_blank(), legend.title = element_blank(), 
+        axis.ticks = element_line(color = "black", size = 0.5),
+        axis.ticks.length = unit(0.3, "cm"),
+        panel.border = element_rect(color = "black", size = 0.5),
+        plot.margin = margin(15, 15, 15, 15)) + 
+  coord_cartesian(clip = 'off', expand = FALSE)
+
+# ggsave(paste0(path_plots, "CDReff_int_dfm.png"), plot = last_plot(),
+#               width = 6, height = 4, dpi = 300)
+
+# plotting dDIC
+ggplot(full_cdreff, aes(x = month, y = (dDIC_sum - dDIC_mean)/1e10, color = phase)) +
+  scale_x_continuous(breaks = seq(6, 72, by = 6), limits = c(0,72),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(-1, 1), expand = c(0,0)) +
+  geom_vline(xintercept = 12, linetype = "dashed", color = "grey75", linewidth = 0.6) +
+  #geom_hline(yintercept = 13.36, linetype = "dashed", color = "black", linewidth = 0.6) +
+  geom_line(linewidth = 1) +
+  scale_color_discrete(labels = c("elnino" = "El Niño", "lanina" = "La Niña", "neutral" = "Neutral")
+  ) +
+  labs(x = "Months Since OAE Start",
+       y = "Integrated \u0394DIC' [10\u00B9\u2070 mol]" #, title = "Total Change in Dissolved Inorganic Carbon"
+       ) +
+  theme_bw() + 
+  theme(panel.grid = element_blank(), legend.position = c(0.875, 0.2), 
+        legend.text = element_text(size = 15),
+        legend.box.background = element_rect(color = "grey80", size = 0.5),
+        axis.text = element_text(size = 15, color = "black"),
+        axis.title = element_text(size = 16),
+        plot.title = element_blank(), legend.title = element_blank(), 
+        axis.ticks = element_line(color = "black", size = 0.5),
+        axis.ticks.length = unit(0.3, "cm"),
+        panel.border = element_rect(color = "black", size = 0.5),
+        plot.margin = margin(15, 15, 15, 15)) + 
+  coord_cartesian(clip = 'off', expand = FALSE)
+
+# ggsave(paste0(path_plots, "total_dDIC_cum_dfm.png"), plot = last_plot(),
+#               width = 6, height = 4, dpi = 300)
+
+rm(list = ls())
+gc()
+```
+
+

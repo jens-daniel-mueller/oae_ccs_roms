@@ -8,12 +8,12 @@ editor_options:
 ---
 
 ## Introduction
-
-1. Map air-sea CO2 flux of each surface cell (all 3 phases, monthly maps)
-2. Map dFlux of each cell (OAE - control), monthly maps, also on zoomed in region
-3. Map dFlux difference from mean of each phase on zoomed region
-4. Calculate moles of CO2 uptake per month dist and time series
-
+ 
+1.  Map air-sea CO2 flux of each surface cell (all 3 phases, monthly maps)
+2.  Map dFlux of each cell (OAE - control), monthly maps, also on zoomed in region
+3.  Map dFlux difference from mean of each phase on zoomed region
+4.  Calculate moles of CO2 uptake per month dist and time series
+5.  Mapping ddpCO2 during months of interest
 
 ```{r setup, message=FALSE}
 
@@ -52,6 +52,10 @@ neutral_cdreff_sum <- read_feather(
   paste0(path_outputs_og, "neutral_CDReff_integrated.feather"))
 elnino_cdreff_sum <- read_feather(
   paste0(path_outputs_og, "elnino_CDReff_integrated.feather"))
+
+# loading in pCO2 gradient data
+ddpco2_data <- read_feather(
+  paste0(path_outputs, "ddpco2_dataRG2.feather"))
 
 ```
 
@@ -106,9 +110,9 @@ gc()
 
 ```
 
-## Air-Sea Flux Regional Distribution
+# Air-Sea Flux Regional Distribution
 
-# Regional distribution of flux in OAE runs
+## Regional distribution of flux in OAE runs
 ```{r fgCO2_dist, message=FALSE}
 
 # can rerun code for months of choice
@@ -130,7 +134,7 @@ create_fgOAE_distmap <- function(phase_name, title_text) {
          title = paste0(title_text, " Phase, Air-Sea CO2 Flux (Month 14)")) +
     theme(panel.border = element_blank())
   
-  print(plot)
+  # print(plot)
 
   # # save plot
   # ggsave(paste0(path_plots, phase_name, "_fgOAEmap_month14.png"), plot = plot,
@@ -146,7 +150,7 @@ gc()
 
 ```
 
-# Regional distribution of dflux in OAE runs (OAE flux - control flux)
+## Regional distribution of dflux in OAE runs (OAE flux - control flux)
 ```{r dfgCO2_dist, message=FALSE}
 
 # can rerun code for months of choice,
@@ -171,7 +175,7 @@ create_dfg_distmap <- function(phase_name, title_text) {
          title = paste0(title_text, " Phase, Change in Air-Sea CO2 Flux (Month 22)")) +
     theme(panel.border = element_blank())
   
-  print(plot)
+  # print(plot)
 
   # # save plot
   # ggsave(paste0(path_plots, phase_name, "_dfgmap_month22.png"), plot = plot,
@@ -187,7 +191,7 @@ gc()
 
 ```
 
-# Zoomed in maps of dflux in OAE runs (OAE flux - control flux) near add site
+## Zoomed in maps of dflux in OAE runs (OAE flux - control flux) near add site
 ```{r dfgCO2_dist_zoom, message=FALSE}
 
 # can rerun code for months of choice
@@ -212,7 +216,7 @@ create_dfg_distmap <- function(phase_name, title_text) {
          title = paste0(title_text, " Phase, Change in Air-Sea CO2 Flux (Month 15)")) +
     theme(panel.border = element_blank())
   
-  print(plot)
+  # print(plot)
 
   # # save plot
   # ggsave(paste0(path_plots, phase_name, "_dfgmapzoom_month15.png"), plot = plot,
@@ -229,7 +233,7 @@ gc()
 
 ```
 
-# Zoomed in difference from mean dflux maps
+## Zoomed in difference from mean dflux maps
 ```{r dfgco2_dfm, message=FALSE}
 
 # calculating mean max delta flux across all 3 phases for each grid cell
@@ -259,7 +263,7 @@ create_dfg_meanmap <- function(phase_name, title_text) {
          title = paste0(title_text, " Phase, Difference from Mean delta Air-Sea CO2 Flux (Month 1)")) +
     theme(panel.border = element_blank())
   
-  print(plot)
+  # print(plot)
 
   # # save plot
   # ggsave(paste0(path_plots, phase_name, "_dfgmapdfm_month1.png"), plot = plot,
@@ -275,8 +279,7 @@ gc()
 
 ```
 
-## Quantifying Uptake
-
+# Quantifying Uptake
 ```{r co2_uptake, message=FALSE}
 
 # merging area data to dFG and calculating moles per month from the dFG rate
@@ -309,7 +312,7 @@ create_uptake_distmap <- function(phase_name, title_text) {
          title = paste0(title_text, " Phase, CO2 Uptake (Month 24)")) +
     theme(panel.border = element_blank())
   
-  print(plot)
+  # print(plot)
 
   # # save plot
   # ggsave(paste0(path_plots, phase_name, "_co2uptakemap_month24.png"), plot = plot,
@@ -331,10 +334,10 @@ uptake_data_int <- merge(uptake_data_int, full_cdreff_og[, .(phase, month, dDIC_
   .[, fraction := CO2_sum_cum / dDIC_sum]
 
 # saving uptake individual and sum value tables
-write_feather(uptake_data, paste0(path_outputs,
-                                      "fguptake_data.feather"))
-write_feather(uptake_data_int, paste0(path_outputs,
-                                      "fguptake_data_intsum.feather"))
+# write_feather(uptake_data, paste0(path_outputs,
+#                                       "fguptake_data.feather"))
+# write_feather(uptake_data_int, paste0(path_outputs,
+#                                       "fguptake_data_intsum.feather"))
 
 # plot time series of accumulating uptaken CO2
 ggplot(uptake_data_int, aes(x = month, y = CO2_sum_cum/1e10, color = phase)) +
@@ -352,10 +355,107 @@ ggplot(uptake_data_int, aes(x = month, y = CO2_sum_cum/1e10, color = phase)) +
 # ggsave(paste0(path_plots, "total_fg_co2uptake.png"), plot = last_plot(),
 #               width = 10, height = 6, dpi = 300)
 
+rm(create_uptake_distmap)
+gc()
 
+```
+
+# Induced pCO2 Gradient Distribution
+
+Calculating 3-month mean
+```{r ddpco2_3momean, message=FALSE}
+
+# assigning group
+ddpco2_data[, period := (month - 1) %/% 3 + 1]
+
+# calculating 3-month mean
+ddpco2_data[, ":=" (
+  ddpco2_3mean = mean(ddpCO2, na.rm = TRUE)),
+  by = .(lat, lon, phase, period)]
+
+```
+
+## Regional distribution of ddpCO2 (3-month means)
+```{r ddpco2_dist, message=FALSE}
+
+# can rerun code for months of choice, using CCS region grid
+create_ddpco2_distmap <- function(phase_name, title_text) {
+  phase_dt <- ddpco2_data[ddpco2_data$phase == phase_name & ddpco2_data$month == 3]
+  plot <- ggplot(phase_dt, aes(x = lon, y = lat, fill = ddpco2_3mean)) +
+    geom_polygon(data = map_data("world"), aes(x = long, y = lat, group = group), 
+                 fill = "lightgray", color = "white") +
+    geom_raster() +
+    scale_fill_gradient2(low = "green", mid = "white", high = "purple", midpoint = 0,
+                         limit = c(-1, 130)) +
+    theme_light() +
+    coord_fixed(xlim = c(-135, -110),
+              ylim = c(22.5, 47.5)) +
+    scale_x_continuous(breaks = seq(-140, -110, by = 5)) +
+    scale_y_continuous(breaks = seq(20, 50, by = 5)) +
+    labs(x = "Longitude",
+         y = "Latitude",
+         fill = "dpCO2 Gradient (ppm)",
+         title = paste0(title_text, " Phase, Induced pCO2 Gradient 3-Month Mean (Month 3)")) +
+    theme(panel.border = element_blank())
+  
+  # print(plot)
+
+  # # save plot
+  # ggsave(paste0(path_plots, phase_name, "_ddpco2map_3mo_month3.png"), plot = plot,
+  #        width = 8, height = 6, dpi = 300)
+}
+
+lapply(seq_along(phases), function(i) {
+  create_ddpco2_distmap(phases[i], phase_titles[i])
+})
+
+rm(create_ddpco2_distmap)
+gc()
+
+```
+
+## Zoomed in difference from mean ddpCO2 maps
+```{r ddpco2_dfm, message=FALSE}
+
+# calculating mean ddpco2 across all 3 phases for each grid cell
+setDT(ddpco2_data)
+ddpco2_data[, ":=" (
+  ddpco2_mean = mean(ddpCO2, na.rm = TRUE)
+), by = .(lat, lon, month)]
+
+# can rerun code for months of choice, subset coordinates in place
+create_ddpco2_meanmap <- function(phase_name, title_text) {
+  phase_dt <- ddpco2_data[ddpco2_data$phase == phase_name & ddpco2_data$month == 15]
+  plot <- ggplot(phase_dt, aes(x = lon, y = lat, fill = ddpCO2 - ddpco2_mean)) +
+    geom_polygon(data = map_data("world"), aes(x = long, y = lat, group = group), 
+                 fill = "lightgray", color = "white") +
+    geom_raster() +
+    scale_fill_gradient2(low = "blue", mid = "white", high = "red", midpoint = 0,
+                        limits = c(-40, 40)) + 
+                        # breaks = c(-0.000005, -0.0000025, 0, 0.0000025, 0.000005)) +
+    theme_light() +
+    coord_fixed(xlim = c(-135, -110),
+              ylim = c(22.5, 47.5)) +
+    scale_x_continuous(breaks = seq(-135, -100, by = 10)) +
+    scale_y_continuous(breaks = seq(10, 45, by = 10)) +
+    labs(x = "Longitude",
+         y = "Latitude",
+         fill = "Difference from Mean\ndpCO2 Gradient (ppm)",
+         title = paste0(title_text, " Phase, Difference from Mean OAE Induced pCO2 Gradient (Month 15)")) +
+    theme(panel.border = element_blank())
+  
+  # print(plot)
+
+  # # save plot
+  # ggsave(paste0(path_plots, phase_name, "_ddpco2mapdfm_month15.png"), plot = plot,
+  #        width = 8, height = 6, dpi = 300)
+}
+
+lapply(seq_along(phases), function(i) {
+  create_ddpco2_meanmap(phases[i], phase_titles[i])
+})
 
 rm(list = ls())
 gc()
 
 ```
-
