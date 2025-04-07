@@ -1,0 +1,99 @@
+---
+title: "Analysis Subregions"
+author: "Victoria Froh & Jens Daniel Müller"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+Defining and displaying the subregions for my driver analysis
+
+```{r regions, message=FALSE, results='hide'}
+
+#loading packages
+library(tidyverse)
+library(maps)
+library(data.table)
+library(arrow)
+
+# Path to intermediate computation outputs
+path_outputs <- "/net/sea/work/vifroh/oae_ccs_roms_data/regrid_2/"
+
+# Path to save practice plots when working on them
+path_plots <- "/net/sea/work/vifroh/test_plots/"
+
+# load in surface data set
+lanina_surf_data <- read_feather(paste0(path_outputs,
+                                       "lanina_surf_dataRG2.feather"))
+lanina_surf_data <- lanina_surf_data[time == "1998-06"] %>% 
+  .[, lat := as.numeric(lat)] %>% 
+    .[, lon := as.numeric(lon)] %>% setDT()
+
+regions <- data.frame(
+  region = c("Local", "CCS", "NE Pacific"),
+  lon_min = c(-127, -140, -155),
+  lon_max = c(-115, -110, -95),
+  lat_min = c(27.5, 22.5, 10),
+  lat_max = c(37.5, 47.5, 60)
+)
+
+lanina_surf_data[, region := ifelse(
+  lon >= regions$lon_min[1] & lon <= regions$lon_max[1] & lat >= regions$lat_min[1] & 
+    lat <= regions$lat_max[1], "Local", 
+  ifelse(lon >= regions$lon_min[2] & lon <= regions$lon_max[2] & 
+           lat >= regions$lat_min[2] & lat <= regions$lat_max[2], "CCS",
+         ifelse(lon >= regions$lon_min[3] & lon <= regions$lon_max[3] 
+                & lat >= regions$lat_min[3] & lat <= regions$lat_max[3], 
+                "NE Pacific", NA_character_)))]
+
+
+base_map <- ggplot() + 
+  borders("world", fill = "gray80", color = "black") +
+  coord_fixed(xlim = c(-160, -90), ylim = c(5, 65), expand = FALSE) + 
+  theme_minimal()
+
+# boundaries
+map_regions <- base_map + 
+  geom_rect(data = regions, aes(
+    xmin = lon_min, xmax = lon_max, ymin = lat_min, ymax = lat_max, fill = region
+  ), color = "black", alpha = 0.3) + 
+  scale_fill_manual(values = c("orange", "green", "blue")) + 
+  labs(title = "Study Regions", fill = "Region")
+
+print(map_regions)
+
+ggsave(paste0(path_plots, "regions_boxes_fill.png"), plot = last_plot(),
+              width = 8, height = 8, dpi = 300)
+
+# regions <- rbindlist(list(
+#   data.table(region = "Local", 
+#              lon = c(-127, -127, -115, -115, -127), 
+#              lat = c(27.5, 37.5, 37.5, 27.5, 27.5)),  # Closing the polygon
+#   data.table(region = "CCS", 
+#              lon = c(-140, -140, -110, -110, -140), 
+#              lat = c(22.5, 47.5, 47.5, 22.5, 22.5)),
+#   data.table(region = "NE Pacific", 
+#              lon = c(-155, -155, -95, -95, -155), 
+#              lat = c(10, 60, 60, 10, 10))
+# ))
+
+# Assign region colors
+region_colors <- c("Local" = "purple", "CCS" = "green", "NE Pacific" = "blue")
+
+# filling in from actual data
+ggplot(lanina_surf_data, aes(x = lon, y = lat, color = region)) + 
+  borders("world", fill = "gray80", color = "black") + #adding coastlines
+  geom_point(size = 2) +
+  scale_color_manual(values = 
+                      c("Local" = "purple", "CCS" = "green", "NE Pacific" = "blue")) + #coloring in regions
+  coord_fixed(xlim = c(-160, -90), ylim = c(5, 65), expand = FALSE) + 
+  theme_minimal() + 
+  labs(title = "Study Regions", color = "Region")
+
+
+```
+
+
+

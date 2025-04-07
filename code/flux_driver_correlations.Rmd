@@ -1,0 +1,353 @@
+---
+title: "Air-Sea CO2 Flux Driver Attributions"
+author: "Victoria Froh"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+# Introduction
+
+Exploring the flux drivers for each defined region
+```{r setup, message=FALSE}
+
+#loading packages
+library(tidyverse)
+library(tidync)
+library(data.table)
+library(arrow)
+library(parallel)
+library(scales)
+library(patchwork)
+
+
+# Path to intermediate computation outputs
+path_outputs <- "/net/sea/work/vifroh/oae_ccs_roms_data/regrid_2/"
+
+# Path to save practice plots when working on them
+path_plots <- "/net/sea/work/vifroh/test_plots/"
+
+# loading in previous saved flux drivers data files
+flux_drivers_loc <- read_feather(paste0(path_outputs,
+                                             "flux_drivers_loc.feather"))
+flux_drivers_ccs <- read_feather(paste0(path_outputs,
+                                             "flux_drivers_ccs.feather"))
+flux_drivers_nep <- read_feather(paste0(path_outputs,
+                                             "flux_drivers_nep.feather"))
+
+```
+
+## Data Preparation
+```{r data_prep, message=FALSE}
+
+flux_drivers_loc_long <- flux_drivers_loc %>% 
+  pivot_longer(cols = c(CO2_upsum, wind_avg, alk_pot_mean, ddpCO2_mean, CO3prox_mean),
+               names_to = "variable", values_to = "value")
+flux_drivers_ccs_long <- flux_drivers_ccs %>% 
+  pivot_longer(cols = c(CO2_upsum, wind_avg, alk_pot_mean, ddpCO2_mean, CO3prox_mean),
+               names_to = "variable", values_to = "value")
+flux_drivers_nep_long <- flux_drivers_nep %>% 
+  pivot_longer(cols = c(CO2_upsum, wind_avg, alk_pot_mean, ddpCO2_mean, CO3prox_mean),
+               names_to = "variable", values_to = "value")
+
+```
+
+# Air-Sea Flux Uptake and Drivers Correlation
+
+## Local Region Time Series
+```{r  loc_plot, message=FALSE}
+# CO2 uptake from flux rates plot
+p1 <- ggplot(flux_drivers_loc, aes(x = month, y = CO2_upsum/1e8, color = phase)) +
+  scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(0, 150), expand = c(0,0)) +
+  geom_vline(xintercept = seq(0, 24, by = 12), color = "grey75", linewidth = 0.4) +
+  geom_line(linewidth = 1) +
+  labs( #title = "Monthly CO2 Uptake in Local Region", 
+       #x = "Months Since OAE Start", 
+       y = "Moles of CO2 (1E8)") +
+  theme_bw() + 
+  theme(panel.grid.minor.x = element_blank(), axis.text.x = element_blank(),
+        axis.title.x = element_blank())
+
+# average wind speed plot
+p2 <- ggplot(flux_drivers_loc, aes(x = month, y = wind_avg, color = phase)) +
+  scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(0, 10), expand = c(0,0)) +
+  geom_vline(xintercept = seq(0, 24, by = 12), color = "grey75", linewidth = 0.4) +
+  geom_line(linewidth = 1) +
+  labs(#x = "Months Since OAE Start", 
+       y = "Wind Speed (m/s)") +
+       # title = "Monthly Mean Wind Speed in Local Region") +
+  theme_bw() + 
+  theme(panel.grid.minor.x = element_blank(), axis.text.x = element_blank(), 
+        axis.title.x = element_blank())
+
+# average unused alkalinity concentration plot
+p3 <- ggplot(flux_drivers_loc, aes(x = month, y = alk_pot_mean, color = phase)) +
+  scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(0, 2), expand = c(0,0)) +
+  geom_vline(xintercept = seq(0, 24, by = 12), color = "grey75", linewidth = 0.4) +
+  geom_line(linewidth = 1) +
+  labs(# x = "Months Since OAE Start", 
+       y = "Alkalinity Potential (mmol/m3)") +
+       # title = "Monthly Mean Alkalinity Potential in Local Region"
+  theme_bw() + 
+  theme(panel.grid.minor.x = element_blank(), axis.text.x = element_blank(), 
+        axis.title.x = element_blank())
+
+# average dpCO2 gradient plot
+p4 <- ggplot(flux_drivers_loc, aes(x = month, y = ddpCO2_mean, color = phase)) +
+  scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(0, 4), expand = c(0,0)) +
+  geom_vline(xintercept = seq(0, 24, by = 12), color = "grey75", linewidth = 0.4) +
+  geom_line(linewidth = 1) +
+  labs(# title = "Monthly Mean OAE-Induced pCO2 Gradient in Local Region", 
+       # x = "Months Since OAE Start", 
+       y = "dpCO2 gradient (ppm)") +
+  theme_bw() + 
+  theme(panel.grid.minor.x = element_blank(), axis.text.x = element_blank(), 
+        axis.title.x = element_blank())
+
+# average carbonate ion concentration mmol/m3
+p5 <- ggplot(flux_drivers_loc, aes(x = month, y = CO3prox_mean, color = phase)) +
+  scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(150, 300), expand = c(0,0)) +
+  geom_vline(xintercept = seq(0, 24, by = 12), color = "grey75", linewidth = 0.4) +
+  geom_line(linewidth = 1) +
+  labs(# title = "Monthly Mean Carbonate Ion proxy Concentration in Local Region", 
+       x = "Months Since OAE Start", 
+       y = "TA - DIC (mmol/m3)") +
+  theme_bw() + 
+  theme(panel.grid.minor.x = element_blank())
+
+p1 / p2 / p3 / p4 / p5 + plot_layout(guides = "collect") +
+  plot_annotation(title = "Comparison of CO2 Flux Drivers (Local Region)") & 
+  theme(legend.position = "bottom",
+        plot.title = element_text(hjust = 0.5))
+
+# ggsave(paste0(path_plots, "fluxdrivers_stack_loc.png"), plot = last_plot(),
+#               width = 6, height = 10, dpi = 300)
+
+rm()
+gc()
+
+```
+
+## CCS Region Time Series
+```{r  ccs_plot, message=FALSE}
+# CO2 uptake from flux rates plot
+p1 <- ggplot(flux_drivers_ccs, aes(x = month, y = CO2_upsum/1e8, color = phase)) +
+  scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(0, 140), expand = c(0,0)) +
+  geom_vline(xintercept = seq(0, 24, by = 12), color = "grey75", linewidth = 0.4) +
+  geom_line(linewidth = 1) +
+  labs( #title = "Monthly CO2 Uptake in CCS Region", 
+       #x = "Months Since OAE Start", 
+       y = "Moles of CO2 (1E8)") +
+  theme_bw() + 
+  theme(panel.grid.minor.x = element_blank(), axis.text.x = element_blank(),
+        axis.title.x = element_blank())
+
+# average wind speed plot
+p2 <- ggplot(flux_drivers_ccs, aes(x = month, y = wind_avg, color = phase)) +
+  scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(0, 10), expand = c(0,0)) +
+  geom_vline(xintercept = seq(0, 24, by = 12), color = "grey75", linewidth = 0.4) +
+  geom_line(linewidth = 1) +
+  labs(#x = "Months Since OAE Start", 
+       y = "Wind Speed (m/s)") +
+       # title = "Monthly Mean Wind Speed in CCS Region") +
+  theme_bw() + 
+  theme(panel.grid.minor.x = element_blank(), axis.text.x = element_blank(), 
+        axis.title.x = element_blank())
+
+# average unused alkalinity concentration plot
+p3 <- ggplot(flux_drivers_ccs, aes(x = month, y = alk_pot_mean, color = phase)) +
+  scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(0, 0.5), expand = c(0,0)) +
+  geom_vline(xintercept = seq(0, 24, by = 12), color = "grey75", linewidth = 0.4) +
+  geom_line(linewidth = 1) +
+  labs(# x = "Months Since OAE Start", 
+       y = "Unused Alkalinity (mmol/m3)") +
+       # title = "Monthly Mean Alkalinity Potential in CCS Region"
+  theme_bw() + 
+  theme(panel.grid.minor.x = element_blank(), axis.text.x = element_blank(), 
+        axis.title.x = element_blank())
+
+# average dpCO2 gradient plot
+p4 <- ggplot(flux_drivers_ccs, aes(x = month, y = ddpCO2_mean, color = phase)) +
+  scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(0, 1), expand = c(0,0)) +
+  geom_vline(xintercept = seq(0, 24, by = 12), color = "grey75", linewidth = 0.4) +
+  geom_line(linewidth = 1) +
+  labs(# title = "Monthly Mean OAE-Induced pCO2 Gradient in CCS Region", 
+       # x = "Months Since OAE Start", 
+       y = "dpCO2 gradient (ppm)") +
+  theme_bw() + 
+  theme(panel.grid.minor.x = element_blank(), axis.text.x = element_blank(), 
+        axis.title.x = element_blank())
+
+# average carbonate ion concentration mmol/m3
+p5 <- ggplot(flux_drivers_ccs, aes(x = month, y = CO3prox_mean, color = phase)) +
+  scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(150, 300), expand = c(0,0)) +
+  geom_vline(xintercept = seq(0, 24, by = 12), color = "grey75", linewidth = 0.4) +
+  geom_line(linewidth = 1) +
+  labs(# title = "Monthly Mean Carbonate Ion proxy Concentration in CCS Region", 
+       x = "Months Since OAE Start", 
+       y = "TA - DIC (mmol/m3)") +
+  theme_bw() + 
+  theme(panel.grid.minor.x = element_blank())
+
+p1 / p2 / p3 / p4 / p5 + plot_layout(guides = "collect") +
+  plot_annotation(title = "Comparison of CO2 Flux Drivers (CCS Region)") & 
+  theme(legend.position = "bottom",
+        plot.title = element_text(hjust = 0.5))
+
+# ggsave(paste0(path_plots, "fluxdrivers_stack_ccs.png"), plot = last_plot(),
+#               width = 6, height = 10, dpi = 300)
+
+# stacked plot
+# ggplot(flux_drivers_loc_long, aes(x = month, y = value, color = phase)) +
+#   scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+#                      expand = c(0,0)) +
+#   # scale_y_continuous(limits = c(0, 125), expand = c(0,0)) +
+#   geom_vline(xintercept = seq(0, 24, by = 12), color = "grey75", linewidth = 0.4) +
+#   geom_line(linewidth = 1) +
+#   facet_wrap(~variable, ncol = 1, scales = "free_y") +
+#   labs(title = "Comparison of CO2 Flux Drivers (Local Region)", 
+#        x = "Months Since OAE Start", 
+#        y = "Moles of CO2 (1E8)") +
+#   theme_bw() + 
+#   theme(panel.grid.minor.x = element_blank(), legend.position = "bottom")
+
+rm()
+gc()
+
+```
+
+## NE Pacific Region Time Series
+```{r  ccs_plot, message=FALSE}
+# CO2 uptake from flux rates plot
+p1 <- ggplot(flux_drivers_nep, aes(x = month, y = CO2_upsum/1e8, color = phase)) +
+  scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(0, 140), expand = c(0,0)) +
+  geom_vline(xintercept = seq(0, 24, by = 12), color = "grey75", linewidth = 0.4) +
+  geom_line(linewidth = 1) +
+  labs( #title = "Monthly CO2 Uptake in NE Pacific Region", 
+       #x = "Months Since OAE Start", 
+       y = "Moles of CO2 (1E8)") +
+  theme_bw() + 
+  theme(panel.grid.minor.x = element_blank(), axis.text.x = element_blank(),
+        axis.title.x = element_blank())
+
+# average wind speed plot
+p2 <- ggplot(flux_drivers_nep, aes(x = month, y = wind_avg, color = phase)) +
+  scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(0, 10.3), expand = c(0,0)) +
+  geom_vline(xintercept = seq(0, 24, by = 12), color = "grey75", linewidth = 0.4) +
+  geom_line(linewidth = 1) +
+  labs(#x = "Months Since OAE Start", 
+       y = "Wind Speed (m/s)") +
+       # title = "Monthly Mean Wind Speed in NE Pacific Region") +
+  theme_bw() + 
+  theme(panel.grid.minor.x = element_blank(), axis.text.x = element_blank(), 
+        axis.title.x = element_blank())
+
+# average unused alkalinity concentration plot
+p3 <- ggplot(flux_drivers_nep, aes(x = month, y = alk_pot_mean, color = phase)) +
+  scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(0, 0.2), expand = c(0,0)) +
+  geom_vline(xintercept = seq(0, 24, by = 12), color = "grey75", linewidth = 0.4) +
+  geom_line(linewidth = 1) +
+  labs(# x = "Months Since OAE Start", 
+       y = "Unused Alkalinity (mmol/m3)") +
+       # title = "Monthly Mean Alkalinity Potential in NE Pacific Region"
+  theme_bw() + 
+  theme(panel.grid.minor.x = element_blank(), axis.text.x = element_blank(), 
+        axis.title.x = element_blank())
+
+# average dpCO2 gradient plot
+p4 <- ggplot(flux_drivers_nep, aes(x = month, y = ddpCO2_mean, color = phase)) +
+  scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(0, 0.2), expand = c(0,0)) +
+  geom_vline(xintercept = seq(0, 24, by = 12), color = "grey75", linewidth = 0.4) +
+  geom_line(linewidth = 1) +
+  labs(# title = "Monthly Mean OAE-Induced pCO2 Gradient in NE Pacific Region", 
+       # x = "Months Since OAE Start", 
+       y = "dpCO2 gradient (ppm)") +
+  theme_bw() + 
+  theme(panel.grid.minor.x = element_blank(), axis.text.x = element_blank(), 
+        axis.title.x = element_blank())
+
+# average carbonate ion concentration mmol/m3
+p5 <- ggplot(flux_drivers_nep, aes(x = month, y = CO3prox_mean, color = phase)) +
+  scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(150, 300), expand = c(0,0)) +
+  geom_vline(xintercept = seq(0, 24, by = 12), color = "grey75", linewidth = 0.4) +
+  geom_line(linewidth = 1) +
+  labs(# title = "Monthly Mean Carbonate Ion proxy Concentration in NE Pacific Region", 
+       x = "Months Since OAE Start", 
+       y = "TA - DIC (mmol/m3)") +
+  theme_bw() + 
+  theme(panel.grid.minor.x = element_blank())
+
+p1 / p2 / p3 / p4 / p5 + plot_layout(guides = "collect") +
+  plot_annotation(title = "Comparison of CO2 Flux Drivers (NE Pacific Region)") & 
+  theme(legend.position = "bottom",
+        plot.title = element_text(hjust = 0.5))
+
+# ggsave(paste0(path_plots, "fluxdrivers_stack_nep.png"), plot = last_plot(),
+#               width = 6, height = 10, dpi = 300)
+
+# stacked plot
+# ggplot(flux_drivers_loc_long, aes(x = month, y = value, color = phase)) +
+#   scale_x_continuous(breaks = seq(0, 24, by = 3), limits = c(0,24),
+#                      expand = c(0,0)) +
+#   # scale_y_continuous(limits = c(0, 125), expand = c(0,0)) +
+#   geom_vline(xintercept = seq(0, 24, by = 12), color = "grey75", linewidth = 0.4) +
+#   geom_line(linewidth = 1) +
+#   facet_wrap(~variable, ncol = 1, scales = "free_y") +
+#   labs(title = "Comparison of CO2 Flux Drivers (Local Region)", 
+#        x = "Months Since OAE Start", 
+#        y = "Moles of CO2 (1E8)") +
+#   theme_bw() + 
+#   theme(panel.grid.minor.x = element_blank(), legend.position = "bottom")
+
+rm()
+gc()
+
+```
+
+# Driver Correlation Analysis
+
+```{r corr_tests, message=FALSE}
+
+# performing correlation test on local region data
+cor(flux_drivers_loc$CO2_upsum, flux_drivers_loc$alk_pot_mean, method = "pearson")
+cor(flux_drivers_loc$CO2_upsum, flux_drivers_loc$wind_avg, method = "pearson")
+cor(flux_drivers_loc$CO2_upsum, flux_drivers_loc$ddpCO2_mean, method = "pearson")
+
+
+rm(list = ls())
+gc()
+
+```
+
+

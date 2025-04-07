@@ -23,6 +23,9 @@ library(zoo)
 path_ROMSv2RG_results <- 
  "/net/sea/work/loher/ROMS/Alk_enh_formatted_2024_08/"
 
+# Path to save practice plots when working on them
+path_plots <- "/net/sea/work/vifroh/test_plots/"
+
 ```
 
 ```{r load_data, message=FALSE, warning=FALSE}
@@ -102,20 +105,27 @@ region_temp %>%
   annotation_map(map_data("world"),
                  colour = "gray80",
                  fill = "gray80") +
-  geom_tile(aes(
-    lon,
-    lat,
-    width = 0.125,
-    height = 0.125,
-    fill = temp
+  geom_tile(aes(lon, lat, width = 0.125, height = 0.125, fill = temp
   )) +
-  labs(title = "Jan 2nd 2010", x = "Longitude", y = "Latitude") +
+  scale_x_continuous(breaks = seq(-126, -118, by = 2),
+                     expand = c(0,0)) +
+  scale_y_continuous(breaks = seq(32, 46, by = 2),
+                     expand = c(0,0)) +
+  scale_fill_viridis_c(guide = guide_colorbar(
+    barwidth = unit(0.7, "cm"), barheight = unit(4, "cm"), title.hjust = 0.5
+  ), limits = c(7.5, 16.5), name = "SST (°C)") +
+  labs(title = "Jan 2010", x = "Longitude", y = "Latitude") +
   theme_bw() +
   # facet_wrap(~ region) + # displays 3 regions in separate panels
-  scale_fill_viridis_c(name = "SST (°C)") +
-  coord_quickmap(xlim = c(-128, -116),
-                 ylim = c(30, 48),
-                 expand = FALSE)
+  coord_quickmap(xlim = c(-128, -115),
+                 ylim = c(31, 47.5),
+                 expand = FALSE) + 
+  theme(panel.grid = element_blank(), axis.text = element_blank(),
+        axis.title = element_blank())
+
+# save plot
+ggsave(paste0(path_plots, "add_locations.png"), plot = last_plot(),
+       width = 4.5, height = 7.5, dpi = 300)
 
 ```
 

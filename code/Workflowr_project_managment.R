@@ -47,7 +47,7 @@ wflow_publish(here::here(
     "drivers_fgCO2.Rmd"
   )
 ),
-message = "Mixing depth and air-sea co2 flux anlaysis",
+message = "Final code push",
 republish = TRUE) #USE THIS ONE
 
 

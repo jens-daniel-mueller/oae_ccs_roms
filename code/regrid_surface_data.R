@@ -1,7 +1,7 @@
 # -------------------------------------------------
 # Loading Surface Variables
 # Author: Victoria Froh
-# Date: 07/02/2025
+# Date: 07/02/2025 Updates: 26/02/2025
 # Purpose: Loading in surface driver variables for examination
 # -------------------------------------------------
 
@@ -221,18 +221,209 @@ elnino_surf_data <- elnino_surf_data[, dFG := FG_CO2_OAE - FG_CO2]
 rm(elnino_data, elnino_data_last, control_data)
 gc()
 
+
 # -------------------------------
-# 4. Saving Tables
+# 4. Loading pCO2 Data
+# -------------------------------
+
+# -------------------------------
+# 4.1 - Loading in Control Data
+# -------------------------------
+# file <- paste0(path_ROMS_regrid,"control/control_avg_2000-2001.nc")
+control_data <- files_control %>%
+  mclapply(function(file){
+    nc_data <- tidync(file) %>% # reads in nc file, then we load in data
+      activate("D1,D2,D0") %>% # activating surface grid
+      hyper_filter() %>% # can add subset here for testing
+      hyper_tibble(
+        select_var = c("PCO2OC", "pCO2air"), force = TRUE) %>%
+      as.data.table()
+    # want time in consistent date format with correct year
+    nc_data[, time := format(as.Date(time, format = "%Y-%m-%d"), "%Y-%m")]
+    nc_data[, lat := as.numeric(lat)]
+    nc_data[, lon := as.numeric(lon)]
+
+    return(nc_data)
+
+  }, mc.cores = 20)
+
+# bind each data table in the list into one
+control_data <- rbindlist(control_data, fill = TRUE)
+
+# calculate gradient
+control_data <- control_data[, dpCO2_con := pCO2air - PCO2OC]
+
+# -------------------------------
+# 4.2 - Loading in La Nina Data and Calculating
+# -------------------------------
+lanina_data <- files_lanina %>%
+  mclapply(function(file){
+    nc_data <- tidync(file) %>% # reads in nc file, then we load in data
+      activate("D1,D2,D0") %>% # activating surface grid
+      hyper_filter() %>%
+      hyper_tibble(
+        select_var = c("PCO2OC", "pCO2air"), force = TRUE) %>%
+      as.data.table()
+    # reformat time to be Year and Month
+    nc_data[, time := format(as.Date(time, format = "%Y-%m-%d"), "%Y-%m")]
+    nc_data[, lat := as.numeric(lat)]
+    nc_data[, lon := as.numeric(lon)]
+
+    return(nc_data)
+  }, mc.cores = 20)
+
+# bind each data table in the list into one, drop cells with NA
+lanina_data <- rbindlist(lanina_data, fill = TRUE)
+
+# calculate gradient
+lanina_data <- lanina_data[, dpCO2_oae := pCO2air - PCO2OC]
+
+# merge with control and calculate ddpCO2, units in ppm
+lanina_pco2_data <- merge(lanina_data, control_data, by =
+                            c("lon", "lat", "time"),
+                          all.x = TRUE)
+lanina_pco2_data <- lanina_pco2_data[, ddpCO2 := dpCO2_oae - dpCO2_con]
+
+
+rm(lanina_data)
+gc()
+
+# -------------------------------
+# 4.3 - Loading in Neutral Data and Calculating
+# -------------------------------
+neutral_data <- files_neutral %>%
+  mclapply(function(file){
+    nc_data <- tidync(file) %>% # reads in nc file, then we load in data
+      activate("D1,D2,D0") %>%  # activating surface grid
+      hyper_filter() %>%
+      hyper_tibble(
+        select_var = c("PCO2OC", "pCO2air"), force = TRUE) %>%
+      as.data.table()
+    # reformat time to be Year and Month
+    nc_data[, time := format(as.Date(time, format = "%Y-%m-%d"), "%Y-%m")]
+    nc_data[, lat := as.numeric(lat)]
+    nc_data[, lon := as.numeric(lon)]
+
+    return(nc_data)
+  }, mc.cores = 20)
+
+# bind each data table in the list into one, drop cells with NA
+neutral_data <- rbindlist(neutral_data, fill = TRUE)
+
+# calculate gradient
+neutral_data <- neutral_data[, dpCO2_oae := pCO2air - PCO2OC]
+
+# merge with control and calculate ddpCO2, units in ppm
+neutral_pco2_data <- merge(neutral_data, control_data, by =
+                            c("lon", "lat", "time"),
+                          all.x = TRUE)
+neutral_pco2_data <- neutral_pco2_data[, ddpCO2 := dpCO2_oae - dpCO2_con]
+
+
+rm(neutral_data)
+gc()
+
+# -------------------------------
+# 4.4 - Load in El Nino Data and Calculating
+# -------------------------------
+elnino_data <- files_elnino[-6] %>% # last file will be separate
+  mclapply(function(file){
+    nc_data <- tidync(file) %>% # reads in nc file, then we load in data
+      activate("D1,D2,D0") %>%  # activating surface grid
+      hyper_filter() %>%
+      hyper_tibble(
+        select_var = c("PCO2OC", "pCO2air"), force = TRUE) %>%
+      as.data.table()
+    # reformat time to be Year and Month
+    nc_data[, time := format(as.Date(time, format = "%Y-%m-%d"), "%Y-%m")]
+    nc_data[, lat := as.numeric(lat)]
+    nc_data[, lon := as.numeric(lon)]
+
+    return(nc_data)
+  }, mc.cores = 20)
+
+# bind each data table in the list into one, drop cells with NA
+elnino_data <- rbindlist(elnino_data, fill = TRUE)
+
+# only months 1-5 from last file
+elnino_data_last <- tidync(files_elnino[6]) %>% # last file
+  activate("D1,D2,D0") %>%  # activating surface grid
+  hyper_filter(time = index < 6) %>% # don't need after May 2021 (index 5)
+  hyper_tibble(
+    select_var = c("PCO2OC", "pCO2air"), force = TRUE) %>%
+  as.data.table()  %>%
+  .[, time := format(as.Date(time, format = "%Y-%m-%d"), "%Y-%m")] %>%
+  .[, lat := as.numeric(lat)] %>%
+  .[, lon := as.numeric(lon)]
+
+# bind with the rest
+elnino_data <- bind_rows(elnino_data, elnino_data_last)
+
+# calculate gradient
+elnino_data <- elnino_data[, dpCO2_oae := pCO2air - PCO2OC]
+
+# merge with control and calculate ddpCO2, units in ppm
+elnino_pco2_data <- merge(elnino_data, control_data, by =
+                             c("lon", "lat", "time"),
+                           all.x = TRUE)
+elnino_pco2_data <- elnino_pco2_data[, ddpCO2 := dpCO2_oae - dpCO2_con]
+
+rm(elnino_data, elnino_data_last, control_data)
+gc()
+
+# -------------------------------
+# 5. Loading Surface TA and DIC data
+# -------------------------------
+
+# for just control
+# file <- paste0(path_ROMS_regrid,"control/control_avg_2000-2001.nc")
+control_data <- files_control %>%
+  mclapply(function(file){
+    nc_data <- tidync(file) %>% # reads in nc file, then we load in data
+      activate("D1,D2,D3,D0") %>%
+      hyper_filter(depth = depth == 0) %>% # can add subset here for testing
+      hyper_tibble(
+        select_var = c("Alk", "DIC"), force = TRUE) %>%
+      as.data.table()
+    # want time in consistent date format with correct year
+    nc_data[, time := format(as.Date(time, format = "%Y-%m-%d"), "%Y-%m")]
+    nc_data[, lat := as.numeric(lat)]
+    nc_data[, lon := as.numeric(lon)]
+
+    return(nc_data)
+
+  }, mc.cores = 20)
+
+# bind each data table in the list into one
+control_data <- rbindlist(control_data, fill = TRUE)
+
+# calculate TA - DIC as carbonate ion proxy
+carb_proxy_data <- control_data[, CO3_prox := Alk - DIC]
+
+# -------------------------------
+# 6. Saving Tables
 # -------------------------------
 
 # save data (unit mmol/m^2/s) as feather objects
 
 write_feather(lanina_surf_data, paste0(path_outputs,
-                                      "lanina_surf_dataRG2.feather"))
+                                       "lanina_surf_dataRG2.feather"))
 write_feather(neutral_surf_data, paste0(path_outputs,
-                                       "neutral_surf_dataRG2.feather"))
+                                        "neutral_surf_dataRG2.feather"))
 write_feather(elnino_surf_data, paste0(path_outputs,
-                                      "elnino_surf_dataRG2.feather"))
+                                       "elnino_surf_dataRG2.feather"))
+
+# pCO2 gradient data
+write_feather(lanina_pco2_data, paste0(path_outputs,
+                                       "lanina_dpco2_dataRG2.feather"))
+write_feather(neutral_pco2_data, paste0(path_outputs,
+                                        "neutral_dpco2_dataRG2.feather"))
+write_feather(elnino_pco2_data, paste0(path_outputs,
+                                       "elnino_dpco2_dataRG2.feather"))
+
+# carbonate ion proxy data of control
+write_feather(carb_proxy_data, paste0(path_outputs,
+                                       "co3_proxy_dataRG2.feather"))
 
 # clear out
 rm(list = ls())
